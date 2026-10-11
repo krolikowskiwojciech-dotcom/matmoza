@@ -179,7 +179,7 @@ body.w-lekcji { overflow: hidden; }
 .cw-nr { font-variant-numeric: tabular-nums; letter-spacing: 0; }
 
 /* karta z działaniem — biała, z brzegiem 3D jak krok gramatyki w Lingozie */
-.zadanie-karta { background: rgba(255,255,255,.9); border-radius: 30px; padding: 22px 14px 16px; min-height: 30dvh; display: flex; flex-direction: column; justify-content: center;
+.zadanie-karta { background: rgba(255,255,255,.9); border-radius: 30px; padding: 22px 14px 16px; min-height: 24dvh; display: flex; flex-direction: column; justify-content: center;
   box-shadow: inset 0 1.5px 0 rgba(255,255,255,.9), 0 6px 0 var(--brzeg, rgba(0,0,0,.12)), 0 22px 30px -20px rgba(29,28,34,.45);
   transition: background-color .2s; }
 .zadanie-karta.ok { background: var(--ok-tlo); }
@@ -238,7 +238,7 @@ sup { font-size: .55em; line-height: 0; }
 
 .klawiatura { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 /* klawisze 3D jak karty Lingozy: gruby dolny brzeg, przy dotknięciu klawisz „wpada” */
-.klawisz { position: relative; height: clamp(62px, 9.6dvh, 86px); border-radius: 20px; border: 0; background: var(--karta);
+.klawisz { position: relative; height: clamp(58px, 8.4dvh, 78px); border-radius: 20px; border: 0; background: var(--karta);
   background-image: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,0) 60%);
   box-shadow: inset 0 1.5px 0 rgba(255,255,255,.9), 0 7px 0 var(--brzeg, #D9D2C2), 0 14px 18px -12px rgba(29,28,34,.4);
   font-size: 32px; font-weight: 500; font-variant-numeric: tabular-nums; cursor: pointer; user-select: none; -webkit-user-select: none;
