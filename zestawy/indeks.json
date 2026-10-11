@@ -1,0 +1,44 @@
+{
+  "profile": [
+    {
+      "id": "julek",
+      "imie": "Julek",
+      "klasa": 6,
+      "znak": "J"
+    },
+    {
+      "id": "aniela",
+      "imie": "Aniela",
+      "klasa": 4,
+      "znak": "A"
+    }
+  ],
+  "zestawy": [
+    {
+      "id": "przyklad-klasa-4",
+      "tytul": "Rachunki w pamięci",
+      "opis": "Zestaw na próbę, zanim przyjdzie pierwsze zdjęcie z podręcznika.",
+      "dla": [
+        "aniela"
+      ],
+      "termin": null,
+      "dodano": "2026-10-11",
+      "przyklad": true,
+      "bloki": 5,
+      "zadan": 24
+    },
+    {
+      "id": "przyklad-klasa-6",
+      "tytul": "Ułamki dziesiętne i zwykłe",
+      "opis": "Zestaw na próbę, zanim przyjdzie pierwsze zdjęcie z podręcznika.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-11",
+      "przyklad": true,
+      "bloki": 4,
+      "zadan": 20
+    }
+  ]
+}

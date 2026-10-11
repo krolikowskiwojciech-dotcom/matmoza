@@ -1,0 +1,43 @@
+{
+  "id": "przyklad-klasa-6",
+  "przyklad": true,
+  "dla": ["julek"],
+  "tytul": "Ułamki dziesiętne i zwykłe",
+  "opis": "Zestaw na próbę, zanim przyjdzie pierwsze zdjęcie z podręcznika.",
+  "dodano": "2026-10-11",
+  "bloki": [
+    {
+      "id": "zera",
+      "tytul": "Liczby z zerami",
+      "polecenie": "Oblicz w pamięci.",
+      "ile": 5,
+      "generator": { "typ": "wyrazenie", "szablony": ["{a} · {b}", "{c} : {b}"], "zmienne": { "a": { "cyfry": [2, 9], "zera": [1, 3] }, "b": { "cyfry": [2, 9], "zera": [1, 2] }, "c": "= a · b" } }
+    },
+    {
+      "id": "dziesietne-mnozenie",
+      "tytul": "Mnożenie i dzielenie ułamków dziesiętnych",
+      "polecenie": "Oblicz.",
+      "ile": 6,
+      "generator": { "typ": "wyrazenie", "dziesietne": true, "maxMiejsc": 3,
+        "szablony": ["{a} · {b}", "{p} : {q}"],
+        "zmienne": { "a": { "od": 0.1, "do": 9.9, "miejsca": 1 }, "b": [2, 9], "q": { "od": 0.2, "do": 0.9, "miejsca": 1 }, "k": [2, 9], "p": "= q · k" } },
+      "jak": { "intro": "Mnożenie: pomnóż bez przecinków i oddziel w wyniku tyle cyfr, ile jest po przecinku w obu liczbach razem. Dzielenie: przesuń przecinek w obu liczbach tak, żeby dzielnik był liczbą całkowitą." }
+    },
+    {
+      "id": "ulamki",
+      "tytul": "Dodawanie i odejmowanie ułamków zwykłych",
+      "polecenie": "Oblicz. Wynik skróć i wyłącz całości.",
+      "ile": 5,
+      "generator": { "typ": "ulamki", "dzialania": ["+", "−"], "mianowniki": [2, 3, 4, 6, 8, 12], "mieszane": 2 }
+    },
+    {
+      "id": "porownaj",
+      "tytul": "Porównywanie",
+      "polecenie": "Policz obie strony i wybierz znak.",
+      "ile": 4,
+      "generator": { "typ": "porownaj",
+        "lewa": { "szablon": "{a} · {b}", "zmienne": { "a": { "od": 0.5, "do": 4.5, "miejsca": 1 }, "b": [2, 6] }, "dziesietne": true },
+        "prawa": { "szablon": "{a} + {b}", "zmienne": { "a": { "od": 1, "do": 9, "miejsca": 1 }, "b": { "od": 1, "do": 9, "miejsca": 1 } }, "dziesietne": true } }
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "przyklad-klasa-4",
+  "przyklad": true,
+  "dla": ["aniela"],
+  "tytul": "Rachunki w pamięci",
+  "opis": "Zestaw na próbę, zanim przyjdzie pierwsze zdjęcie z podręcznika.",
+  "dodano": "2026-10-11",
+  "bloki": [
+    {
+      "id": "dodawanie",
+      "tytul": "Dodawanie i odejmowanie w pamięci",
+      "polecenie": "Oblicz w pamięci.",
+      "ile": 6,
+      "generator": { "typ": "wyrazenie", "szablony": ["{a} + {b}", "{a} − {b}"], "zmienne": { "a": [24, 99], "b": [11, 79] } },
+      "jak": { "intro": "Drugą liczbę rozbij na dziesiątki i jedności. Najpierw dodaj (albo odejmij) dziesiątki, potem jedności.",
+        "przyklad": ["47 + 38 = 47 + 30 + 8", "47 + 30 = 77", "77 + 8 = 85"] }
+    },
+    {
+      "id": "tabliczka",
+      "tytul": "Mnożenie i dzielenie",
+      "polecenie": "Oblicz.",
+      "ile": 6,
+      "generator": { "typ": "wyrazenie", "szablony": ["{a} · {b}", "{c} : {b}"], "zmienne": { "a": [3, 9], "b": [3, 9], "c": "= a · b" } },
+      "jak": { "intro": "Dzielenie to mnożenie czytane wstecz: 56 : 7 to pytanie, ile razy 7 daje 56." }
+    },
+    {
+      "id": "reszta",
+      "tytul": "Dzielenie z resztą",
+      "polecenie": "Podziel i podaj resztę.",
+      "ile": 5,
+      "generator": { "typ": "reszta", "dzielna": [20, 89], "dzielnik": [3, 9] }
+    },
+    {
+      "id": "kolejnosc",
+      "tytul": "Kolejność działań",
+      "polecenie": "Oblicz. Pamiętaj o kolejności działań.",
+      "ile": 5,
+      "generator": { "typ": "wyrazenie", "szablony": ["{a} + {b} · {c}", "({a} + {b}) · {c}", "{a} − {b} · {c}", "{d} : {c} + {b}"], "zmienne": { "a": [20, 60], "b": [2, 9], "c": [2, 6], "d": [12, 54] } },
+      "jak": { "intro": "Najpierw nawiasy, potem mnożenie i dzielenie, na końcu dodawanie i odejmowanie — od lewej do prawej." }
+    },
+    {
+      "id": "zakupy",
+      "tytul": "Zadania z treścią",
+      "ile": 2,
+      "zadania": [
+        {
+          "q": "Ola ma 50 zł. Kupiła 3 zeszyty po 4 zł i piórnik za 18 zł.",
+          "czesci": [
+            { "e": "Ile zapłaciła za zeszyty? (zł)", "a": "12", "kind": "liczba", "w": "3 · 4", "exp": ["Trzy zeszyty po 4 zł: 3 · 4 = 12"] },
+            { "e": "Ile pieniędzy jej zostało? (zł)", "a": "20", "kind": "liczba", "w": "50 − 12 − 18", "exp": ["Wydała razem: 12 + 18 = 30", "Zostało: 50 − 30 = 20"] }
+          ]
+        },
+        {
+          "q": "W klasie jest 27 uczniów. Nauczycielka dzieli ich na grupy po 4 osoby.",
+          "czesci": [
+            { "e": "Ile będzie pełnych grup?", "a": "6", "kind": "liczba", "w": "24 : 4", "exp": ["27 : 4 = 6 r. 3", "Pełnych grup po 4 osoby jest 6."] },
+            { "e": "Ile osób zostanie bez pełnej grupy?", "a": "3", "kind": "liczba", "w": "27 − 6 · 4", "exp": ["Sprawdzenie: 6 · 4 + 3 = 27", "Zostaje reszta: 3 osoby."] }
+          ]
+        }
+      ]
+    }
+  ]
+}
