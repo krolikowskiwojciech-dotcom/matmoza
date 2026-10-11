@@ -185,7 +185,7 @@ export function uruchom(el, opcje) {
     const minus = blok.ujemne ? k('−', () => wpisz('−'), 'minus', 'minus') : null;
     return [
       h('div', { class: 'klawiatura' }, cyfry, lewy, k('0', () => wpisz('0'), '0'), k(ik('kasuj'), () => kasuj(), 'kasuj', 'kasuj'), minus),
-      h('button', { class: 'btn glowny szeroki', type: 'button', onclick: () => sprawdz() }, 'Sprawdź'),
+      h('button', { class: 'btn sprawdz szeroki', type: 'button', onpointerdown: wcisnij, onclick: () => sprawdz() }, 'Sprawdź'),
     ];
   }
 
