@@ -84,6 +84,8 @@ a { color: inherit; }
 .profil-klasa { color: var(--atrament-2); font-weight: 700; }
 
 .maskotka { display: block; width: 120px; height: auto; margin: 0 auto 4px; }
+.powitanie { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.maskotka.mala { width: 92px; margin: 0; flex: none; }
 .maskotka.duza { width: 170px; margin-top: 10px; }
 
 /* lista zestawów */

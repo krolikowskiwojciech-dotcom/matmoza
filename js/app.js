@@ -67,7 +67,9 @@ function ekranListy() {
   };
   app.replaceChildren(naglowek(),
     h('main', { class: 'tresc-strony' },
-      h('h1', { class: 'tytul-strony' }, `Cześć, ${p.imie}!`),
+      h('div', { class: 'powitanie' },
+        h('h1', { class: 'tytul-strony' }, `Cześć, ${p.imie}!`),
+        h('img', { class: 'maskotka mala', src: 'obrazy/koza-czesc.png', alt: '', onerror: (e) => e.target.remove() })),
       prawdziwe.length ? h('p', { class: 'podtytul' }, 'Wybierz zestaw i przerabiaj blok po bloku.')
         : h('p', { class: 'podtytul' }, 'Tata jeszcze nie wrzucił zadań z podręcznika. Na rozgrzewkę jest przykład.'),
       h('div', { class: 'lista-zestawow' }, prawdziwe.map(karta)),
