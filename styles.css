@@ -237,15 +237,27 @@ sup { font-size: .55em; line-height: 0; }
 .stopka .przyciski { margin: 0; }
 
 .klawiatura { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-/* klawisze 3D jak karty Lingozy: gruby dolny brzeg, przy dotknięciu klawisz „wpada” */
-.klawisz { position: relative; height: clamp(58px, 8.4dvh, 78px); border-radius: 20px; border: 0; background: var(--karta);
-  background-image: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,0) 60%);
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,.9), 0 7px 0 var(--brzeg, #D9D2C2), 0 14px 18px -12px rgba(29,28,34,.4);
-  font-size: 32px; font-weight: 500; font-variant-numeric: tabular-nums; cursor: pointer; user-select: none; -webkit-user-select: none;
-  display: grid; place-items: center; margin-bottom: 7px; transition: transform .06s ease-out, box-shadow .06s ease-out; }
-.klawisz:active, .klawisz.wcisniety { transform: translateY(6px); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.9), 0 1px 0 var(--brzeg, #D9D2C2), 0 4px 6px -4px rgba(29,28,34,.35); }
-.klawisz.szary { background-color: rgba(255,255,255,.6); }
-.klawisz .ik svg { width: 30px; height: 30px; }
+/* klawisze: kolorowe, matowe krążki 3D z wypukłą białą cyfrą (jak naklejane znaki matematyczne);
+   przy dotknięciu krążek „wpada” w dół i traci grubość */
+.klawisz { height: clamp(62px, 8.6dvh, 80px); border: 0; padding: 0; background: none; cursor: pointer; user-select: none; -webkit-user-select: none;
+  display: grid; place-items: center; --k: #E5603F; }
+.krazek { position: relative; height: calc(100% - 8px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  background-color: var(--k);
+  background-image: radial-gradient(circle at 32% 26%, rgba(255,255,255,.34), rgba(255,255,255,0) 48%),
+    radial-gradient(circle at 70% 85%, rgba(0,0,0,.12), rgba(0,0,0,0) 55%);
+  box-shadow: inset 0 2px 1px rgba(255,255,255,.35), inset 0 -3px 5px rgba(0,0,0,.12),
+    0 7px 0 color-mix(in srgb, var(--k) 68%, #1D1C22), 0 14px 16px -8px rgba(29,28,34,.45);
+  color: #fff; font-size: clamp(30px, 4.6dvh, 40px); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 0 color-mix(in srgb, var(--k) 70%, #1D1C22), 0 4px 6px rgba(0,0,0,.28);
+  transform: translateY(-4px); transition: transform .06s ease-out, box-shadow .06s ease-out; }
+.klawisz:active .krazek, .klawisz.wcisniety .krazek { transform: translateY(3px);
+  box-shadow: inset 0 2px 1px rgba(255,255,255,.35), inset 0 -2px 4px rgba(0,0,0,.14), 0 1px 0 color-mix(in srgb, var(--k) 68%, #1D1C22), 0 4px 6px -4px rgba(29,28,34,.4); }
+.krazek .ik svg { width: 32px; height: 32px; stroke-width: 2.6; filter: drop-shadow(0 2px 0 rgba(0,0,0,.2)); }
+.klawisz[data-k="1"] { --k: #E5603F; } .klawisz[data-k="2"] { --k: #EE8A2E; } .klawisz[data-k="3"] { --k: #F0A93A; }
+.klawisz[data-k="4"] { --k: #6BAF52; } .klawisz[data-k="5"] { --k: #3E9C8A; } .klawisz[data-k="6"] { --k: #7FB7E6; }
+.klawisz[data-k="7"] { --k: #24537F; } .klawisz[data-k="8"] { --k: #8A5DB3; } .klawisz[data-k="9"] { --k: #EC7A6A; }
+.klawisz[data-k="0"] { --k: #D9513A; } .klawisz[data-k="przecinek"], .klawisz[data-k="minus"] { --k: #A9A39A; }
+.klawisz[data-k="kasuj"] { --k: #5B5866; } .klawisz[data-k="dalej"] { --k: #3E9C8A; }
 .stopka .btn.glowny.szeroki { min-height: 58px; font-size: 18px; box-shadow: 0 6px 0 #000, 0 14px 18px -12px rgba(29,28,34,.5); margin-bottom: 6px; transition: transform .06s, box-shadow .06s; }
 .stopka .btn.glowny.szeroki:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 1px 0 #000; }
 
@@ -326,7 +338,7 @@ input.pole { display: block; width: 100%; height: auto; padding: 12px 14px; bord
 .okno-przyciski .btn { flex: 1; }
 
 @media (max-height: 700px) {
-  .klawisz { height: 54px; font-size: 26px; }
+  .klawisz { height: 56px; }
   .dzialanie { padding: 8px 0 2px; }
   .lekcja-tytul { display: none; }
 }

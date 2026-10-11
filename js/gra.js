@@ -177,12 +177,14 @@ export function uruchom(el, opcje) {
   // klawisz „wpada” od razu przy dotknięciu (iOS nie zawsze pokazuje :active), a puszcza po chwili
   const wcisnij = (e) => { const b = e.currentTarget; b.classList.add('wcisniety'); setTimeout(() => b.classList.remove('wcisniety'), 120); };
   function klawiatura(cz, blok) {
-    const k = (etyk, akcja, klasa = '', aria) => h('button', { class: 'klawisz ' + klasa, type: 'button', 'aria-label': aria || (typeof etyk === 'string' ? etyk : ''), onpointerdown: wcisnij, onclick: akcja }, etyk);
-    const cyfry = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => k(String(n), () => wpisz(String(n))));
-    const lewy = cz.kind !== 'liczba' ? k(ik('dalej'), () => dalej(), 'szary', 'następne okienko') : k(',', () => wpisz(','), 'szary', 'przecinek');
-    const minus = blok.ujemne ? k('−', () => wpisz('−'), 'szary', 'minus') : null;
+    // klawisz = kolorowy krążek z wypukłą białą cyfrą; data-k wybiera kolor krążka
+    const k = (etyk, akcja, nazwa, aria) => h('button', { class: 'klawisz', 'data-k': nazwa, type: 'button', 'aria-label': aria || (typeof etyk === 'string' ? etyk : ''), onpointerdown: wcisnij, onclick: akcja },
+      h('span', { class: 'krazek' }, etyk));
+    const cyfry = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => k(String(n), () => wpisz(String(n)), String(n)));
+    const lewy = cz.kind !== 'liczba' ? k(ik('dalej'), () => dalej(), 'dalej', 'następne okienko') : k(',', () => wpisz(','), 'przecinek', 'przecinek');
+    const minus = blok.ujemne ? k('−', () => wpisz('−'), 'minus', 'minus') : null;
     return [
-      h('div', { class: 'klawiatura' }, cyfry, lewy, k('0', () => wpisz('0')), k(ik('kasuj'), () => kasuj(), 'szary', 'kasuj'), minus),
+      h('div', { class: 'klawiatura' }, cyfry, lewy, k('0', () => wpisz('0'), '0'), k(ik('kasuj'), () => kasuj(), 'kasuj', 'kasuj'), minus),
       h('button', { class: 'btn glowny szeroki', type: 'button', onclick: () => sprawdz() }, 'Sprawdź'),
     ];
   }
