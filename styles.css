@@ -179,19 +179,20 @@ body.w-lekcji { overflow: hidden; }
 .cw-nr { font-variant-numeric: tabular-nums; letter-spacing: 0; }
 
 /* karta z działaniem — biała, z brzegiem 3D jak krok gramatyki w Lingozie */
-.zadanie-karta { background: rgba(255,255,255,.9); border-radius: 28px; padding: 20px 16px 14px;
+.zadanie-karta { background: rgba(255,255,255,.9); border-radius: 30px; padding: 22px 14px 16px; min-height: 30dvh; display: flex; flex-direction: column; justify-content: center;
   box-shadow: inset 0 1.5px 0 rgba(255,255,255,.9), 0 6px 0 var(--brzeg, rgba(0,0,0,.12)), 0 22px 30px -20px rgba(29,28,34,.45);
   transition: background-color .2s; }
 .zadanie-karta.ok { background: var(--ok-tlo); }
 .zadanie-karta.zle { background: var(--zle-tlo); }
-.tresc { font-size: 20px; line-height: 1.4; margin: 0 0 10px; }
+.tresc { font-size: 22px; line-height: 1.4; margin: 0 0 10px; }
 .etykieta { font-size: 17px; margin: 0 0 6px; }
 .dzialanie { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; column-gap: .26em; row-gap: 8px;
-  font-size: clamp(36px, 11vw, 54px); font-weight: 500; font-variant-numeric: tabular-nums lining-nums; padding: 14px 0 6px; text-align: center; white-space: pre-wrap; }
-.dzialanie.dlugie { font-size: clamp(30px, 9vw, 44px); }
-.dzialanie.bardzo-dlugie { font-size: clamp(23px, 7vw, 34px); }
+  font-size: clamp(46px, 13.5vw, 68px); font-weight: 500; font-variant-numeric: tabular-nums lining-nums; padding: 24px 0 12px; text-align: center; white-space: pre-wrap; }
+.dzialanie.dlugie { font-size: clamp(38px, 11vw, 56px); }
+.dzialanie.bardzo-dlugie { font-size: clamp(29px, 8.6vw, 42px); }
 .dzialanie.samo { padding-top: 4px; }
-.zadanie-karta.zle .dzialanie { font-size: clamp(22px, 7vw, 30px); padding: 4px 0 0; }
+.zadanie-karta.zle { min-height: 0; }
+.zadanie-karta.zle .dzialanie { font-size: clamp(24px, 7.5vw, 32px); padding: 4px 0 0; }
 .zadanie-karta.zle .tresc { font-size: 16px; }
 .jednostka { font-size: .55em; color: var(--szary); }
 .info { min-height: 22px; text-align: center; font-weight: 500; margin: 6px 0 0; font-size: 15px; }
@@ -204,7 +205,7 @@ body.w-lekcji { overflow: hidden; }
 .mieszana { display: inline-flex; align-items: center; gap: .06em; }
 sup { font-size: .55em; line-height: 0; }
 .kwadrat { display: inline-block; width: .85em; height: .85em; border: 2px solid currentColor; border-radius: 6px; vertical-align: middle; opacity: .6; }
-.pole { display: inline-grid; place-items: center; min-width: 1.5em; height: 1.32em; padding: 0 .18em; margin: 0 .04em;
+.pole { display: inline-grid; place-items: center; min-width: 1.6em; height: 1.36em; padding: 0 .18em; margin: 0 .04em;
   border: 2px solid var(--linia); border-bottom-width: 4px; border-radius: 14px; background: var(--karta); font: inherit; cursor: pointer; line-height: 1; }
 .pole.aktywne { border-color: #8AA8F0; background: #EAF0FF; }
 .pole.aktywne.puste::after { content: ''; width: 3px; height: .75em; border-radius: 2px; background: #5B7FE0; animation: kursor 1s steps(1) infinite; }
@@ -235,16 +236,24 @@ sup { font-size: .55em; line-height: 0; }
 .stopka-info.z-koza { display: flex; gap: 10px; align-items: center; }
 .stopka .przyciski { margin: 0; }
 
-.klawiatura { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.klawisz { height: clamp(48px, 7.4dvh, 62px); border-radius: 16px; border: 2px solid rgba(29,28,34,.08); border-bottom-width: 4px; background: var(--karta);
-  font-size: 26px; font-weight: 500; font-variant-numeric: tabular-nums; cursor: pointer; user-select: none; display: grid; place-items: center; transition: transform .05s; }
-.klawisz:active { transform: translateY(2px); border-bottom-width: 2px; }
-.klawisz.szary { background: rgba(255,255,255,.55); }
-.klawisz .ik svg { width: 26px; height: 26px; }
+.klawiatura { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+/* klawisze 3D jak karty Lingozy: gruby dolny brzeg, przy dotknięciu klawisz „wpada” */
+.klawisz { position: relative; height: clamp(62px, 9.6dvh, 86px); border-radius: 20px; border: 0; background: var(--karta);
+  background-image: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,0) 60%);
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,.9), 0 7px 0 var(--brzeg, #D9D2C2), 0 14px 18px -12px rgba(29,28,34,.4);
+  font-size: 32px; font-weight: 500; font-variant-numeric: tabular-nums; cursor: pointer; user-select: none; -webkit-user-select: none;
+  display: grid; place-items: center; margin-bottom: 7px; transition: transform .06s ease-out, box-shadow .06s ease-out; }
+.klawisz:active, .klawisz.wcisniety { transform: translateY(6px); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.9), 0 1px 0 var(--brzeg, #D9D2C2), 0 4px 6px -4px rgba(29,28,34,.35); }
+.klawisz.szary { background-color: rgba(255,255,255,.6); }
+.klawisz .ik svg { width: 30px; height: 30px; }
+.stopka .btn.glowny.szeroki { min-height: 58px; font-size: 18px; box-shadow: 0 6px 0 #000, 0 14px 18px -12px rgba(29,28,34,.5); margin-bottom: 6px; transition: transform .06s, box-shadow .06s; }
+.stopka .btn.glowny.szeroki:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 1px 0 #000; }
 
 .opcje { display: flex; flex-direction: column; gap: 10px; }
 .opcje.znaki { flex-direction: row; }
-.opcja { flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 2px solid var(--linia); border-bottom-width: 4px; background: var(--karta); cursor: pointer; font-size: 19px; }
+.opcja { flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 16px; border-radius: 18px; border: 2px solid transparent; background: var(--karta); cursor: pointer; font-size: 19px;
+  box-shadow: 0 6px 0 var(--brzeg, #D9D2C2), 0 12px 16px -12px rgba(29,28,34,.4); margin-bottom: 6px; transition: transform .06s, box-shadow .06s; }
+.opcja:active, .opcja.wcisniety { transform: translateY(5px); box-shadow: 0 1px 0 var(--brzeg, #D9D2C2); }
 .opcje.znaki .opcja { font-size: 38px; padding: 8px; min-height: 76px; font-family: 'Libre Baskerville', Georgia, serif; }
 .opcja.ok { border-color: var(--ok); background: var(--ok-tlo); }
 .opcja.zle { border-color: var(--zle); background: var(--zle-tlo); }
@@ -317,7 +326,7 @@ input.pole { display: block; width: 100%; height: auto; padding: 12px 14px; bord
 .okno-przyciski .btn { flex: 1; }
 
 @media (max-height: 700px) {
-  .klawisz { height: 46px; font-size: 23px; }
+  .klawisz { height: 54px; font-size: 26px; }
   .dzialanie { padding: 8px 0 2px; }
   .lekcja-tytul { display: none; }
 }

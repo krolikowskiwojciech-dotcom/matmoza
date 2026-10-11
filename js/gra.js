@@ -155,7 +155,7 @@ export function uruchom(el, opcje) {
       : cz.kind === 'wybor' ? null : h('div', { class: 'dzialanie samo' }, mat('□', okienkoDla(cz)), cz.jednostka ? h('span', { class: 'jednostka' }, cz.jednostka) : null);
     const stopka = cz.kind === 'wybor'
       ? h('div', { class: 'opcje' + (cz.choices.every((c) => c.length <= 2) ? ' znaki' : '') },
-        cz.choices.map((c) => h('button', { class: 'opcja', type: 'button', onclick: () => sprawdz(c) }, h('span', { class: 'opcja-txt' }, c))))
+        cz.choices.map((c) => h('button', { class: 'opcja', type: 'button', onpointerdown: wcisnij, onclick: () => sprawdz(c) }, h('span', { class: 'opcja-txt' }, c))))
       : klawiatura(cz, b);
     ekran({
       tytul: b.tytul,
@@ -174,8 +174,10 @@ export function uruchom(el, opcje) {
     ustawKlawisze((e) => klawiszFizyczny(e, cz));
   }
 
+  // klawisz „wpada” od razu przy dotknięciu (iOS nie zawsze pokazuje :active), a puszcza po chwili
+  const wcisnij = (e) => { const b = e.currentTarget; b.classList.add('wcisniety'); setTimeout(() => b.classList.remove('wcisniety'), 120); };
   function klawiatura(cz, blok) {
-    const k = (etyk, akcja, klasa = '', aria) => h('button', { class: 'klawisz ' + klasa, type: 'button', 'aria-label': aria || (typeof etyk === 'string' ? etyk : ''), onclick: akcja }, etyk);
+    const k = (etyk, akcja, klasa = '', aria) => h('button', { class: 'klawisz ' + klasa, type: 'button', 'aria-label': aria || (typeof etyk === 'string' ? etyk : ''), onpointerdown: wcisnij, onclick: akcja }, etyk);
     const cyfry = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => k(String(n), () => wpisz(String(n))));
     const lewy = cz.kind !== 'liczba' ? k(ik('dalej'), () => dalej(), 'szary', 'następne okienko') : k(',', () => wpisz(','), 'szary', 'przecinek');
     const minus = blok.ujemne ? k('−', () => wpisz('−'), 'szary', 'minus') : null;
