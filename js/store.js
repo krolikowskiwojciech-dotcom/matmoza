@@ -10,6 +10,8 @@ export const LS = {
 
 export const REPO_DANYCH = 'krolikowskiwojciech-dotcom/matmoza-dane';
 const API = 'https://api.github.com';
+const BRAK_REPO = 'Token nie widzi repozytorium matmoza-dane. W ustawieniach tokenu na GitHubie: Repository access → Only select repositories → dodaj matmoza-dane.';
+const BRAK_ZAPISU = 'Token widzi repozytorium, ale nie może w nim zapisywać. W ustawieniach tokenu: Permissions → Repositories → Contents → Read and write.';
 
 export const profil = () => LS.get('mz.profil');
 export const ustawProfil = (id) => (id ? LS.set('mz.profil', id) : LS.del('mz.profil'));
@@ -59,8 +61,12 @@ export async function synchronizuj(id) {
   if (!token() || !id) return { stan: 'wylaczona' };
   const plik = `/repos/${REPO_DANYCH}/contents/profile/${id}.json`;
   for (let proba = 0; proba < 3; proba++) {
+    if (proba === 0) {
+      const repo = await gh(`/repos/${REPO_DANYCH}`);
+      if (repo.status === 404 || repo.status === 403) throw new Error(BRAK_REPO);
+    }
     const r = await gh(plik);
-    if (!r.ok && r.status !== 404) throw new Error(r.status === 403 || r.status === 404 ? 'Token nie ma dostępu do repozytorium danych.' : `GitHub: błąd ${r.status}`);
+    if (!r.ok && r.status !== 404) throw new Error(r.status === 403 ? BRAK_REPO : `GitHub: błąd ${r.status}`);
     const j = r.ok ? await r.json() : null;
     const zdalne = j ? JSON.parse(dec(j.content || '') || 'null') : null;
     const razem = scal(zdalne?.proby, proby(id));
@@ -70,7 +76,7 @@ export async function synchronizuj(id) {
     if (j?.sha) body.sha = j.sha;
     const w = await gh(plik, { method: 'PUT', body: JSON.stringify(body) });
     if (w.status === 409 || w.status === 422) continue;
-    if (!w.ok) throw new Error(w.status === 403 || w.status === 404 ? 'Token nie ma prawa zapisu do repozytorium danych.' : `GitHub: błąd ${w.status} przy zapisie`);
+    if (!w.ok) throw new Error(w.status === 403 || w.status === 404 ? BRAK_ZAPISU : `GitHub: błąd ${w.status} przy zapisie`);
     return { stan: 'ok' };
   }
   throw new Error('Nie udało się zapisać wyników (konflikt). Spróbuj za chwilę.');
