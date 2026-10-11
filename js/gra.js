@@ -1,7 +1,8 @@
 // Przebieg zestawu: bloki ćwiczeń jeden po drugim, zła odpowiedź zatrzymuje grę i uczy,
 // błędne zadanie wraca w tym samym bloku, na końcu podsumowanie i „Wyślij wynik”.
+// Wygląd jak lekcja w Lingozie: pełny ekran w kolorze bloku, pasek postępu u góry, stopka z przyciskiem na dole.
 
-import { h, mat, okno, odm } from './dom.js';
+import { h, mat, okno, odm, ik, koza, kolor } from './dom.js';
 import { nastepneZadanie, los, JAK } from './generatory.js';
 import { ocen, normuj } from './sprawdz.js';
 import { graj } from './dzwieki.js';
@@ -27,15 +28,16 @@ export function zadaniaBloku(blok) {
 const tekstZadania = (z, cz) => [z.q, cz.e, cz.d && cz.d.replace(/ = □ r\. □$/, '')].filter(Boolean).join(' ');
 const poprawnie = (cz) => {
   if (cz.kind === 'reszta') { const [a, r] = cz.a.split(' r '); return cz.d.replace('□', a).replace('□', r); }
-  if (cz.kind === 'wybor' && cz.d?.includes('□')) return cz.d.replace('□', cz.a);
   if (cz.d?.includes('□')) return cz.d.replace('□', cz.a);
   return cz.a;
 };
 const gwiazdki = (dobrze, ile) => (ile === 0 || dobrze === 0 ? 0 : dobrze === ile ? 3 : dobrze / ile >= 0.8 ? 2 : 1);
-const pokazGwiazdki = (n) => h('span', { class: 'gwiazdki', 'aria-label': `${n} z 3 gwiazdek` }, [1, 2, 3].map((i) => h('span', { class: i <= n ? 'on' : '' }, '★')));
+const pokazGwiazdki = (n, klasa = '') => h('span', { class: 'gwiazdki ' + klasa, 'aria-label': `${n} z 3 gwiazdek` },
+  [1, 2, 3].map((i) => h('span', { class: i <= n ? '' : 'gw-puste' }, '★')));
+const POCHWALY = ['Dobrze!', 'Super!', 'Brawo!', 'Tak jest!', 'Świetnie!', 'Pięknie!'];
 
 /**
- * uruchom(kontener, { zestaw, bloki, profil, zadania?, naKoniec(proba), wyjdz() })
+ * uruchom(kontener, { zestaw, bloki, profil, zadania?, tylkoBlok?, powtorka?, naKoniec(proba), powtorz(), jeszczeRaz(), wyjdz() })
  * bloki — lista bloków do przejścia; zadania — gotowe zadania (powtórka pomyłek) { idBloku: [zadania] }
  */
 export function uruchom(el, opcje) {
@@ -43,18 +45,25 @@ export function uruchom(el, opcje) {
   const start = Date.now();
   const bloki = opcje.bloki.map((b) => ({
     blok: b,
+    nr: zestaw.bloki.indexOf(b),
     kolejka: (opcje.zadania?.[b.id] || zadaniaBloku(b)).map((z) => ({ z, powtorka: false })),
-    wyniki: [], // { dobrze, tekst, a, odp } — tylko pierwsze podejście do każdej części
+    wyniki: [], // { dobrze, tekst, a, pelne, odp } — tylko pierwsze podejście do każdej części
   })).filter((b) => b.kolejka.length);
 
   let nrBloku = 0, poz = 0, czesc = 0, seria = 0, zablokowane = false, pola = [], aktywne = 0, timer = null;
   let klawisze = null;
+  document.body.classList.add('w-lekcji');
 
   const B = () => bloki[nrBloku];
   const pozycja = () => B().kolejka[poz];
   const czescTeraz = () => pozycja().z.czesci[czesc];
   const wszystkich = () => bloki.reduce((n, b) => n + b.kolejka.filter((x) => !x.powtorka).reduce((m, x) => m + x.z.czesci.length, 0), 0);
   const zrobionych = () => bloki.reduce((n, b) => n + b.wyniki.length, 0);
+  const postep = () => {
+    const razem = bloki.reduce((n, b) => n + b.kolejka.length, 0);
+    const zrob = bloki.slice(0, nrBloku).reduce((n, b) => n + b.kolejka.length, 0) + poz;
+    return Math.round((zrob / Math.max(1, razem)) * 100);
+  };
 
   function ustawKlawisze(f) {
     if (klawisze) document.removeEventListener('keydown', klawisze);
@@ -63,9 +72,23 @@ export function uruchom(el, opcje) {
   }
   const sprzataj = () => { clearTimeout(timer); ustawKlawisze(null); };
 
+  // wspólny szkielet ekranu lekcji
+  function ekran({ tytul, tresc, stopka, klasaStopki = '', bezGory = false }) {
+    el.className = `lekcja w-kolorze ${kolor(B()?.nr ?? 0)}`;
+    el.replaceChildren(...[
+      bezGory ? null : h('div', { class: 'lekcja-gora' },
+        h('button', { class: 'zamknij', type: 'button', 'aria-label': 'Przerwij', onclick: przerwij }, ik('zamknij')),
+        h('div', { class: 'postep' }, h('div', { class: 'postep-wew', style: `width:${postep()}%` })),
+        h('span', { class: 'licznik' }, `${nrBloku + 1}/${bloki.length}`)),
+      tytul ? h('div', { class: 'lekcja-tytul serif' }, tytul) : null,
+      h('div', { class: 'cw-pole' }, tresc),
+      stopka ? h('div', { class: 'stopka ' + klasaStopki }, stopka) : null].filter(Boolean));
+    el.querySelector('.cw-pole').scrollTop = 0;
+  }
+
   async function przerwij() {
     const w = await okno({ tytul: 'Przerwać ćwiczenie?', tresc: 'Wynik zapisze się jako przerwany. Możesz go i tak wysłać.',
-      przyciski: [{ tekst: 'Ćwiczę dalej', wartosc: false }, { tekst: 'Przerwij', wartosc: true, klasa: 'zly' }] });
+      przyciski: [{ tekst: 'Ćwiczę dalej', wartosc: false, klasa: 'jasny' }, { tekst: 'Przerwij', wartosc: true, klasa: 'czerwony' }] });
     if (w) podsumowanie(true);
   }
 
@@ -74,23 +97,21 @@ export function uruchom(el, opcje) {
     sprzataj();
     const b = B().blok;
     const jak = b.jak || JAK[b.generator?.typ];
-    el.replaceChildren(
-      h('div', { class: 'gra-gora' },
-        h('button', { class: 'btn maly jasny', type: 'button', onclick: przerwij }, '✕ Przerwij'),
-        h('span', { class: 'gra-licznik' }, `Blok ${nrBloku + 1} z ${bloki.length}`)),
-      h('section', { class: 'karta wstep kolor-' + (nrBloku % 5) },
-        h('p', { class: 'nadtytul' }, `Blok ${nrBloku + 1} · ${B().kolejka.length} ${odm(B().kolejka.length, 'zadanie', 'zadania', 'zadań')}`),
-        h('h1', {}, b.tytul),
-        b.polecenie ? h('p', { class: 'polecenie' }, b.polecenie) : null,
-        jak ? h('div', { class: 'jak' },
-          h('h2', {}, 'Jak to zrobić?'),
-          jak.intro ? h('p', {}, mat(jak.intro)) : null,
-          (jak.zasady || []).map(([t, opis]) => h('p', { class: 'zasada' }, h('b', {}, t), ' ', mat(opis))),
-          jak.przyklad ? h('div', { class: 'przyklad' }, jak.przyklad.map((l) => h('div', {}, mat(l)))) : null) : null,
-        h('button', { class: 'btn glowny duzy', type: 'button', id: 'start-bloku', onclick: () => pokazZadanie() }, 'Zaczynam →')));
+    const ile = B().kolejka.length;
+    ekran({
+      tresc: h('div', { class: 'gram-lekcja' },
+        h('div', { class: 'kat-etykieta' }, `Blok ${nrBloku + 1} z ${bloki.length} · ${ile} ${odm(ile, 'zadanie', 'zadania', 'zadań')}`),
+        h('h1', { class: 'wstep-tytul serif' }, b.tytul),
+        b.polecenie ? h('p', { class: 'wstep-polecenie' }, b.polecenie) : null,
+        jak ? h('div', { class: 'gram-krok' },
+          h('div', { class: 'gram-klucz serif' }, 'Jak to zrobić?'),
+          jak.intro ? h('p', { class: 'gram-tekst' }, mat(jak.intro)) : null,
+          (jak.zasady || []).map(([t, opis]) => h('p', { class: 'gram-tekst' }, h('b', {}, t), ' — ', mat(opis))),
+          jak.przyklad ? h('div', { class: 'gram-przyklad' }, h('div', { class: 'gp-znak serif' }, '='), h('div', { class: 'gp-linie' }, jak.przyklad.map((l) => h('div', {}, mat(l))))) : null) : null),
+      stopka: h('button', { class: 'btn glowny szeroki', type: 'button', id: 'start-bloku', onclick: () => pokazZadanie() }, 'Zaczynam', ik('dalej')),
+    });
     ustawKlawisze((e) => { if (e.key === 'Enter') { e.preventDefault(); pokazZadanie(); } });
     el.querySelector('#start-bloku').focus({ preventScroll: true });
-    window.scrollTo(0, 0);
   }
 
   // ---------- zadanie ----------
@@ -104,7 +125,7 @@ export function uruchom(el, opcje) {
       if (cz.kind === 'ulamek') {
         return h('span', { class: 'wpis-ulamek' },
           h('button', { class: 'pole cale', type: 'button', 'data-i': 0, 'aria-label': 'całości' }),
-          h('span', { class: 'ul' }, h('button', { class: 'pole', type: 'button', 'data-i': 1, 'aria-label': 'licznik' }),
+          h('span', { class: 'ul wpis' }, h('button', { class: 'pole', type: 'button', 'data-i': 1, 'aria-label': 'licznik' }),
             h('button', { class: 'pole', type: 'button', 'data-i': 2, 'aria-label': 'mianownik' })));
       }
       if (cz.kind === 'wybor') return h('span', { class: 'pole wybor-pole' });
@@ -124,45 +145,44 @@ export function uruchom(el, opcje) {
   function pokazZadanie() {
     sprzataj();
     zablokowane = false;
-    const { z } = pozycja();
+    const { z, powtorka } = pozycja();
     const cz = czescTeraz();
     nowePola(cz);
     const b = B().blok;
     const ile = B().kolejka.length;
     const dzialanie = cz.d
       ? h('div', { class: 'dzialanie' + (cz.d.length > 24 ? ' bardzo-dlugie' : cz.d.length > 12 ? ' dlugie' : '') }, mat(cz.d, okienkoDla(cz)))
-      : h('div', { class: 'dzialanie samo' }, cz.kind === 'wybor' ? null : mat('□', okienkoDla(cz)), cz.jednostka ? h('span', { class: 'jednostka' }, cz.jednostka) : null);
-    const klaw = cz.kind === 'wybor'
-      ? h('div', { class: 'wybory' }, cz.choices.map((c) => h('button', { class: 'btn wybor', type: 'button', onclick: () => sprawdz(c) }, c)))
+      : cz.kind === 'wybor' ? null : h('div', { class: 'dzialanie samo' }, mat('□', okienkoDla(cz)), cz.jednostka ? h('span', { class: 'jednostka' }, cz.jednostka) : null);
+    const stopka = cz.kind === 'wybor'
+      ? h('div', { class: 'opcje' + (cz.choices.every((c) => c.length <= 2) ? ' znaki' : '') },
+        cz.choices.map((c) => h('button', { class: 'opcja', type: 'button', onclick: () => sprawdz(c) }, h('span', { class: 'opcja-txt' }, c))))
       : klawiatura(cz, b);
-    el.replaceChildren(
-      h('div', { class: 'gra-gora' },
-        h('button', { class: 'btn maly jasny', type: 'button', onclick: przerwij }, '✕ Przerwij'),
-        h('span', { class: 'gra-licznik' }, `${Math.min(poz + 1, ile)} / ${ile}${pozycja().powtorka ? ' · powtórka' : ''}`)),
-      h('div', { class: 'pasek' }, bloki.map((bb, i) => h('span', { class: 'pasek-blok' },
-        h('span', { style: `width:${i < nrBloku ? 100 : i > nrBloku ? 0 : Math.round((poz / ile) * 100)}%` })))),
-      h('section', { class: 'karta zadanie kolor-' + (nrBloku % 5) },
-        h('p', { class: 'nadtytul' }, b.tytul),
-        z.q ? h('p', { class: 'tresc' }, mat(z.q)) : (b.polecenie ? h('p', { class: 'polecenie' }, b.polecenie) : null),
-        z.czesci.length > 1 ? h('p', { class: 'czesc-nr' }, `${String.fromCharCode(97 + czesc)}) `, cz.e ? mat(cz.e) : null) : cz.e ? h('p', { class: 'etykieta' }, mat(cz.e)) : null,
-        dzialanie,
-        h('p', { class: 'info', 'aria-live': 'polite' })),
-      h('div', { class: 'dol' }, klaw));
+    ekran({
+      tytul: b.tytul,
+      tresc: [
+        h('div', { class: 'cw-polecenie' }, powtorka ? 'Jeszcze raz to zadanie' : (b.polecenie || 'Oblicz.'), h('span', { class: 'cw-nr' }, `${Math.min(poz + 1, ile)} / ${ile}`)),
+        h('section', { class: 'zadanie-karta' },
+          z.q ? h('p', { class: 'tresc' }, mat(z.q)) : null,
+          z.czesci.length > 1 ? h('p', { class: 'etykieta' }, h('b', {}, `${String.fromCharCode(97 + czesc)}) `), cz.e ? mat(cz.e) : null) : cz.e ? h('p', { class: 'etykieta' }, mat(cz.e)) : null,
+          dzialanie,
+          h('p', { class: 'info', 'aria-live': 'polite' })),
+      ],
+      stopka,
+    });
     el.querySelectorAll('.pole[data-i]').forEach((p) => p.addEventListener('click', () => { aktywne = Number(p.dataset.i); graj('klik'); odswiezPola(); }));
     odswiezPola();
     ustawKlawisze((e) => klawiszFizyczny(e, cz));
-    window.scrollTo(0, 0);
   }
 
   function klawiatura(cz, blok) {
-    const k = (etyk, akcja, klasa = '', aria) => h('button', { class: 'klawisz ' + klasa, type: 'button', 'aria-label': aria || etyk, onclick: akcja }, etyk);
+    const k = (etyk, akcja, klasa = '', aria) => h('button', { class: 'klawisz ' + klasa, type: 'button', 'aria-label': aria || (typeof etyk === 'string' ? etyk : ''), onclick: akcja }, etyk);
     const cyfry = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => k(String(n), () => wpisz(String(n))));
-    const wiele = cz.kind !== 'liczba';
-    const lewy = wiele ? k('→', () => dalej(), 'szary', 'następne okienko') : k(',', () => wpisz(','), 'szary', 'przecinek');
+    const lewy = cz.kind !== 'liczba' ? k(ik('dalej'), () => dalej(), 'szary', 'następne okienko') : k(',', () => wpisz(','), 'szary', 'przecinek');
     const minus = blok.ujemne ? k('−', () => wpisz('−'), 'szary', 'minus') : null;
-    return h('div', { class: 'klawiatura-wrap' },
-      h('div', { class: 'klawiatura' + (minus ? ' z-minusem' : '') }, cyfry, lewy, k('0', () => wpisz('0')), k('⌫', () => kasuj(), 'szary', 'kasuj'), minus),
-      h('button', { class: 'btn glowny duzy sprawdz', type: 'button', onclick: () => sprawdz() }, 'Sprawdź'));
+    return [
+      h('div', { class: 'klawiatura' }, cyfry, lewy, k('0', () => wpisz('0')), k(ik('kasuj'), () => kasuj(), 'szary', 'kasuj'), minus),
+      h('button', { class: 'btn glowny szeroki', type: 'button', onclick: () => sprawdz() }, 'Sprawdź'),
+    ];
   }
 
   function wpisz(znak) {
@@ -241,18 +261,19 @@ export function uruchom(el, opcje) {
     const poz0 = pozycja();
     if (!poz0.powtorka) B().wyniki.push({ dobrze: ok, tekst: tekstZadania(poz0.z, cz), a: pokazOdp(cz, cz.kind === 'reszta' ? cz.a.split(' r ') : cz.a), pelne: poprawnie(cz), odp: pokazOdp(cz, odp) });
     odswiezPola();
-    if (ok) dobrze(cz, odp); else zle(cz, odp, uwaga);
+    if (cz.kind === 'wybor') el.querySelectorAll('.opcja').forEach((b) => { if (b.textContent === odp) b.classList.add(ok ? 'ok' : 'zle'); });
+    if (ok) dobrze(); else zle(cz, odp, uwaga);
   }
 
-  function dobrze(cz, odp) {
+  function dobrze() {
     seria++;
     graj(seria % 10 === 0 ? 'piec' : seria % 5 === 0 ? 'trzy' : 'dobrze');
-    el.querySelector('.zadanie').classList.add('ok');
-    if (cz.kind === 'wybor') el.querySelectorAll('.wybor').forEach((b) => { if (b.textContent === odp) b.classList.add('ok'); });
-    const info = el.querySelector('.info');
-    info.className = 'info ok';
-    info.textContent = los.wybierz(['Dobrze!', 'Super!', 'Brawo!', 'Tak jest!', 'Świetnie!']) + (seria >= 3 ? ` · seria ${seria}` : '');
-    timer = setTimeout(nastepne, 750);
+    el.querySelector('.zadanie-karta').classList.add('ok');
+    const stopka = el.querySelector('.stopka');
+    stopka.className = 'stopka ok';
+    stopka.replaceChildren(h('div', { class: 'stopka-tytul' }, ik('ptaszek'), ' ', los.wybierz(POCHWALY),
+      seria >= 3 ? h('span', { class: 'seria' }, `seria ${seria}`) : null));
+    timer = setTimeout(nastepne, 800);
   }
 
   function zle(cz, odp, uwaga) {
@@ -261,32 +282,35 @@ export function uruchom(el, opcje) {
     const { z } = pozycja();
     // zadanie wraca w tym bloku za 2–4 pozycje (albo na końcu)
     const kolejka = B().kolejka;
-    const gdzie = Math.min(kolejka.length, poz + 1 + los.int(2, 4));
-    kolejka.splice(gdzie, 0, { z, powtorka: true });
+    kolejka.splice(Math.min(kolejka.length, poz + 1 + los.int(2, 4)), 0, { z, powtorka: true });
 
-    const karta = el.querySelector('.zadanie');
+    const karta = el.querySelector('.zadanie-karta');
     karta.classList.add('zle');
-    if (cz.kind === 'wybor') el.querySelectorAll('.wybor').forEach((b) => { if (b.textContent === odp) b.classList.add('zle'); });
-    const dalejBtn = h('button', { class: 'btn glowny duzy', type: 'button', disabled: true, onclick: () => { if (!zablokowaneDalej) nastepne(); } }, 'Przeczytaj…');
-    let zablokowaneDalej = true;
-    const przerwijBtn = h('button', { class: 'btn jasny', type: 'button', disabled: true, onclick: przerwij }, 'Przerwij');
     el.querySelector('.info').replaceChildren();
-    el.querySelector('.dol').replaceChildren(
-      h('section', { class: 'poprawka' },
-        h('p', { class: 'twoja' }, 'Twoja odpowiedź: ', h('s', {}, mat(pokazOdp(cz, odp)))),
-        uwaga ? h('p', { class: 'uwaga' }, uwaga) : null,
-        h('div', { class: 'ramka-poprawna' },
-          h('p', { class: 'nadtytul' }, 'Poprawna odpowiedź'),
-          h('div', { class: 'rownanie' }, mat(poprawnie(cz)))),
-        h('h3', {}, 'Jak to policzyć'),
-        h('ol', { class: 'kroki' }, (cz.exp || []).map((l) => h('li', {}, mat(l)))),
-        h('p', { class: 'wraca' }, 'To zadanie wróci jeszcze raz w tym bloku.'),
-        h('div', { class: 'przyciski' }, przerwijBtn, dalejBtn)));
-    karta.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    const pole = el.querySelector('.cw-pole');
+    pole.append(h('section', { class: 'poprawka' },
+      h('p', { class: 'twoja' }, 'Twoja odpowiedź: ', h('s', {}, mat(pokazOdp(cz, odp)))),
+      uwaga ? h('p', { class: 'uwaga' }, uwaga) : null,
+      h('div', { class: 'ramka-poprawna' },
+        h('div', { class: 'kat-etykieta' }, 'Poprawna odpowiedź'),
+        h('div', { class: 'rownanie' }, mat(poprawnie(cz)))),
+      h('div', { class: 'sekcja' }, 'Jak to policzyć'),
+      h('ol', { class: 'kroki' }, (cz.exp || []).map((l) => h('li', {}, mat(l)))),
+      h('p', { class: 'wraca' }, ik('powtorz'), ' To zadanie wróci jeszcze raz w tym bloku.')));
+    let zablokowaneDalej = true;
+    const dalejBtn = h('button', { class: 'btn czerwony', type: 'button', disabled: true, onclick: () => { if (!zablokowaneDalej) nastepne(); } }, 'Przeczytaj…');
+    const przerwijBtn = h('button', { class: 'btn jasny', type: 'button', disabled: true, onclick: przerwij }, 'Przerwij');
+    const stopka = el.querySelector('.stopka');
+    stopka.className = 'stopka zle';
+    stopka.replaceChildren(
+      h('div', { class: 'stopka-info z-koza' }, koza('mysli', 'koza-stopka'),
+        h('div', {}, h('div', { class: 'stopka-tytul' }, 'Prawie! Zobacz, jak to policzyć.'))),
+      h('div', { class: 'przyciski' }, przerwijBtn, dalejBtn));
+    requestAnimationFrame(() => pole.querySelector('.poprawka')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
     timer = setTimeout(() => {
       zablokowaneDalej = false;
       dalejBtn.disabled = false; przerwijBtn.disabled = false;
-      dalejBtn.textContent = 'Następne →';
+      dalejBtn.replaceChildren('Dalej', ik('dalej'));
       dalejBtn.focus({ preventScroll: true });
       ustawKlawisze((e) => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) { e.preventDefault(); nastepne(); } });
     }, BLOKADA_MS);
@@ -306,29 +330,28 @@ export function uruchom(el, opcje) {
   function koniecBloku() {
     sprzataj();
     const w = B().wyniki, dob = w.filter((x) => x.dobrze).length;
-    const ostatni = nrBloku + 1 >= bloki.length;
-    if (ostatni) return podsumowanie(false);
+    if (nrBloku + 1 >= bloki.length) return podsumowanie(false);
     const g = gwiazdki(dob, w.length);
     graj(g === 3 ? 'trzy' : 'dobrze');
+    const nast = bloki[nrBloku + 1].blok;
     const dalejF = () => { nrBloku++; poz = 0; czesc = 0; wstepBloku(); };
-    el.replaceChildren(
-      h('section', { class: 'karta koniec-bloku' },
-        h('img', { class: 'maskotka', src: g === 3 ? 'obrazy/koza-brawo.png' : 'obrazy/koza-ok.png', alt: '', onerror: (e) => e.target.remove() }),
-        h('p', { class: 'nadtytul' }, `Blok ${nrBloku + 1} z ${bloki.length} gotowy`),
-        h('h1', {}, B().blok.tytul),
-        pokazGwiazdki(g),
-        h('p', { class: 'wynik-duzy' }, `${dob} / ${w.length}`),
-        h('p', { class: 'muted' }, 'dobrze za pierwszym razem'),
-        h('button', { class: 'btn glowny duzy', type: 'button', id: 'dalej', onclick: dalejF }, `Blok ${nrBloku + 2}: ${bloki[nrBloku + 1].blok.tytul} →`)));
+    ekran({
+      tresc: h('div', { class: 'podsum' },
+        koza(g === 3 ? 'brawo' : 'ok', 'koza-duza'),
+        h('div', { class: 'kat-etykieta' }, `Blok ${nrBloku + 1} z ${bloki.length} gotowy`),
+        h('h2', { class: 'serif' }, B().blok.tytul),
+        pokazGwiazdki(g, 'duze'),
+        h('div', { class: 'wynik-duzy serif' }, `${dob}/${w.length}`),
+        h('p', { class: 'maly' }, 'dobrze za pierwszym razem')),
+      stopka: h('button', { class: 'btn glowny szeroki', type: 'button', id: 'dalej', onclick: dalejF }, `Dalej: ${nast.tytul}`, ik('dalej')),
+    });
     ustawKlawisze((e) => { if (e.key === 'Enter') { e.preventDefault(); dalejF(); } });
     el.querySelector('#dalej').focus({ preventScroll: true });
-    window.scrollTo(0, 0);
   }
 
   // ---------- podsumowanie ----------
   function podsumowanie(przerwane) {
     sprzataj();
-    const ile = przerwane ? zrobionych() : wszystkich();
     const wszystkie = bloki.flatMap((b) => b.wyniki);
     const dob = wszystkie.filter((x) => x.dobrze).length;
     const proba = {
@@ -351,32 +374,40 @@ export function uruchom(el, opcje) {
       const zadania = b.kolejka.filter((x) => !x.powtorka && x.z.czesci.some((cz) => bledneKlucze.has(tekstZadania(x.z, cz)))).map((x) => x.z);
       if (zadania.length) doPowtorki[b.blok.id] = zadania;
     }
-    el.replaceChildren(
-      h('section', { class: 'karta podsumowanie' },
-        h('img', { class: 'maskotka', src: g === 3 ? 'obrazy/koza-brawo.png' : 'obrazy/koza-ok.png', alt: '', onerror: (e) => e.target.remove() }),
-        h('p', { class: 'nadtytul' }, przerwane ? 'Przerwane' : 'Zestaw ukończony!'),
-        h('h1', {}, zestaw.tytul),
-        pokazGwiazdki(g),
-        h('p', { class: 'wynik-duzy' }, `${dob} / ${proba.ile}`),
-        h('p', { class: 'muted' }, `dobrze za pierwszym razem · ${minuty} min${przerwane ? ` · zrobione ${proba.ile} z ${wszystkich()}` : ''}`),
-        h('button', { class: 'btn wyslij duzy', type: 'button', onclick: (e) => wyslij(tekstSMS, e.currentTarget, status) }, 'Wyślij wynik'),
+    nrBloku = Math.min(nrBloku, bloki.length - 1);
+    ekran({
+      bezGory: true,
+      tresc: h('div', { class: 'podsum' },
+        koza(g === 3 ? 'brawo' : g ? 'ok' : 'mysli', 'koza-duza'),
+        h('div', { class: 'kat-etykieta' }, przerwane ? 'Przerwane' : 'Zestaw ukończony'),
+        h('h2', { class: 'serif' }, zestaw.tytul),
+        pokazGwiazdki(g, 'duze'),
+        h('div', { class: 'podsum-kafle' },
+          h('div', { class: 'kafel mietowy' }, h('b', {}, `${dob}/${proba.ile}`), h('small', {}, 'dobrze za 1. razem')),
+          h('div', { class: 'kafel rozowy' }, h('b', {}, proba.ile - dob), h('small', {}, odm(proba.ile - dob, 'błąd', 'błędy', 'błędów'))),
+          h('div', { class: 'kafel zolty' }, h('b', {}, `${minuty}`), h('small', {}, 'min'))),
+        przerwane ? h('p', { class: 'maly' }, `Zrobione ${proba.ile} z ${wszystkich()} zadań.`) : null,
         status,
-        h('div', { class: 'tabela-blokow' }, proba.bloki.map((b) => h('div', { class: 'wiersz' },
-          h('span', {}, b.tytul), pokazGwiazdki(gwiazdki(b.dobrze, b.ile)), h('b', {}, `${b.dobrze}/${b.ile}`)))),
+        h('div', { class: 'sekcja' }, 'Bloki'),
+        h('ul', { class: 'lista-pozycji' }, proba.bloki.map((b) => h('li', { class: 'pozycja' },
+          h('span', { class: 'poz-txt' }, h('b', {}, b.tytul)), pokazGwiazdki(gwiazdki(b.dobrze, b.ile)),
+          h('span', { class: 'poz-status ' + (b.dobrze === b.ile ? 'opan' : 'uczy') }, `${b.dobrze}/${b.ile}`)))),
         proba.bledy.length
-          ? h('div', { class: 'do-powtorki' }, h('h2', {}, 'Do powtórki'),
-            proba.bledy.map((x) => h('div', { class: 'blad' }, h('div', {}, mat(x.d)),
-              h('div', { class: 'blad-odp' }, 'było: ', h('s', {}, mat(x.odp)), ' · dobrze: ', h('b', {}, mat(x.pelne || x.a))))))
+          ? [h('div', { class: 'sekcja' }, 'Do powtórki'),
+            h('ul', { class: 'lista-pozycji bledy' }, proba.bledy.map((x) => h('li', { class: 'pozycja' },
+              h('span', { class: 'poz-txt' }, h('b', { class: 'mat' }, mat(x.d)),
+                h('small', {}, 'było: ', h('s', {}, mat(x.odp)), ' · dobrze: ', h('span', { class: 'dobra' }, mat(x.pelne || x.a)))))))]
           : h('p', { class: 'bez-bledow' }, 'Bez błędów — tak trzymaj!'),
         h('div', { class: 'przyciski kolumna' },
-          Object.keys(doPowtorki).length ? h('button', { class: 'btn glowny', type: 'button', onclick: () => opcje.powtorz(doPowtorki) }, 'Powtórz pomyłki') : null,
-          h('button', { class: 'btn', type: 'button', onclick: () => opcje.jeszczeRaz() }, 'Jeszcze raz (nowe przykłady)'),
-          h('button', { class: 'btn jasny', type: 'button', onclick: () => opcje.wyjdz() }, 'Wróć do zestawów'))));
-    window.scrollTo(0, 0);
+          Object.keys(doPowtorki).length ? h('button', { class: 'btn glowny', type: 'button', onclick: () => opcje.powtorz(doPowtorki) }, ik('powtorz'), 'Powtórz pomyłki') : null,
+          h('button', { class: 'btn jasny', type: 'button', onclick: () => opcje.jeszczeRaz() }, 'Jeszcze raz (nowe przykłady)'),
+          h('button', { class: 'btn jasny', type: 'button', onclick: () => opcje.wyjdz() }, 'Wróć do zestawów'))),
+      stopka: h('button', { class: 'btn zielony szeroki', type: 'button', onclick: (e) => wyslij(tekstSMS, e.currentTarget, status) }, ik('wyslij'), 'Wyślij wynik'),
+    });
   }
 
   wstepBloku();
-  return { zakoncz: sprzataj };
+  return { zakoncz: () => { sprzataj(); document.body.classList.remove('w-lekcji'); } };
 }
 
 export function tekstWyniku(p, profilInfo, minuty) {

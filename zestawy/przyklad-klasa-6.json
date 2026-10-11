@@ -1,6 +1,8 @@
 {
   "id": "przyklad-klasa-6",
   "przyklad": true,
+  "ikona": "½",
+  "kolor": "lila",
   "dla": ["julek"],
   "tytul": "Ułamki dziesiętne i zwykłe",
   "opis": "Zestaw na próbę, zanim przyjdzie pierwsze zdjęcie z podręcznika.",

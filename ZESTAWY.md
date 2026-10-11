@@ -8,6 +8,8 @@
   "opis": "Dodawanie, odejmowanie i skracanie ułamków.",
   "termin": "2026-10-14",                    // dzień kartkówki (opcjonalnie) — karta pokaże „kartkówka jutro”
   "dodano": "2026-10-11",
+  "ikona": "½",                              // znak w bąblu karty: + − × ÷ ½ % = … (opcjonalnie)
+  "kolor": "lila",                           // lila | mietowy | zolty | brzoskwinia | niebieski | rozowy (opcjonalnie)
   "bloki": [ { … }, { … } ]                  // jeden typ zadań = jeden blok
 }
 ```

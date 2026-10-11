@@ -1,7 +1,7 @@
 // Offline: pliki aplikacji i zestawy najpierw z sieci (nowe zadania od razu), bez sieci z pamięci podręcznej.
-const CACHE = 'matmoza-v2';
+const CACHE = 'matmoza-v3';
 const SHELL = ['./', 'index.html', 'styles.css', 'manifest.webmanifest', 'js/app.js', 'js/dom.js', 'js/gra.js', 'js/generatory.js',
-  'js/liczby.js', 'js/wyrazenie.js', 'js/sprawdz.js', 'js/store.js', 'js/dzwieki.js', 'zestawy/indeks.json', 'ikony/ikona.svg',
+  'js/liczby.js', 'js/wyrazenie.js', 'js/sprawdz.js', 'js/store.js', 'js/dzwieki.js', 'zestawy/indeks.json', 'ikony/ikona-192.png', 'fonts/Jost.ttf', 'fonts/LibreBaskerville.ttf', 'obrazy/koza-mysli.png',
   'obrazy/koza-czesc.png', 'obrazy/koza-ok.png', 'obrazy/koza-brawo.png', 'audio/dobra-odpowiedz-podstawowa.mp3', 'audio/zla-odpowiedz.mp3'];
 
 self.addEventListener('install', (e) => {
@@ -17,13 +17,7 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.hostname === 'api.github.com') return;
-  if (url.origin !== location.origin) {
-    // czcionki Google: raz pobrane zostają w pamięci
-    if (/fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) {
-      e.respondWith(caches.open(CACHE).then((c) => c.match(req).then((hit) => hit || fetch(req).then((res) => { c.put(req, res.clone()); return res; }))));
-    }
-    return;
-  }
+  if (url.origin !== location.origin) return;
   e.respondWith(fetch(req.url, { cache: 'no-cache' }).then((res) => {
     if (res.ok) { const kopia = res.clone(); caches.open(CACHE).then((c) => c.put(req, kopia)); }
     return res;

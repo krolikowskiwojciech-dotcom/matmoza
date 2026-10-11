@@ -24,6 +24,8 @@
       "termin": null,
       "dodano": "2026-10-11",
       "przyklad": true,
+      "ikona": "+",
+      "kolor": "mietowy",
       "bloki": 5,
       "zadan": 24
     },
@@ -37,6 +39,8 @@
       "termin": null,
       "dodano": "2026-10-11",
       "przyklad": true,
+      "ikona": "½",
+      "kolor": "lila",
       "bloki": 4,
       "zadan": 20
     }

@@ -29,11 +29,13 @@ Zawsze po polsku. Aplikacja webowa na iPhone'a (dodana do ekranu początkowego),
 
 ## Kod
 
-- `index.html`, `styles.css` (zeszyt w kratkę, Bricolage Grotesque + Atkinson Hyperlegible), `sw.js` (offline).
+- `index.html`, `styles.css` (wygląd Lingozy: kremowe tło, pastelowe karty 3D, Libre Baskerville + Jost z `fonts/`, bez kursywy;
+  akcent matematyki: białe znaki + − × ÷ na kartach, bąble ze znakiem działania, kratka w tle ćwiczeń), `sw.js` (offline).
 - `js/app.js` (ekrany i adresy `#/…`), `js/gra.js` (przebieg zestawu, poprawka po błędzie, podsumowanie, udostępnianie),
   `js/generatory.js` (generatory i wyjaśnienia), `js/wyrazenie.js` (kolejność działań krok po kroku),
   `js/liczby.js` (ułamki dokładne, polski zapis liczb), `js/sprawdz.js` (ocena odpowiedzi), `js/store.js` (zapis + synchronizacja),
-  `js/dzwieki.js` (dźwięki z „Ucz się sprytniej”), `obrazy/` (maskotka; brak pliku nie psuje ekranu).
+  `js/dzwieki.js` (dźwięki z „Ucz się sprytniej”), `obrazy/koza-*.png` (kózka 3D w stylu Lingi: czesc, ok, brawo, mysli;
+  brak pliku nie psuje ekranu, ale `sw.js` ma je w SHELL — muszą istnieć).
 - `narzedzia/matmoza.mjs` — wyrocznia NIEZALEŻNA od kodu aplikacji (własna arytmetyka na BigInt). Nie łącz jej z `js/`.
 - Podgląd lokalny na 127.0.0.1 nie ma tokenu, więc nie zapisuje wyników do prawdziwych danych. Nie testuj z tokenem.
 - Po każdej zmianie kodu podbij `CACHE` w `sw.js`, potem commit + push.

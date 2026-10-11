@@ -234,7 +234,7 @@ if (cmd === 'sprawdz' || cmd === 'katalog') {
       profile: PROFILE,
       zestawy: zestawy.map((z) => ({
         id: z.id, tytul: z.tytul, opis: z.opis || '', dla: [].concat(z.dla), termin: z.termin || null, dodano: z.dodano || null,
-        przyklad: !!z.przyklad, bloki: z.bloki.length, zadan: z.bloki.reduce((n, b) => n + (b.ile || b.zadania?.length || 10), 0),
+        przyklad: !!z.przyklad, ikona: z.ikona || null, kolor: z.kolor || null, bloki: z.bloki.length, zadan: z.bloki.reduce((n, b) => n + (b.ile || b.zadania?.length || 10), 0),
       })).sort((a, b) => String(b.dodano).localeCompare(String(a.dodano))),
     };
     fs.writeFileSync(path.join(ZESTAWY, 'indeks.json'), JSON.stringify(indeks, null, 2) + '\n');
