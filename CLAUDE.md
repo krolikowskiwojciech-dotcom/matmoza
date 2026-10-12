@@ -34,7 +34,7 @@ Zawsze po polsku. Aplikacja webowa na iPhone'a (dodana do ekranu początkowego),
 - `js/app.js` (ekrany i adresy `#/…`), `js/gra.js` (przebieg zestawu, poprawka po błędzie, podsumowanie, udostępnianie),
   `js/generatory.js` (generatory i wyjaśnienia), `js/wyrazenie.js` (kolejność działań krok po kroku),
   `js/liczby.js` (ułamki dokładne, polski zapis liczb), `js/sprawdz.js` (ocena odpowiedzi), `js/store.js` (zapis + synchronizacja),
-  `js/dzwieki.js` (dźwięki z Epidemic Sound w `audio/*.m4a`), `obrazy/koza-*.png` (kózka 3D w stylu Lingi: czesc, ok, brawo, mysli;
+  `js/dzwieki.js` (dźwięki z Epidemic Sound w `audio/*.mp3`, obróbka `narzedzia/dzwiek.sh`), `obrazy/koza-*.png` (kózka 3D w stylu Lingi: czesc, ok, brawo, mysli;
   brak pliku nie psuje ekranu, ale `sw.js` ma je w SHELL — muszą istnieć).
 - `narzedzia/matmoza.mjs` — wyrocznia NIEZALEŻNA od kodu aplikacji (własna arytmetyka na BigInt). Nie łącz jej z `js/`.
 - Podgląd lokalny na 127.0.0.1 nie ma tokenu, więc nie zapisuje wyników do prawdziwych danych. Nie testuj z tokenem.
