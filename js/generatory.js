@@ -4,7 +4,7 @@
 // etykieta kończy się dwukropkiem bez spacji przed nim („Policz bez zer: 72 · 3 = 216”), dzielenie ma spacje („18 : 6”).
 // Narzędzie `node narzedzia/matmoza.mjs sprawdz` sprawdza to niezależną wyrocznią.
 
-import { Q, q, zapisz, nwd, nww, odmiana } from './liczby.js';
+import { Q, q, zapisz, nwd, nww, odmiana, okresowy, cyfraPoPrzecinku } from './liczby.js';
 import { krokPoKroku, lagodne, wartosc } from './wyrazenie.js';
 
 // ---------- losowanie ----------
@@ -30,10 +30,21 @@ const zera = (n) => { let z = 0; while (n !== 0 && n % 10 === 0) { n /= 10; z++;
 function losujZmienna(spec, wart) {
   if (Array.isArray(spec)) return new Q(los.int(spec[0], spec[1]));
   if (typeof spec === 'string') {
-    const wyr = spec.replace(/^=\s*/, '').replace(/\b([a-z])\b/g, (_, n) => Z(wart[n]));
+    const wyr = spec.replace(/^=\s*/, '').replace(/\b([a-z])\b/g, (_, n) => wart[n]._t ?? Z(wart[n]));
     return wartosc(wyr);
   }
-  if (spec.lista) return q(los.wybierz(spec.lista));
+  if (spec.lista) { const t = String(los.wybierz(spec.lista)); const v = q(t); v._t = t.replace('.', ','); return v; }
+  if (spec.ulamek) {
+    // { ulamek: { mianowniki: [...], calosci: [0, 2] } } → „3/4” albo „2 1/3” (zapis zostaje jak w podręczniku)
+    const u = spec.ulamek;
+    const m = los.wybierz(u.mianowniki || [2, 3, 4, 5, 6, 8]);
+    const l = los.int(1, m - 1);
+    if (nwd(l, m) !== 1) return losujZmienna(spec, wart);
+    const c = los.int(...(u.calosci || [0, 0]));
+    const v = new Q(c * m + l, m);
+    v._t = c ? `${c} ${l}/${m}` : `${l}/${m}`;
+    return v;
+  }
   if (spec.cyfry) return new Q(los.int(spec.cyfry[0], spec.cyfry[1]) * 10 ** los.int(spec.zera[0], spec.zera[1]));
   if (spec.miejsca != null) {
     const skala = 10 ** spec.miejsca;
@@ -48,7 +59,7 @@ function losujZmienna(spec, wart) {
 function wypelnij(szablon, wart) {
   return szablon.replace(/\{([a-z])\}/g, (_, n) => {
     if (!(n in wart)) throw new Error(`Brak zmiennej {${n}} w szablonie „${szablon}”`);
-    return Z(wart[n]);
+    return wart[n]._t ?? Z(wart[n]);
   });
 }
 
@@ -94,6 +105,24 @@ function wyjasnijCalkowite(o, a, b) {
         `Dopisz ${za + zb} ${odmiana(za + zb, 'zero', 'zera', 'zer')}: ${W(a)} · ${W(b)} = ${W(a * b)}`];
     }
     if (a <= 10 && b <= 10) return trikMnozenia(a, b);
+    // sprytnie: czynnik blisko pełnej dziesiątki (19, 21, 99…), razy 15 albo razy 25
+    if (a >= 11 && b >= 11 && a < 1000 && b < 1000) {
+      const [x, y] = [a, b].sort((p1, p2) => Math.abs(p1 - Math.round(p1 / 10) * 10) - Math.abs(p2 - Math.round(p2 / 10) * 10) || p1 - p2);
+      const R = Math.round(x / 10) * 10, r = x - R;
+      if (Math.abs(r) === 1) {
+        const o = r > 0 ? '+' : '−';
+        return [`Rozbij ${W(x)} na ${W(R)} ${o} 1: ${W(y)} · ${W(x)} = ${W(y)} · ${W(R)} ${o} ${W(y)}`, `${W(y)} · ${W(R)} = ${W(y * R)}`, `${W(y * R)} ${o} ${W(y)} = ${W(a * b)}`];
+      }
+      const z = [a, b].find((t) => t === 15 || t === 25);
+      if (z) {
+        const inny = z === a ? b : a;
+        if (z === 15) return [`Razy 15 to razy 10 plus razy 5: ${W(inny)} · 15 = ${W(inny)} · 10 + ${W(inny)} · 5`, `${W(inny)} · 10 = ${W(inny * 10)}`, `${W(inny)} · 5 = ${W(inny * 5)}`, `${W(inny * 10)} + ${W(inny * 5)} = ${W(a * b)}`];
+        if (inny % 4 === 0) return [`Razy 25 to razy 100 i podzielić przez 4: ${W(inny)} · 25 = ${W(inny)} · 100 : 4`, `${W(inny * 100)} : 4 = ${W(a * b)}`];
+      }
+      const [d, m] = a >= b ? [a, b] : [b, a];
+      const T = m - (m % 10), J = m % 10;
+      if (J && T) return [`Rozbij ${W(m)} na ${W(T)} i ${J}: ${W(d)} · ${W(m)} = ${W(d)} · ${W(T)} + ${W(d)} · ${J}`, `${W(d)} · ${W(T)} = ${W(d * T)}`, `${W(d)} · ${J} = ${W(d * J)}`, `${W(d * T)} + ${W(d * J)} = ${W(a * b)}`];
+    }
     const [d, m] = a >= b ? [a, b] : [b, a];
     if (m < 10 && d < 1000 && d % 10 !== 0 && d > 10) {
       const T = d - (d % 10), J = d % 10;
@@ -137,6 +166,11 @@ function wyjasnijCalkowite(o, a, b) {
 function wyjasnijDziesietne(o, A, B) {
   const wynik = { '+': () => A.dodaj(B), '−': () => A.odejmij(B), '·': () => A.razy(B), ':': () => A.przez(B) }[o]();
   const mA = A.miejsca, mB = B.miejsca;
+  const potega10 = (x) => x.calkowita && /^10+$/.test(String(x.l));
+  if ((o === '·' || o === ':') && potega10(B)) {
+    const n = String(B.l).length - 1;
+    return [`${o === '·' ? 'Razy' : 'Przez'} ${Z(B)} → przesuń przecinek o ${n} ${odmiana(n, 'miejsce', 'miejsca', 'miejsc')} w ${o === '·' ? 'prawo' : 'lewo'}${o === ':' ? ' (brakujące miejsca uzupełnij zerami)' : ''}: ${Z(A)} ${o} ${Z(B)} = ${Z(wynik)}`];
+  }
   if (o === '+' || o === '−') {
     const m = Math.max(mA, mB);
     const wyr = (x) => zapisz(x, 'dziesietny').replace(/^(\d+)$/, '$1,0').replace(/,(\d+)$/, (_, u) => ',' + u.padEnd(m, '0'));
@@ -149,7 +183,7 @@ function wyjasnijDziesietne(o, A, B) {
     const lines = [`Pomnóż bez przecinków: ${Z(a0)} · ${Z(b0)} = ${Z(surowy)}`];
     if (m > 0) {
       const zPrzecinkiem = (() => { const s = String(surowy.l).padStart(m + 1, '0'); return s.slice(0, -m) + ',' + s.slice(-m); })();
-      lines.push(`Po przecinku jest razem ${m} ${odmiana(m, 'cyfra', 'cyfry', 'cyfr')}, więc oddziel je w wyniku: ${zPrzecinkiem}`);
+      lines.push(`Po przecinku ${m > 1 && m < 5 ? 'są' : 'jest'} razem ${m} ${odmiana(m, 'cyfra', 'cyfry', 'cyfr')}, więc oddziel je w wyniku: ${zPrzecinkiem}`);
       if (zPrzecinkiem !== Z(wynik)) lines.push(`Zera na końcu po przecinku można skreślić: ${zPrzecinkiem} = ${Z(wynik)}`);
     }
     return lines;
@@ -168,15 +202,26 @@ function wyjasnijDziesietne(o, A, B) {
 }
 
 // wyjaśnienie całego wyrażenia: dla jednego działania sposób liczenia, dla kilku — kolejność krok po kroku
-export function wyjasnij(wyr) {
-  const r = krokPoKroku(wyr);
+export function wyjasnij(wyr, styl = 'auto') {
+  const r = krokPoKroku(wyr, styl);
   if (r.kroki.length === 1 && r.kroki[0].czastki.length === 1) {
     const m = wyr.match(/^(.+?) ([+−·:]) (.+)$/) || wyr.match(/^(.+?)(\^)(\d+)$/);
+    if (m && m[2] === '^') {
+      const A = q(m[1].replace(/^\((.*)\)$/, '$1')), n = Number(m[3]);
+      const t = m[1];
+      if (n === 0) return [`Każda liczba różna od zera do potęgi 0 daje 1: ${wyr} = 1`];
+      if (n === 1) return [`Potęga o wykładniku 1 to ta sama liczba: ${wyr} = ${t.replace(/^\((.*)\)$/, '$1')}`];
+      const czynniki = Array(n).fill(t.replace(/^\((.*)\)$/, '$1')).join(' · ');
+      const out = [`Potęga to mnożenie tej samej liczby ${n} razy: ${wyr} = ${czynniki}`];
+      if (A.miejsca !== null && !A.calkowita && n === 2) out.push(...wyjasnijDziesietne('·', A, A));
+      else out.push(`${czynniki} = ${zapisz(r.wynik, styl === 'auto' ? 'auto' : styl)}`);
+      return out;
+    }
     if (m) {
       const A = q(m[1]), B = q(m[3]);
       if (A && B) {
-        if (A.calkowita && B.calkowita) return wyjasnijCalkowite(m[2], A.l, B.l);
-        if (A.miejsca !== null && B.miejsca !== null && r.wynik.miejsca !== null && m[2] !== '^') return wyjasnijDziesietne(m[2], A, B);
+        if (A.calkowita && B.calkowita && r.wynik.calkowita && styl === 'auto') return wyjasnijCalkowite(m[2], A.l, B.l);
+        if (styl === 'auto' && !/\//.test(wyr) && A.miejsca !== null && B.miejsca !== null && r.wynik.miejsca !== null && m[2] !== '^') return wyjasnijDziesietne(m[2], A, B);
       }
     }
     return [r.lancuch];
@@ -211,6 +256,9 @@ function zadanieUlamki(p) {
   let wynik;
   try { wynik = { '+': () => A.v.dodaj(B.v), '−': () => A.v.odejmij(B.v), '·': () => A.v.razy(B.v), ':': () => A.v.przez(B.v) }[o](); } catch { return null; }
   if (wynik.ujemna || wynik.l === 0) return null;
+  // poziom podręcznika: wspólny mianownik i mianownik wyniku nie za duże (liczby „ładnie się skracają”)
+  if ((o === '+' || o === '−') && nww(A.m, B.m) > (p.maxWspolny || 1000)) return null;
+  if (wynik.m > (p.maxMianownikWyniku || 1000)) return null;
   const d = `${A.t} ${o} ${B.t} = □`;
   const exp = [];
   let a = A, b = B;
@@ -259,16 +307,190 @@ export const GENERATORY = {
     const wyr = wypelnij(szablon, wart);
     let wynik;
     try { wynik = wartosc(wyr); } catch { return null; }
+    if (p.ulamki) {
+      // wynik i kroki jako ułamki zwykłe / liczby mieszane; wszystko po drodze nieujemne, mianowniki rozsądne
+      let r;
+      try { r = krokPoKroku(wyr, 'mieszany'); } catch { return null; }
+      if (r.wartosci.some((v) => v.ujemna || v.m > (p.maxMianownik || 60))) return null;
+      if (p.max != null && wynik.porownaj(p.max) > 0) return null;
+      if (wynik.l === 0 && !p.zero) return null;
+      return { d: wyr + ' = □', a: zapisz(wynik, 'mieszany'), kind: wynik.calkowita ? 'liczba' : 'ulamek', postac: 'najprostsza', exp: wyjasnij(wyr, 'mieszany') };
+    }
     if (!p.dowolneWyniki && !lagodne(wyr) && !p.dziesietne) return null;
     if (p.dziesietne && (wynik.ujemna || wynik.miejsca === null || wynik.miejsca > (p.maxMiejsc ?? 4))) return null;
     if (p.max != null && wynik.porownaj(p.max) > 0) return null;
     if (p.min != null && wynik.porownaj(p.min) < 0) return null;
-    return { d: wyr + ' = □', a: Z(wynik), kind: 'liczba', exp: wyjasnij(wyr) };
+    let exp = wyjasnij(wyr);
+    if (/\//.test(wyr) && wynik.miejsca !== null) {
+      // działania mieszane: najpierw ułamki zwykłe → dziesiętne (te o skończonym rozwinięciu), potem rachunek
+      const zamiany = [];
+      const dz = wyr.replace(/(\d+ )?\d+\/\d+/g, (t) => { const v = q(t); if (v.miejsca === null) return t; const z = zapisz(v, 'dziesietny'); zamiany.push(`Zamień na ułamek dziesiętny: ${t} = ${z}`); return z; });
+      if (zamiany.length && !/\//.test(dz)) exp = [...zamiany, ...wyjasnij(dz)];
+    }
+    return { d: wyr + ' = □', a: Z(wynik), kind: 'liczba', exp };
+  },
+
+  // rozkład na czynniki pierwsze: { pierwsze: [2,3,5,7,11], ile: [3,6], min, max } → „600 = □”
+  czynniki(p) {
+    const pula = p.pierwsze || [2, 3, 5, 7, 11, 13];
+    const ile = los.int(...(p.ile || [3, 6]));
+    const f = Array.from({ length: ile }, () => los.wybierz(pula)).sort((a, b) => a - b);
+    const N = f.reduce((a, b) => a * b, 1);
+    if (N < (p.min || 30) || N > (p.max || 3000)) return null;
+    const W = (x) => Z(new Q(x));
+    const exp = ['Dziel przez najmniejsze liczby pierwsze, dopóki nie zostanie 1:'];
+    let r = N;
+    for (const x of f) { exp.push(`${W(r)} : ${x} = ${W(r / x)}`); r /= x; }
+    exp.push(`${W(N)} = ${f.join(' · ')}`);
+    return { d: `${W(N)} = □`, a: f.join(' · '), kind: 'czynniki', exp };
+  },
+
+  // NWD albo NWW dwóch liczb: { co: ['nwd','nww'], pierwsze, wspolnych: [1,3], wlasnych: [1,2], max }
+  nwdnww(p) {
+    const co = los.wybierz([].concat(p.co || ['nwd', 'nww']));
+    const pula = p.pierwsze || [2, 3, 5, 7];
+    const wsp = Array.from({ length: los.int(...(p.wspolnych || [1, 3])) }, () => los.wybierz(pula));
+    const fa = [...wsp, ...Array.from({ length: los.int(...(p.wlasnych || [1, 2])) }, () => los.wybierz(pula))].sort((x, y) => x - y);
+    const fb = [...wsp, ...Array.from({ length: los.int(...(p.wlasnych || [1, 2])) }, () => los.wybierz(pula))].sort((x, y) => x - y);
+    const a = fa.reduce((x, y) => x * y, 1), b = fb.reduce((x, y) => x * y, 1);
+    if (a === b || a > (p.max || 400) || b > (p.max || 400)) return null;
+    const g = nwd(a, b), l = (a / g) * b;
+    if (co === 'nww' && l > (p.maxNww || 2000)) return null;
+    // wspólne czynniki liczone z krotnością
+    const reszta = [...fb];
+    const wspolne = [];
+    for (const x of fa) { const i = reszta.indexOf(x); if (i >= 0) { wspolne.push(x); reszta.splice(i, 1); } }
+    const W = (x) => Z(new Q(x));
+    const exp = [`Rozłóż obie liczby: ${W(a)} = ${fa.join(' · ')}`, `${W(b)} = ${fb.join(' · ')}`];
+    if (co === 'nwd') {
+      exp.push(wspolne.length ? `NWD to iloczyn wspólnych czynników: ${wspolne.join(' · ')}${wspolne.length > 1 ? ' = ' + W(g) : ''}` : 'Nie ma wspólnych czynników, więc NWD = 1.');
+    } else {
+      exp.push(`NWW: do rozkładu liczby ${W(a)} dopisz czynniki liczby ${W(b)}, których brakuje (${reszta.length ? reszta.join(', ') : 'żadnych'}).`);
+      exp.push(`${[...fa, ...reszta].join(' · ')} = ${W(l)}`);
+    }
+    return { d: `${co.toUpperCase()}(${W(a)}, ${W(b)}) = □`, a: W(co === 'nwd' ? g : l), kind: 'liczba', exp };
+  },
+
+  // odwrotność: { mianowniki, calosci: [0,3], calkowite?: true } → „2 3/4 · □ = 1”
+  odwrotnosc(p) {
+    const W = (x) => Z(new Q(x));
+    if (p.calkowite && los.int(0, 3) === 0) {
+      const n = los.int(2, 12);
+      return { d: `${n} · □ = 1`, a: `1/${n}`, kind: 'ulamek', exp: [`Liczba całkowita to ułamek o mianowniku 1: ${n} = ${n}/1`, `Odwróć licznik z mianownikiem: 1/${n}`, `Sprawdzenie: ${n} · 1/${n} = 1`] };
+    }
+    const m = los.wybierz(p.mianowniki || [2, 3, 4, 5, 7, 8, 9, 12]);
+    const l = los.int(1, m - 1);
+    if (nwd(l, m) !== 1) return null;
+    const c = los.int(...(p.calosci || [0, 3]));
+    const L = c * m + l;
+    const t = c ? `${c} ${l}/${m}` : `${l}/${m}`;
+    const exp = [];
+    if (c) exp.push(`Zamień na ułamek niewłaściwy: ${t} = ${L}/${m}`);
+    exp.push(`Odwróć licznik z mianownikiem: ${L}/${m} → ${m}/${L}`, `Sprawdzenie: ${L}/${m} · ${m}/${L} = 1`);
+    return { d: `${t} · □ = 1`, a: `${m}/${L}`, kind: 'ulamek', exp };
+  },
+
+  // zamiana ułamków: { kierunek: 'naZwykly' | 'naDziesietny' | 'naOkresowy' }
+  zamiana2(p) {
+    const k = los.wybierz([].concat(p.kierunek || ['naZwykly', 'naDziesietny']));
+    if (k === 'naZwykly') {
+      const miejsca = los.int(1, p.maxMiejsc || 3);
+      const sk = 10 ** miejsca;
+      const n = los.int(1, sk * (p.calosci ? 3 : 1) - 1);
+      if (n % 10 === 0) return null;
+      const v = new Q(n, sk);
+      if (v.m === sk && miejsca === 1 && los.int(0, 1)) return null;
+      if (miejsca > 1 && v.m === sk) return null; // ma się dać skrócić, jak w podręczniku (0,06 = 3/50)
+      const t = zapisz(v, 'dziesietny');
+      const c = Math.floor(n / sk), r = n % sk;
+      const g = nwd(r, sk);
+      const exp = [`Po przecinku ${miejsca === 1 ? 'jest' : miejsca < 5 ? 'są' : 'jest'} ${miejsca} ${odmiana(miejsca, 'cyfra', 'cyfry', 'cyfr')}, więc mianownik to ${sk}: ${t} = ${c ? c + ' ' : ''}${r}/${sk}`];
+      if (g > 1) exp.push(`Skróć przez ${g}: ${r}/${sk} = ${r / g}/${sk / g}`);
+      return { d: `${t} = □`, a: zapisz(v, 'mieszany'), kind: 'ulamek', postac: 'najprostsza', exp };
+    }
+    if (k === 'naDziesietny') {
+      const m = los.wybierz(p.mianowniki || [2, 4, 5, 8, 20, 25, 40, 50, 125, 250]);
+      const l = los.int(1, m - 1);
+      if (nwd(l, m) !== 1) return null;
+      const v = new Q(l, m);
+      const docel = 10 ** v.miejsca;
+      return { d: `${l}/${m} = □`, a: zapisz(v, 'dziesietny'), kind: 'liczba',
+        exp: [`Rozszerz do mianownika ${docel}: ${l}/${m} = ${l * (docel / m)}/${docel}`, `${l * (docel / m)}/${docel} = ${zapisz(v, 'dziesietny')}`] };
+    }
+    const m = los.wybierz(p.mianowniki || [3, 6, 9, 11, 12, 15, 18, 30]);
+    const l = los.int(1, (p.calosci ? 3 : 1) * m - 1);
+    if (nwd(l, m) !== 1) return null;
+    const v = new Q(l, m);
+    if (v.miejsca !== null || okresowy(l, m).length > 8) return null;
+    const o = okresowy(l, m);
+    return { d: `${l}/${m} = □`, a: o, kind: 'liczba', okres: true,
+      exp: [`Podziel licznik przez mianownik: ${l} : ${m} = ${o.replace(/\((\d+)\)/, (_, x) => x + x + x)}…`, `Powtarza się ${o.match(/\((\d+)\)/)[1]}, więc zapisz okres w nawiasie: ${l}/${m} = ${o}`] };
+  },
+
+  // n-ta cyfra po przecinku liczby okresowej: { n: [8, 20] }
+  cyfra(p) {
+    const calosc = los.int(0, 9);
+    const nieokres = los.int(0, 1) ? String(los.int(0, 9)) + (los.int(0, 1) ? String(los.int(0, 9)) : '') : '';
+    const dl = los.int(1, 3);
+    const okr = Array.from({ length: dl }, () => los.int(0, 9)).join('');
+    if (new Set(okr).size === 1 && dl > 1) return null;
+    if (okr === '0' || okr === '9') return null;
+    const t = `${calosc},${nieokres}(${okr})`;
+    const n = los.int(...(p.n || [8, 20]));
+    const v = q(t);
+    const c = cyfraPoPrzecinku(v.l, v.m, n);
+    const poz = n - nieokres.length;
+    const exp = [];
+    if (nieokres.length) exp.push(`Przed okresem ${nieokres.length === 1 ? 'jest 1 cyfra' : `są ${nieokres.length} cyfry`} (${nieokres}), a potem powtarza się ${okr}.`);
+    else exp.push(`Zaraz po przecinku powtarza się okres ${okr}.`);
+    if (poz > 0) {
+      const w = ((poz - 1) % dl) + 1;
+      exp.push(`W okresie ${dl === 1 ? 'jest 1 cyfra' : `są ${dl} cyfry`}. Miejsce ${poz} w okresie to ${w}. cyfra okresu (reszta z dzielenia ${poz} przez ${dl} to ${poz % dl}).`);
+    }
+    exp.push(`Na ${n}. miejscu po przecinku stoi ${c}.`);
+    return { q: `Jaka cyfra stoi na ${n}. miejscu po przecinku w liczbie ${t}?`, a: String(c), kind: 'liczba', oblicz: { cyfra: [t, n] }, exp };
+  },
+
+  // czy rozwinięcie dziesiętne jest skończone: { mianowniki }
+  skonczone(p) {
+    const cel = los.int(0, 1); // pół na pół: skończone / nieskończone
+    const m = los.wybierz(cel ? [8, 16, 20, 25, 40, 50, 125, 48, 150] : [6, 7, 12, 15, 21, 24, 30, 35, 48, 150]);
+    const l = los.int(1, m - 1);
+    const g = nwd(l, m);
+    const mm = m / g;
+    let x = mm; const f = [];
+    for (let d = 2; x > 1; d++) while (x % d === 0) { f.push(d); x /= d; }
+    const sk = f.every((d) => d === 2 || d === 5);
+    if (sk !== !!cel) return null;
+    const exp = [];
+    if (g > 1) exp.push(`Najpierw skróć: ${l}/${m} = ${l / g}/${mm}`);
+    exp.push(mm === 1 ? 'To liczba całkowita.' : `Rozłóż mianownik: ${mm} = ${f.join(' · ')}`,
+      sk ? 'W mianowniku są tylko dwójki i piątki, więc rozwinięcie jest skończone.' : 'W mianowniku jest liczba pierwsza inna niż 2 i 5, więc rozwinięcie jest nieskończone (okresowe).');
+    return { q: `Jakie rozwinięcie dziesiętne ma ułamek ${l}/${m}?`, a: sk ? 'skończone' : 'nieskończone', kind: 'wybor', choices: ['skończone', 'nieskończone'], oblicz: { skonczone: [l, m] }, exp };
+  },
+
+  // porównanie ułamka zwykłego z dziesiętnym (także okresowym): „2/9 □ 0,22”
+  porownajUlamek(p) {
+    const m = los.wybierz(p.mianowniki || [3, 4, 6, 7, 8, 9, 11, 12, 15]);
+    const l = los.int(1, (p.calosci ? 3 : 1) * m - 1);
+    if (nwd(l, m) !== 1) return null;
+    const v = new Q(l, m);
+    const miejsca = los.int(1, 3);
+    const sk = 10 ** miejsca;
+    const blisko = Math.round((l / m) * sk) + los.int(-1, 1);
+    if (blisko <= 0) return null;
+    const d = new Q(blisko, sk);
+    const td = zapisz(d, 'dziesietny');
+    const tu = `${l}/${m}`;
+    const znak = { '-1': '<', 0: '=', 1: '>' }[v.porownaj(d)];
+    const roz = zapisz(v, v.miejsca === null ? 'okresowy' : 'dziesietny');
+    return { d: `${tu} □ ${td}`, a: znak, kind: 'wybor', choices: ['<', '=', '>'],
+      exp: [`Zamień ułamek zwykły na dziesiętny: ${tu} = ${roz}`, `Porównuj cyfra po cyfrze: ${roz} ${znak} ${td}`] };
   },
 
   // dzielenie z resztą: { dzielna: [min,max], dzielnik: [min,max], zReszta?: true }
   reszta(p) {
-    const b = los.int(...(p.dzielnik || [2, 9]));
+    const b = p.dzielniki ? los.wybierz(p.dzielniki) : los.int(...(p.dzielnik || [2, 9]));
     const a = los.int(...(p.dzielna || [10, 99]));
     const iloraz = Math.floor(a / b), r = a % b;
     if (p.zReszta !== false && r === 0) return null;
@@ -343,7 +565,7 @@ export const GENERATORY = {
     if (nwd(l, m) !== 1) return null;
     const c = los.int(...(p.calosci || [1, 9]));
     const L = c * m + l;
-    if ((p.kierunek || 'naMieszana') === 'naMieszana') {
+    if (los.wybierz([].concat(p.kierunek || 'naMieszana')) === 'naMieszana') {
       return {
         d: `${U(L, m)} = □`, a: `${c} ${l}/${m}`, kind: 'ulamek', postac: 'najprostsza',
         exp: [`Ile razy ${m} mieści się w ${L}? ${c} razy: ${c} · ${m} = ${c * m}`, `Zostaje: ${L} − ${c * m} = ${l}`,

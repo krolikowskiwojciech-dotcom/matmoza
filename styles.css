@@ -176,7 +176,7 @@ body.w-lekcji { overflow: hidden; }
 .cw-pole > * { animation: pojaw .28s ease both; }
 @keyframes pojaw { from { opacity: 0; transform: translateY(8px); } }
 .cw-polecenie { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: rgba(29,28,34,.65); margin: 6px 2px 12px; font-weight: 500; }
-.cw-nr { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.cw-nr { font-variant-numeric: tabular-nums; letter-spacing: 0; white-space: nowrap; flex: none; }
 
 /* karta z działaniem — biała, z brzegiem 3D jak krok gramatyki w Lingozie */
 .zadanie-karta { background: rgba(255,255,255,.9); border-radius: 30px; padding: 22px 14px 16px; min-height: 24dvh; display: flex; flex-direction: column; justify-content: center;
@@ -306,6 +306,11 @@ sup { font-size: .55em; line-height: 0; }
 .kafel { border-radius: 18px; padding: 12px; display: flex; flex-direction: column; gap: 2px; text-align: left; box-shadow: 0 4px 0 rgba(29,28,34,.07); }
 .kafel b { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .kafel small { color: rgba(29,28,34,.65); }
+.kafel.bialy { background: rgba(255,255,255,.8); }
+.ocena-szkolna { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,.85); border-radius: 22px; padding: 10px 18px 10px 10px; box-shadow: 0 5px 0 var(--brzeg, rgba(0,0,0,.1)); }
+.ocena-cyfra { width: 62px; height: 62px; border-radius: 50%; background: var(--zolty); display: grid; place-items: center; font-size: 36px; }
+.ocena-opis { display: flex; flex-direction: column; text-align: left; }
+.ocena-opis b { font-size: 20px; font-weight: 600; }
 .kafel.zolty { background: var(--zolty); } .kafel.mietowy { background: var(--mietowy); } .kafel.rozowy { background: var(--rozowy); }
 .podsum .sekcja { align-self: flex-start; margin-bottom: 0; }
 .bez-bledow { font-weight: 500; color: var(--ok); }
@@ -334,6 +339,9 @@ input.pole { display: block; width: 100%; height: auto; padding: 12px 14px; bord
 .okno-tekst { color: var(--szary); margin: 0 0 18px; font-size: 16px; }
 .okno-przyciski { display: flex; gap: 10px; }
 .okno-przyciski .btn { flex: 1; }
+
+/* klawiatura z nawiasami (okresy) ma 5 rzędów — niższe klawisze, żeby działanie zostało widoczne */
+.klawiatura.piec-rzedow .klawisz { height: clamp(46px, 6.4dvh, 60px); font-size: clamp(26px, 3.8dvh, 32px); }
 
 @media (max-height: 700px) {
   .klawisz { height: 54px; }

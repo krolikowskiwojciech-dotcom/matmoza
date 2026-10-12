@@ -34,6 +34,9 @@ const poprawnie = (cz) => {
 const gwiazdki = (dobrze, ile) => (ile === 0 || dobrze === 0 ? 0 : dobrze === ile ? 3 : dobrze / ile >= 0.8 ? 2 : 1);
 const pokazGwiazdki = (n, klasa = '') => h('span', { class: 'gwiazdki ' + klasa, 'aria-label': `${n} z 3 gwiazdek` },
   [1, 2, 3].map((i) => h('span', { class: i <= n ? '' : 'gw-puste' }, '★')));
+// przybliżona skala szkolna (procent dobrych odpowiedzi → ocena); szkoły mają podobne, nie identyczne progi
+const SKALA = [[95, 6, 'celujący'], [85, 5, 'bardzo dobry'], [70, 4, 'dobry'], [50, 3, 'dostateczny'], [30, 2, 'dopuszczający'], [0, 1, 'niedostateczny']];
+export const ocenaSzkolna = (dob, ile) => { const pr = ile ? (dob / ile) * 100 : 0; const [, o, n] = SKALA.find(([prog]) => pr >= prog); return { o, n, pr: Math.round(pr) }; };
 const POCHWALY = ['Dobrze!', 'Super!', 'Brawo!', 'Tak jest!', 'Świetnie!', 'Pięknie!'];
 
 /**
@@ -96,7 +99,8 @@ export function uruchom(el, opcje) {
   function wstepBloku() {
     sprzataj();
     const b = B().blok;
-    const jak = b.jak || JAK[b.generator?.typ];
+    // na sprawdzianie próbnym bez podpowiedzi przed blokiem (wyjaśnienie po błędzie zostaje)
+    const jak = zestaw.sprawdzian ? null : b.jak || JAK[b.generator?.typ];
     const ile = B().kolejka.length;
     ekran({
       tresc: h('div', { class: 'gram-lekcja' },
@@ -181,10 +185,13 @@ export function uruchom(el, opcje) {
     const k = (etyk, akcja, nazwa, aria) => h('button', { class: 'klawisz', 'data-k': nazwa, type: 'button', 'aria-label': aria || (typeof etyk === 'string' ? etyk : ''), onpointerdown: wcisnij, onclick: akcja },
       h('span', { class: 'krazek' }, etyk));
     const cyfry = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => k(String(n), () => wpisz(String(n)), String(n)));
-    const lewy = cz.kind !== 'liczba' ? k(ik('dalej'), () => dalej(), 'dalej', 'następne okienko') : k(',', () => wpisz(','), 'przecinek', 'przecinek');
+    const lewy = cz.kind === 'czynniki' ? k('·', () => wpisz('·'), 'przecinek', 'razy')
+      : cz.kind !== 'liczba' ? k(ik('dalej'), () => dalej(), 'dalej', 'następne okienko') : k(',', () => wpisz(','), 'przecinek', 'przecinek');
     const minus = blok.ujemne ? k('−', () => wpisz('−'), 'minus', 'minus') : null;
+    // ułamki okresowe: dodatkowe nawiasy do zapisu okresu, np. 0,(3)
+    const nawiasy = cz.okres || blok.okres ? [k('(', () => wpisz('('), 'minus', 'nawias otwierający'), k(')', () => wpisz(')'), 'minus', 'nawias zamykający')] : null;
     return [
-      h('div', { class: 'klawiatura' }, cyfry, lewy, k('0', () => wpisz('0'), '0'), k(ik('kasuj'), () => kasuj(), 'kasuj', 'kasuj'), minus),
+      h('div', { class: 'klawiatura' + (nawiasy ? ' piec-rzedow' : '') }, cyfry, lewy, k('0', () => wpisz('0'), '0'), k(ik('kasuj'), () => kasuj(), 'kasuj', 'kasuj'), minus, nawiasy),
       h('button', { class: 'btn sprawdz szeroki', type: 'button', onpointerdown: wcisnij, onclick: () => sprawdz() }, 'Sprawdź'),
     ];
   }
@@ -193,8 +200,11 @@ export function uruchom(el, opcje) {
     if (zablokowane) return;
     const v = pola[aktywne];
     if (znak === ',' && (v.includes(',') || !v)) return;
+    if (znak === '·' && (!v || v.endsWith('·'))) return;
+    if (znak === '(' && (!v.includes(',') || v.includes('('))) return;
+    if (znak === ')' && (!v.includes('(') || v.includes(')') || v.endsWith('('))) return;
     if (znak === '−' && v) return;
-    if (v.replace(/\D/g, '').length >= 9) return;
+    if (v.replace(/\D/g, '').length >= 12) return;
     pola[aktywne] = v + znak;
     const info = el.querySelector('.info.podpowiedz');
     if (info) { info.textContent = ''; info.className = 'info'; }
@@ -228,6 +238,8 @@ export function uruchom(el, opcje) {
     }
     if (/^\d$/.test(e.key)) wpisz(e.key);
     else if ((e.key === ',' || e.key === '.') && cz.kind === 'liczba') wpisz(',');
+    else if ((e.key === '*' || e.key === 'x') && cz.kind === 'czynniki') wpisz('·');
+    else if ((e.key === '(' || e.key === ')') && (cz.okres || B().blok.okres)) wpisz(e.key);
     else if (e.key === '-' && B().blok.ujemne) wpisz('−');
     else if (e.key === 'Backspace') kasuj();
     else if (e.key === 'Tab' || e.key === '/' || e.key === 'ArrowRight' || e.key === ' ') { if (cz.kind !== 'liczba') { e.preventDefault(); dalej(); } }
@@ -370,6 +382,8 @@ export function uruchom(el, opcje) {
     const g = gwiazdki(dob, proba.ile);
     if (!przerwane && g === 3) graj('piec');
     const minuty = Math.max(1, Math.round(proba.czas / 60));
+    const ocena = zestaw.ocena && proba.ile && !przerwane ? ocenaSzkolna(dob, proba.ile) : null;
+    if (ocena) proba.ocena = ocena.o;
     const tekstSMS = tekstWyniku(proba, profil, minuty);
     const status = h('p', { class: 'status', role: 'status' });
     const bledneKlucze = new Set(wszystkie.filter((x) => !x.dobrze).map((x) => x.tekst));
@@ -386,8 +400,9 @@ export function uruchom(el, opcje) {
         h('div', { class: 'kat-etykieta' }, przerwane ? 'Przerwane' : 'Zestaw ukończony'),
         h('h2', { class: 'serif' }, zestaw.tytul),
         pokazGwiazdki(g, 'duze'),
+        ocena ? h('div', { class: 'ocena-szkolna' }, h('span', { class: 'ocena-cyfra serif' }, ocena.o), h('span', { class: 'ocena-opis' }, h('b', {}, ocena.n), h('small', {}, `${ocena.pr}% dobrze · przybliżona skala szkolna`))) : null,
         h('div', { class: 'podsum-kafle' },
-          h('div', { class: 'kafel mietowy' }, h('b', {}, `${dob}/${proba.ile}`), h('small', {}, 'dobrze za 1. razem')),
+          h('div', { class: 'kafel bialy' }, h('b', {}, `${dob}/${proba.ile}`), h('small', {}, 'dobrze za 1. razem')),
           h('div', { class: 'kafel rozowy' }, h('b', {}, proba.ile - dob), h('small', {}, odm(proba.ile - dob, 'błąd', 'błędy', 'błędów'))),
           h('div', { class: 'kafel zolty' }, h('b', {}, `${minuty}`), h('small', {}, 'min'))),
         przerwane ? h('p', { class: 'maly' }, `Zrobione ${proba.ile} z ${wszystkich()} zadań.`) : null,
@@ -420,6 +435,7 @@ export function tekstWyniku(p, profilInfo, minuty) {
     `Matmoza · ${profilInfo?.imie || ''}`,
     `${p.tytul}${p.przerwane ? ' (przerwane)' : ''}${p.powtorka ? ' (powtórka pomyłek)' : ''}`,
     `Dobrze za pierwszym razem: ${p.dobrze} z ${p.ile} (${procent}%) · błędów: ${p.ile - p.dobrze}`,
+    ...(p.ocena ? [`Ocena (przybliżona skala szkolna): ${p.ocena}`] : []),
     ...p.bloki.map((b) => `• ${b.tytul}: ${b.dobrze}/${b.ile}`),
     p.bledy.length ? 'Do powtórki: ' + p.bledy.slice(0, 8).map((x) => `${x.d.replace(/□/g, '?')} (było ${x.odp}, dobrze ${x.a})`).join('; ') : 'Bez błędów!',
     `Czas: ${minuty} min`,

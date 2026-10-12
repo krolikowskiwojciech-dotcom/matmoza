@@ -26,6 +26,18 @@ export function ocen(cz, odp) {
       }
       return { ok: true };
     }
+    case 'czynniki': {
+      // rozkład na czynniki pierwsze: kolejność dowolna, każdy czynnik musi być liczbą pierwszą
+      const lista = (t) => String(t).replace(/[×x*]/g, '·').split('·').map((x) => x.trim()).filter(Boolean).map(Number);
+      const pierwsza = (n) => Number.isInteger(n) && n > 1 && [...Array(Math.floor(Math.sqrt(n)) + 1).keys()].slice(2).every((d) => n % d);
+      const o = lista(odp), w = lista(cz.a);
+      if (!o.length || o.some((n) => !Number.isFinite(n))) return { ok: false };
+      const ok = o.length === w.length && [...o].sort((a, b) => a - b).join() === [...w].sort((a, b) => a - b).join();
+      if (!ok && o.reduce((a, b) => a * b, 1) === w.reduce((a, b) => a * b, 1) && o.some((n) => !pierwsza(n))) {
+        return { ok: false, uwaga: 'Iloczyn się zgadza, ale nie wszystkie czynniki są liczbami pierwszymi — rozłóż je dalej.' };
+      }
+      return { ok };
+    }
     default:
       return { ok: rowne(odp, cz.a) };
   }

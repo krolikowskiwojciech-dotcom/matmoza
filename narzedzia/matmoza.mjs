@@ -40,7 +40,14 @@ const op = {
 const cmp = (a, b) => { const d = a.l * b.m - b.l * a.m; return d > 0n ? 1 : d < 0n ? -1 : 0; };
 
 function liczba(tok) {
-  let m = tok.match(/^(\d+) (\d+)\/(\d+)$/);
+  // okresowy: 0,(3) = 0 + 3/9; 0,58(3) = 0,58 + 3/900
+  let m = tok.replace(/\u00a0/g, '').match(/^(\d+),(\d*)\((\d+)\)$/);
+  if (m) {
+    const sk = 10n ** BigInt(m[2].length);
+    const staly = F(BigInt(m[1] + m[2]), sk);
+    return op['+'](staly, F(BigInt(m[3]), sk * (10n ** BigInt(m[3].length) - 1n)));
+  }
+  m = tok.match(/^(\d+) (\d+)\/(\d+)$/);
   if (m) return op['+'](F(BigInt(m[1])), F(BigInt(m[2]), BigInt(m[3])));
   m = tok.match(/^(\d+)\/(\d+)$/);
   if (m) return F(BigInt(m[1]), BigInt(m[2]));
@@ -52,7 +59,7 @@ function liczba(tok) {
 
 function wylicz(tekst) {
   const t = [];
-  const re = /\s*(\d+ \d+\/\d+|\d+\/\d+|\d{1,3}(?: \d{3})+(?:,\d+)?|\d+(?:,\d+)?|[+−·:()^])/y;
+  const re = /\s*(\d+,\d*\(\d+\)|\d+ \d+\/\d+|\d+\/\d+|\d{1,3}(?: \d{3})+(?:,\d+)?|\d+(?:,\d+)?|[+−·:()^])/y;
   const s = tekst.replace(/-/g, '−');
   let i = 0;
   while (s.slice(i).trim()) {
@@ -109,8 +116,48 @@ function sprawdzLinie(linia) {
   return [ile, bledy];
 }
 
+const bnwd = (a, b) => (b ? bnwd(b, a % b) : a);
+const pierwsza = (n) => { if (n < 2n) return false; for (let d = 2n; d * d <= n; d++) if (n % d === 0n) return false; return true; };
+
+// osobne wyrocznie dla zadań, których nie da się zapisać jednym wyrażeniem
+function wyroczniaSpecjalna(cz) {
+  const nw = cz.d?.match(/^(NWD|NWW)\((\d+), (\d+)\) = □$/);
+  if (nw) {
+    const a = BigInt(nw[2]), b = BigInt(nw[3]);
+    const g = bnwd(a, b);
+    const ok = nw[1] === 'NWD' ? g : (a / g) * b;
+    return cmp(F(ok), liczba(cz.a)) === 0 ? null : `${nw[1]}(${a}, ${b}) = ${ok}, a odpowiedź ${cz.a}`;
+  }
+  if (cz.oblicz?.cyfra) {
+    const [t, n] = cz.oblicz.cyfra;
+    const v = liczba(t);
+    let r = v.l % v.m, d = 0n;
+    for (let i = 0; i < n; i++) { r *= 10n; d = r / v.m; r %= v.m; }
+    return String(d) === cz.a ? null : `${n}. cyfra po przecinku ${t} to ${d}, a odpowiedź ${cz.a}`;
+  }
+  if (cz.oblicz?.skonczone) {
+    const [l, m] = cz.oblicz.skonczone.map(BigInt);
+    let mm = m / bnwd(l, m);
+    while (mm % 2n === 0n) mm /= 2n;
+    while (mm % 5n === 0n) mm /= 5n;
+    const ok = mm === 1n ? 'skończone' : 'nieskończone';
+    return ok === cz.a ? null : `${l}/${m} ma rozwinięcie ${ok}`;
+  }
+  if (cz.kind === 'czynniki') {
+    const f = cz.a.split('·').map((x) => BigInt(x.trim()));
+    if (!f.every(pierwsza)) return `nie wszystkie czynniki są pierwsze: ${cz.a}`;
+    return undefined; // iloczyn sprawdzi zwykła wyrocznia (podstawienie w okienko)
+  }
+  if (cz.kind === 'wybor' && cz.w && /^\d/.test(cz.a)) {
+    return cmp(wylicz(cz.w), liczba(cz.a.replace(/\s*(zł|m|kg|l|dag|g)$/, '').replace(/ /g, ''))) === 0 ? null : `odpowiedź ${cz.a} ≠ ${cz.w}`;
+  }
+  return undefined;
+}
+
 // wyrocznia odpowiedzi: wstawia odpowiedź w okienko i sprawdza prawdziwość
 function wyroczniaOdpowiedzi(cz) {
+  const sp = wyroczniaSpecjalna(cz);
+  if (sp !== undefined) return sp;
   if (cz.w) {
     return cmp(wylicz(cz.w), wylicz(cz.a.replace('−', ''))) === 0 && !cz.a.startsWith('−') ? null : `odpowiedź ${cz.a} ≠ ${cz.w}`;
   }
@@ -139,6 +186,7 @@ const ZLE_SLOWA = /undefined|NaN|null|\[object|Infinity/;
 function zlaOdpowiedz(cz) {
   if (cz.kind === 'wybor') return cz.choices.find((c) => c !== cz.a);
   if (cz.kind === 'reszta') { const [a, r] = cz.a.split(' r '); return [a, String(Number(r) + 1)]; }
+  if (cz.kind === 'czynniki') return cz.a + ' · 2';
   return cz.a === '1' ? '2' : '1';
 }
 
@@ -147,10 +195,10 @@ function sprawdzZadanie(z, gdzie, staty) {
   const zad = normuj(z);
   const teksty = JSON.stringify(zad);
   if (ZLE_SLOWA.test(teksty)) bledy.push('podejrzany tekst (undefined/NaN…)');
-  if (/\d\.\d/.test((zad.q || '') + zad.czesci.map((c) => (c.d || '') + c.a).join(' '))) bledy.push('kropka zamiast przecinka w liczbie');
+  if (/\d\.\d/.test([zad.q || '', ...zad.czesci.map((c) => `${c.d || ''} ${c.a}`)].join(' '))) bledy.push('kropka zamiast przecinka w liczbie');
   for (const cz of zad.czesci) {
     if (!cz.a) { bledy.push('brak odpowiedzi'); continue; }
-    if (!['liczba', 'ulamek', 'reszta', 'wybor'].includes(cz.kind || 'liczba')) bledy.push('nieznany rodzaj odpowiedzi: ' + cz.kind);
+    if (!['liczba', 'ulamek', 'reszta', 'wybor', 'czynniki'].includes(cz.kind || 'liczba')) bledy.push('nieznany rodzaj odpowiedzi: ' + cz.kind);
     if (cz.kind === 'wybor' && !cz.choices?.includes(cz.a)) bledy.push('odpowiedzi nie ma wśród wyborów');
     if (!ocen(cz, cz.kind === 'reszta' ? cz.a.split(' r ') : cz.a).ok) bledy.push(`aplikacja NIE przyjmuje poprawnej odpowiedzi „${cz.a}”`);
     if (ocen(cz, zlaOdpowiedz(cz)).ok) bledy.push('aplikacja przyjmuje złą odpowiedź');

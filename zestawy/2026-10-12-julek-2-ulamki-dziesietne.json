@@ -1,0 +1,158 @@
+{
+  "id": "2026-10-12-julek-2-ulamki-dziesietne",
+  "dla": ["julek"],
+  "tytul": "2. Ułamki dziesiętne i potęgi",
+  "opis": "Przesuwanie przecinka, działania w pamięci i pisemnie, potęgi, kolejność działań, średnia, zadania (s. 14–26).",
+  "dodano": "2026-10-12",
+  "ikona": "0,1",
+  "kolor": "zolty",
+  "bloki": [
+    {
+      "id": "przecinek",
+      "tytul": "Razy i przez 10, 100, 1000",
+      "polecenie": "Oblicz w pamięci.",
+      "ile": 6,
+      "generator": {
+        "typ": "wyrazenie", "dziesietne": true, "maxMiejsc": 6,
+        "szablony": ["{a} · {p}", "{a} : {p}", "{b} · {p}", "{b} : {p}", "{c} : {p}"],
+        "zmienne": { "a": { "od": 0.001, "do": 9.999, "miejsca": 3 }, "b": { "od": 0.1, "do": 99.9, "miejsca": 1 }, "c": [2, 900], "p": { "lista": [10, 100, 1000] } }
+      },
+      "jak": {
+        "intro": "Razy 10, 100, 1000 — przecinek w prawo o tyle miejsc, ile jest zer. Przez 10, 100, 1000 — przecinek w lewo; brakujące miejsca uzupełnij zerami.",
+        "przyklad": ["6,2 · 100 = 620", "0,7 : 100 = 0,007"]
+      }
+    },
+    {
+      "id": "dodawanie",
+      "tytul": "Dodawanie i odejmowanie",
+      "polecenie": "Oblicz.",
+      "ile": 5,
+      "generator": {
+        "typ": "wyrazenie", "dziesietne": true, "min": 0,
+        "szablony": ["{a} + {b}", "{a} − {b}", "{c} − {b}", "{a} + {d}"],
+        "zmienne": { "a": { "od": 1, "do": 15, "miejsca": 1 }, "b": { "od": 0.01, "do": 3.5, "miejsca": 2 }, "c": [2, 12], "d": { "od": 0.01, "do": 9.99, "miejsca": 2 } }
+      },
+      "jak": { "intro": "Przecinek pod przecinkiem: całości do całości, dziesiąte do dziesiątych, setne do setnych. Brakujące miejsca uzupełnij zerami.", "przyklad": ["5,7 − 0,16 = 5,70 − 0,16 = 5,54"] }
+    },
+    {
+      "id": "mnozenie",
+      "tytul": "Mnożenie ułamków dziesiętnych",
+      "polecenie": "Oblicz.",
+      "ile": 5,
+      "generator": {
+        "typ": "wyrazenie", "dziesietne": true, "maxMiejsc": 5,
+        "szablony": ["{a} · {b}", "{c} · {b}", "{a} · {e}"],
+        "zmienne": { "a": { "od": 0.1, "do": 9.9, "miejsca": 1 }, "b": { "lista": ["0,2", "0,3", "0,4", "0,03", "0,15", "0,05", "0,007", "0,6", "1,2"] }, "c": [2, 30], "e": { "od": 1.01, "do": 4.99, "miejsca": 2 } }
+      },
+      "jak": { "intro": "Pomnóż jak liczby naturalne (bez przecinków), a w wyniku oddziel przecinkiem tyle cyfr od prawej, ile jest razem po przecinku w obu czynnikach. Gdy cyfr brakuje, dopisz zera z lewej.", "przyklad": ["0,4 · 0,15 = 0,060 (4 · 15 = 60, trzy cyfry po przecinku)", "2,01 · 0,03 = 0,0603"] }
+    },
+    {
+      "id": "dzielenie",
+      "tytul": "Dzielenie ułamków dziesiętnych",
+      "polecenie": "Oblicz.",
+      "ile": 5,
+      "generator": {
+        "typ": "wyrazenie", "dziesietne": true, "maxMiejsc": 3,
+        "szablony": ["{p} : {q}", "{r} : {k}"],
+        "zmienne": { "q": { "lista": ["0,2", "0,3", "0,4", "0,5", "0,7", "0,8", "0,04", "0,09", "0,002", "0,012", "1,2", "0,25"] }, "k": { "lista": [2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 20] }, "p": "= q · k", "s": { "od": 0.1, "do": 9.9, "miejsca": 1 }, "r": "= s · k" }
+      },
+      "jak": { "intro": "Pomnóż dzielną i dzielnik przez 10, 100 albo 1000 tak, żeby dzielnik był liczbą naturalną. Wynik się nie zmieni.", "przyklad": ["1,2 : 0,3 = 12 : 3 = 4", "1,55 : 0,5 = 15,5 : 5 = 3,1"] }
+    },
+    {
+      "id": "potegi",
+      "tytul": "Potęgi",
+      "polecenie": "Oblicz.",
+      "ile": 6,
+      "generator": {
+        "typ": "wyrazenie", "dziesietne": true, "maxMiejsc": 6, "max": 100000000,
+        "szablony": ["{a}^2", "{b}^3", "{c}^{n}", "{k} · 10^{m}", "{k} : 10^{m}", "{c}^0"],
+        "zmienne": {
+          "a": { "lista": ["0,6", "0,07", "0,3", "1,2", "0,9", "15", "20", "11"] },
+          "b": { "lista": ["0,2", "0,1", "0,3", "2", "3", "5", "10"] },
+          "c": { "lista": ["3", "2", "5", "10", "0,1", "0,2", "2,8"] },
+          "n": { "lista": [1, 4, 5] },
+          "k": { "lista": ["2", "7", "3", "3,7", "2,54", "2,75"] },
+          "m": { "lista": [2, 3, 4, 6] }
+        }
+      },
+      "jak": {
+        "intro": "aⁿ to n jednakowych czynników a. Każda liczba (oprócz 0) do potęgi 0 daje 1, a do potęgi 1 — samą siebie. 10ⁿ to jedynka i n zer.",
+        "zasady": [["Kwadrat ułamka dziesiętnego", "0,6^2 = 0,6 · 0,6 = 0,36 — po przecinku dwa razy więcej cyfr."]],
+        "przyklad": ["5^3 = 5 · 5 · 5 = 125", "7^0 = 1", "2 · 10^6 = 2 000 000"]
+      }
+    },
+    {
+      "id": "kolejnosc",
+      "tytul": "Kolejność działań",
+      "polecenie": "Oblicz. Pamiętaj o kolejności działań.",
+      "ile": 5,
+      "generator": {
+        "typ": "wyrazenie", "dziesietne": true, "maxMiejsc": 3, "min": 0,
+        "szablony": ["{a} − {b} · {k}", "{p} : {k} − {b}", "{b} + {p} : {q}", "({a} − {b}) · {k}", "{q} · ({a} + {b})", "{p} : {q} − {b} · {k}"],
+        "zmienne": { "a": { "od": 1, "do": 9.9, "miejsca": 1 }, "b": { "od": 0.02, "do": 0.6, "miejsca": 2 }, "k": [2, 9], "q": { "lista": ["0,2", "0,3", "0,4", "0,5", "0,6", "0,8"] }, "p": "= q · k" }
+      },
+      "jak": { "intro": "Najpierw nawiasy, potem potęgi, mnożenie i dzielenie, na końcu dodawanie i odejmowanie — od lewej do prawej. Kreska ułamkowa działa jak nawias: (13 − 1) : (2 + 4).", "przyklad": ["2,52 − 0,06 · 7 = 2,52 − 0,42 = 2,1"] }
+    },
+    {
+      "id": "srednia",
+      "tytul": "Średnia arytmetyczna",
+      "polecenie": "Oblicz średnią arytmetyczną (suma podzielona przez liczbę składników).",
+      "ile": 3,
+      "generator": {
+        "typ": "wyrazenie", "dziesietne": true, "maxMiejsc": 3,
+        "szablony": ["({a} + {b}) : 2", "({a} + {b} + {c}) : 3", "({a} + {b} + {c} + {d}) : 4"],
+        "zmienne": { "a": { "od": 0.5, "do": 9.5, "miejsca": 1 }, "b": { "od": 0.1, "do": 9.9, "miejsca": 2 }, "c": [1, 12], "d": { "od": 0.5, "do": 5, "miejsca": 1 } }
+      },
+      "jak": { "intro": "Średnia arytmetyczna = suma liczb : ile ich jest.", "przyklad": ["(1,2 + 3,68) : 2 = 4,88 : 2 = 2,44"] }
+    },
+    {
+      "id": "tresc",
+      "tytul": "Zadania z treścią",
+      "ile": 4,
+      "zadania": [
+        {
+          "q": "Kiełbasa kosztuje 22,40 zł za kilogram.",
+          "czesci": [
+            { "e": "Ile zapłacisz za 0,5 kg? (zł)", "a": "11,2", "kind": "liczba", "w": "22,4 · 0,5", "exp": ["Pół kilograma to połowa ceny: 22,4 · 0,5 = 11,2"] },
+            { "e": "Ile zapłacisz za 1,5 kg? (zł)", "a": "33,6", "kind": "liczba", "w": "22,4 · 1,5", "exp": ["1,5 kg = 1 kg + 0,5 kg: 22,4 + 11,2 = 33,6"] }
+          ]
+        },
+        {
+          "q": "Do osolenia 2 litrów zupy potrzeba 2,8 dag soli.",
+          "czesci": [
+            { "e": "Ile dag soli potrzeba na 1 litr?", "a": "1,4", "kind": "liczba", "w": "2,8 : 2", "exp": ["2,8 : 2 = 1,4"] },
+            { "e": "Ile dag soli potrzeba na 5 litrów?", "a": "7", "kind": "liczba", "w": "1,4 · 5", "exp": ["1,4 · 5 = 7"] }
+          ]
+        },
+        {
+          "q": "Pomidory kosztują 8,20 zł za kilogram. Kupujesz 1,5 kg i płacisz banknotem 20 zł.",
+          "czesci": [
+            { "e": "Ile kosztują pomidory? (zł)", "a": "12,3", "kind": "liczba", "w": "8,2 · 1,5", "exp": ["8,2 · 1,5 = 8,2 + 4,1 = 12,3"] },
+            { "e": "Ile reszty dostaniesz? (zł)", "a": "7,7", "kind": "liczba", "w": "20 − 12,3", "exp": ["20 − 12,3 = 7,7"] }
+          ]
+        },
+        {
+          "q": "Na ozdobienie 6 jednakowych paczek zużyto 4,8 m wstążki.",
+          "czesci": [
+            { "e": "Ile metrów wstążki idzie na jedną paczkę?", "a": "0,8", "kind": "liczba", "w": "4,8 : 6", "exp": ["4,8 : 6 = 0,8"] },
+            { "e": "Ile metrów trzeba dokupić na 4 kolejne paczki?", "a": "3,2", "kind": "liczba", "w": "0,8 · 4", "exp": ["0,8 · 4 = 3,2"] }
+          ]
+        },
+        {
+          "q": "Samochód spala 6,5 litra paliwa na 100 km. Litr paliwa kosztuje 6 zł.",
+          "czesci": [
+            { "e": "Ile litrów paliwa zużyje na 300 km?", "a": "19,5", "kind": "liczba", "w": "6,5 · 3", "exp": ["300 km to 3 razy po 100 km: 6,5 · 3 = 19,5"] },
+            { "e": "Ile zapłacisz za to paliwo? (zł)", "a": "117", "kind": "liczba", "w": "19,5 · 6", "exp": ["19,5 · 6 = 117"] }
+          ]
+        },
+        {
+          "q": "Leszek kupił 0,75 kg gruszek po 6,40 zł za kilogram i ananasa. Dał kasjerce 25 zł i dostał 8,75 zł reszty.",
+          "czesci": [
+            { "e": "Ile kosztowały gruszki? (zł)", "a": "4,8", "kind": "liczba", "w": "0,75 · 6,4", "exp": ["0,75 · 6,4 = 4,8"] },
+            { "e": "Ile kosztował ananas? (zł)", "a": "11,45", "kind": "liczba", "w": "25 − 8,75 − 4,8", "exp": ["Zakupy razem: 25 − 8,75 = 16,25", "Ananas: 16,25 − 4,8 = 11,45"] }
+          ]
+        }
+      ]
+    }
+  ]
+}

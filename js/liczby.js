@@ -65,6 +65,14 @@ export function parsuj(s) {
     return zn ? new Q(-w.l, w.m) : w;
   }
   s = s.replace(/ (?=\d{3}(\D|$))/g, '');
+  // ułamek okresowy: 0,(3), 0,58(3), 2,(015)
+  m = s.match(/^(-?)(\d+)[,.](\d*)\((\d+)\)$/);
+  if (m) {
+    const [, zn, c, nie, okr] = m;
+    const skala = 10 ** nie.length;
+    const w = new Q(Number(c + nie), skala).dodaj(new Q(Number(okr), skala * (10 ** okr.length - 1)));
+    return zn ? new Q(-w.l, w.m) : w;
+  }
   m = s.match(/^(-?)(\d+)(?:[,.](\d+))?$/);
   if (!m) return null;
   const [, zn, c, u = ''] = m;
@@ -88,11 +96,38 @@ export function zapisz(x, styl = 'auto') {
     const cyfry = String((l * skala) / m).padStart(miejsca + 1, '0');
     return zn + grupuj(cyfry.slice(0, -miejsca)) + ',' + cyfry.slice(-miejsca);
   }
+  if (styl === 'okresowy' || (styl === 'auto-okres' && miejsca === null)) return zn + okresowy(l, m);
   if (styl === 'mieszany' && l > m) {
     const c = Math.floor(l / m), r = l % m;
     return zn + c + ' ' + r + '/' + m;
   }
   return zn + l + '/' + m;
+}
+
+// rozwinięcie dziesiętne dzieleniem pisemnym: 14/24 → „0,58(3)”, 3/16 → „0,1875”
+export function okresowy(l, m) {
+  const c = Math.floor(l / m);
+  let r = l % m;
+  if (!r) return String(c);
+  const cyfry = [];
+  const gdzie = new Map();
+  while (r && !gdzie.has(r)) {
+    gdzie.set(r, cyfry.length);
+    r *= 10;
+    cyfry.push(Math.floor(r / m));
+    r %= m;
+  }
+  if (!r) return `${c},${cyfry.join('')}`;
+  const i = gdzie.get(r);
+  return `${c},${cyfry.slice(0, i).join('')}(${cyfry.slice(i).join('')})`;
+}
+
+// n-ta cyfra po przecinku rozwinięcia dziesiętnego ułamka l/m
+export function cyfraPoPrzecinku(l, m, n) {
+  let r = l % m;
+  let d = 0;
+  for (let i = 0; i < n; i++) { r *= 10; d = Math.floor(r / m); r %= m; }
+  return d;
 }
 
 // czy ułamek jest zapisany w najprostszej postaci (nieskracalny, całości wyłączone)

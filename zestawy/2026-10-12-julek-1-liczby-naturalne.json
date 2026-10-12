@@ -1,0 +1,131 @@
+{
+  "id": "2026-10-12-julek-1-liczby-naturalne",
+  "dla": ["julek"],
+  "tytul": "1. Liczby naturalne",
+  "opis": "Rachunki w pamięci, reszty, czynniki pierwsze, NWD i NWW, kolejność działań (podręcznik s. 10–13).",
+  "dodano": "2026-10-12",
+  "ikona": "+",
+  "kolor": "mietowy",
+  "bloki": [
+    {
+      "id": "pamiec",
+      "tytul": "Działania w pamięci",
+      "polecenie": "Oblicz w pamięci.",
+      "ile": 6,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": ["{a} + {b}", "{a} − {b}", "{c} − {d}", "{a} · {k}", "{e} : {k}"],
+        "zmienne": { "a": [60, 700], "b": [12, 99], "c": { "cyfry": [11, 99], "zera": [1, 2] }, "d": { "cyfry": [2, 99], "zera": [1, 1] }, "k": [2, 9], "f": [12, 99], "e": "= f · k" }
+      },
+      "jak": { "intro": "Rozbijaj liczby na wygodne części: najpierw dziesiątki (setki), potem jedności.", "przyklad": ["182 + 43 = 182 + 40 + 3 = 225", "148 : 4 = 120 : 4 + 28 : 4 = 30 + 7 = 37"] }
+    },
+    {
+      "id": "zera",
+      "tytul": "Liczby z zerami na końcu",
+      "polecenie": "Oblicz.",
+      "ile": 5,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": ["{a} · {b}", "{c} : {b}"],
+        "zmienne": { "a": { "cyfry": [2, 15], "zera": [1, 3] }, "b": { "cyfry": [2, 9], "zera": [1, 3] }, "c": "= a · b" }
+      },
+      "jak": {
+        "intro": "Mnożenie: pomnóż liczby bez zer i dopisz wszystkie zera. Dzielenie: najpierw skreśl tyle samo końcowych zer w dzielnej i w dzielniku.",
+        "przyklad": ["130 · 200 = 26 000 (13 · 2 = 26 i trzy zera)", "42 000 : 700 = 420 : 7 = 60"]
+      }
+    },
+    {
+      "id": "sprytnie",
+      "tytul": "Sprytne mnożenie",
+      "polecenie": "Oblicz sprytnie w pamięci.",
+      "ile": 4,
+      "generator": { "typ": "wyrazenie", "szablon": "{a} · {b}", "zmienne": { "a": [12, 99], "b": { "lista": [11, 15, 19, 21, 25, 29, 31, 99] } } },
+      "jak": {
+        "intro": "Czynnik blisko pełnej dziesiątki zamień na „dziesiątkę plus albo minus 1”. Razy 15 to razy 10 plus razy 5.",
+        "przyklad": ["35 · 19 = 35 · 20 − 35 = 700 − 35 = 665", "28 · 15 = 280 + 140 = 420"]
+      }
+    },
+    {
+      "id": "reszta",
+      "tytul": "Dzielenie z resztą",
+      "polecenie": "Podaj wynik dzielenia i resztę.",
+      "ile": 4,
+      "generator": { "typ": "reszta", "dzielna": [50, 999], "dzielniki": [6, 7, 8, 9, 12, 15, 21, 22, 25, 70] },
+      "jak": {
+        "intro": "Reszta jest zawsze mniejsza od dzielnika. Z dzielenia wynika równość: dzielna = wynik · dzielnik + reszta.",
+        "przyklad": ["87 : 21 = 4 r. 3", "87 = 4 · 21 + 3"]
+      }
+    },
+    {
+      "id": "reszta-szybko",
+      "tytul": "Reszta z dzielenia przez 10, 5, 20, 25, 50, 100",
+      "polecenie": "Podaj wynik dzielenia i resztę.",
+      "ile": 4,
+      "generator": { "typ": "reszta", "dzielna": [8, 2600], "dzielniki": [10, 5, 20, 25, 50, 100] },
+      "jak": {
+        "intro": "Przez 10 — reszta to ostatnia cyfra. Przez 100 — dwie ostatnie cyfry. Przez 5, 20, 25, 50 — patrz na resztę z dzielenia przez 100 (albo 10) i odejmij pełne piątki, dwudziestki, ćwiartki.",
+        "przyklad": ["1243 : 100 = 12 r. 43", "1243 : 25 = 49 r. 18 (43 − 25 = 18)"]
+      }
+    },
+    {
+      "id": "czynniki",
+      "tytul": "Rozkład na czynniki pierwsze",
+      "polecenie": "Rozłóż na czynniki pierwsze. Wpisuj z kropką, np. 2·2·3·5 (kolejność dowolna).",
+      "ile": 3,
+      "generator": { "typ": "czynniki", "pierwsze": [2, 3, 5, 7, 11, 13], "ile": [3, 6], "min": 40, "max": 3000 },
+      "jak": {
+        "intro": "Dziel przez najmniejszą liczbę pierwszą (2, 3, 5, 7, 11…), dopóki się da. Zapisuj dzielniki z boku, aż zostanie 1.",
+        "przyklad": ["420 : 2 = 210", "210 : 2 = 105", "105 : 5 = 21", "21 : 3 = 7", "7 : 7 = 1", "420 = 2 · 2 · 3 · 5 · 7"]
+      }
+    },
+    {
+      "id": "nwd-nww",
+      "tytul": "NWD i NWW",
+      "polecenie": "Oblicz największy wspólny dzielnik (NWD) albo najmniejszą wspólną wielokrotność (NWW).",
+      "ile": 4,
+      "generator": { "typ": "nwdnww", "pierwsze": [2, 3, 5, 7, 11], "wspolnych": [1, 3], "wlasnych": [1, 2], "max": 400 },
+      "jak": {
+        "intro": "Rozłóż obie liczby na czynniki pierwsze. NWD = iloczyn czynników wspólnych. NWW = rozkład jednej liczby i dopisane czynniki drugiej, których brakuje.",
+        "przyklad": ["30 = 2 · 3 · 5", "66 = 2 · 3 · 11", "NWD = 2 · 3 = 6", "NWW = 2 · 3 · 5 · 11 = 330"]
+      }
+    },
+    {
+      "id": "kolejnosc",
+      "tytul": "Kolejność działań z potęgami",
+      "polecenie": "Oblicz. Pamiętaj o kolejności działań.",
+      "ile": 5,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": ["{a} − {b} · {c}", "{d} : {b} + {e}", "{m} : ({b} · {g})", "{d} : {b} · {h}^2", "{h}^2 + {b} · {c} − {g}", "{e} + {g} · ({c} − {g})^2", "{g}^3 − {e} : {g}"],
+        "zmienne": { "a": [30, 99], "b": [2, 9], "c": [2, 9], "g": [2, 4], "h": [2, 5], "k": [2, 9], "e": [2, 40], "d": "= b · k", "m": "= b · g · k" },
+        "max": 500
+      },
+      "jak": {
+        "intro": "Najpierw nawiasy, potem potęgi, potem mnożenie i dzielenie (od lewej), na końcu dodawanie i odejmowanie (od lewej).",
+        "przyklad": ["24 + 2 · (6 − 3)^2 = 24 + 2 · 3^2 = 24 + 2 · 9 = 24 + 18 = 42"]
+      }
+    },
+    {
+      "id": "tresc",
+      "tytul": "Zadania z treścią",
+      "ile": 2,
+      "zadania": [
+        {
+          "q": "Duży słoik z miodem waży 1300 g, a sam miód w nim — 940 g. Mały słoik z miodem waży 620 g, a miodu jest w nim 2 razy mniej niż w dużym.",
+          "czesci": [
+            { "e": "Ile gramów miodu jest w małym słoiku?", "a": "470", "kind": "liczba", "w": "940 : 2", "exp": ["Dwa razy mniej, więc dzielisz: 940 : 2 = 470"] },
+            { "e": "Ile waży pusty duży słoik? (g)", "a": "360", "kind": "liczba", "w": "1300 − 940", "exp": ["Słoik bez miodu: 1300 − 940 = 360"] },
+            { "e": "Ile waży pusty mały słoik? (g)", "a": "150", "kind": "liczba", "w": "620 − 470", "exp": ["Słoik bez miodu: 620 − 470 = 150"] }
+          ]
+        },
+        {
+          "q": "Ola ma w skarbonce 840 monet dwudziestogroszowych. Jej brat ma taką samą kwotę, ale w monetach pięćdziesięciogroszowych.",
+          "czesci": [
+            { "e": "Ile złotych ma Ola?", "a": "168", "kind": "liczba", "w": "840 · 20 : 100", "exp": ["840 monet po 20 gr: 840 · 20 = 16\u00a0800 gr", "16\u00a0800 gr = 168 zł, bo 16\u00a0800 : 100 = 168"] },
+            { "e": "Ile monet ma brat?", "a": "336", "kind": "liczba", "w": "16800 : 50", "exp": ["Ta sama kwota w groszach: 16\u00a0800 : 50 = 336"] }
+          ]
+        }
+      ]
+    }
+  ]
+}

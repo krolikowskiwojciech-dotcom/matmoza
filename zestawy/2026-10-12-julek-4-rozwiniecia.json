@@ -1,0 +1,261 @@
+{
+  "id": "2026-10-12-julek-4-rozwiniecia",
+  "dla": [
+    "julek"
+  ],
+  "tytul": "4. Ułamki zwykłe i dziesiętne",
+  "opis": "Zamiana ułamków, rozwinięcia okresowe, porównywanie, działania mieszane (s. 34–39).",
+  "dodano": "2026-10-12",
+  "ikona": "⅓",
+  "kolor": "niebieski",
+  "bloki": [
+    {
+      "id": "na-zwykly",
+      "tytul": "Dziesiętny → zwykły",
+      "polecenie": "Zapisz jako ułamek zwykły (albo liczbę mieszaną) i skróć.",
+      "ile": 4,
+      "generator": {
+        "typ": "zamiana2",
+        "kierunek": "naZwykly",
+        "maxMiejsc": 3,
+        "calosci": true
+      },
+      "jak": {
+        "intro": "Ile cyfr po przecinku, tyle zer w mianowniku. Potem skróć.",
+        "przyklad": [
+          "0,06 = 6/100 = 3/50",
+          "6,8 = 6 8/10 = 6 4/5"
+        ]
+      }
+    },
+    {
+      "id": "na-dziesietny",
+      "tytul": "Zwykły → dziesiętny",
+      "polecenie": "Zapisz jako ułamek dziesiętny.",
+      "ile": 4,
+      "generator": {
+        "typ": "zamiana2",
+        "kierunek": "naDziesietny"
+      },
+      "jak": {
+        "intro": "Rozszerz ułamek do mianownika 10, 100 albo 1000. Możesz też podzielić licznik przez mianownik.",
+        "przyklad": [
+          "7/250 = 28/1000 = 0,028",
+          "1 7/20 = 1 35/100 = 1,35"
+        ]
+      }
+    },
+    {
+      "id": "okres",
+      "tytul": "Rozwinięcia okresowe",
+      "polecenie": "Zapisz rozwinięcie dziesiętne w skróconej postaci — okres w nawiasie, np. 0,58(3).",
+      "ile": 4,
+      "okres": true,
+      "generator": {
+        "typ": "zamiana2",
+        "kierunek": "naOkresowy",
+        "calosci": true
+      },
+      "jak": {
+        "intro": "Dziel licznik przez mianownik pisemnie. Gdy cyfry zaczynają się powtarzać, powtarzający się układ to okres — zapisz go raz, w nawiasie.",
+        "przyklad": [
+          "1/3 = 0,333… = 0,(3)",
+          "3/11 = 0,2727… = 0,(27)",
+          "7/12 = 0,58333… = 0,58(3)"
+        ]
+      }
+    },
+    {
+      "id": "cyfra",
+      "tytul": "Która cyfra po przecinku?",
+      "polecenie": "Policz, która cyfra okresu trafia na to miejsce.",
+      "ile": 3,
+      "generator": {
+        "typ": "cyfra",
+        "n": [
+          8,
+          25
+        ]
+      },
+      "jak": {
+        "intro": "Odlicz cyfry przed okresem. Potem podziel numer miejsca w okresie przez długość okresu — reszta mówi, która to cyfra okresu (reszta 0 = ostatnia cyfra okresu).",
+        "przyklad": [
+          "6,(12): na 10. miejscu stoi 2, bo 10 : 2 = 5 r. 0 → ostatnia cyfra okresu"
+        ]
+      }
+    },
+    {
+      "id": "skonczone",
+      "tytul": "Skończone czy nieskończone?",
+      "polecenie": "Wybierz, jakie rozwinięcie dziesiętne ma ułamek.",
+      "ile": 4,
+      "generator": {
+        "typ": "skonczone"
+      },
+      "jak": {
+        "intro": "Skróć ułamek i rozłóż mianownik na czynniki pierwsze. Same dwójki i piątki → rozwinięcie skończone. Jakakolwiek inna liczba pierwsza (3, 7, 11…) → nieskończone okresowe.",
+        "przyklad": [
+          "7/16: 16 = 2 · 2 · 2 · 2 → skończone",
+          "2/35: 35 = 5 · 7 → nieskończone"
+        ]
+      }
+    },
+    {
+      "id": "porownaj",
+      "tytul": "Porównywanie",
+      "polecenie": "Wybierz znak.",
+      "ile": 4,
+      "generator": {
+        "typ": "porownajUlamek",
+        "calosci": true
+      },
+      "jak": {
+        "intro": "Zamień ułamek zwykły na dziesiętny i porównuj cyfra po cyfrze od lewej.",
+        "przyklad": [
+          "2/9 = 0,(2) = 0,222… > 0,22"
+        ]
+      }
+    },
+    {
+      "id": "mieszane",
+      "tytul": "Działania na ułamkach zwykłych i dziesiętnych",
+      "polecenie": "Oblicz. Wynik zapisz jako ułamek dziesiętny.",
+      "ile": 5,
+      "generator": {
+        "typ": "wyrazenie",
+        "dziesietne": true,
+        "maxMiejsc": 3,
+        "min": 0,
+        "szablony": [
+          "{u} + {d}",
+          "{u} − {e}",
+          "{d} · {u}",
+          "{d} : {u}",
+          "{d} − {v}"
+        ],
+        "zmienne": {
+          "u": {
+            "ulamek": {
+              "mianowniki": [
+                2,
+                4,
+                5,
+                8
+              ],
+              "calosci": [
+                0,
+                3
+              ]
+            }
+          },
+          "v": {
+            "ulamek": {
+              "mianowniki": [
+                2,
+                4,
+                5,
+                8
+              ]
+            }
+          },
+          "d": {
+            "od": 0.2,
+            "do": 9.8,
+            "miejsca": 1
+          },
+          "e": {
+            "od": 0.05,
+            "do": 2,
+            "miejsca": 2
+          }
+        }
+      },
+      "jak": {
+        "intro": "Zamień ułamek zwykły na dziesiętny (gdy się da), a potem licz jak na ułamkach dziesiętnych. Przy dzieleniu przez ułamek zwykły możesz też pomnożyć przez odwrotność.",
+        "przyklad": [
+          "2/5 + 0,77 = 0,4 + 0,77 = 1,17",
+          "2,4 : 3/5 = 2,4 · 5/3 = 4"
+        ]
+      }
+    },
+    {
+      "id": "tresc",
+      "tytul": "Zadania z treścią",
+      "ile": 3,
+      "zadania": [
+        {
+          "q": "Ogórek to w 0,95 woda, a pomidor — w 0,93.",
+          "czesci": [
+            {
+              "e": "Ile kg wody jest w 2 kg ogórków?",
+              "a": "1,9",
+              "kind": "liczba",
+              "w": "2 · 0,95",
+              "exp": [
+                "2 · 0,95 = 1,9"
+              ]
+            },
+            {
+              "e": "Ile kg wody jest w 0,5 kg pomidorów?",
+              "a": "0,465",
+              "kind": "liczba",
+              "w": "0,5 · 0,93",
+              "exp": [
+                "0,5 · 0,93 = 0,465"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Proszek do prania waży razem z pudełkiem 2,88 kg. Pudełko to 1/6 tej masy.",
+          "czesci": [
+            {
+              "e": "Ile kg waży pudełko?",
+              "a": "0,48",
+              "kind": "liczba",
+              "w": "2,88 : 6",
+              "exp": [
+                "1/6 z 2,88: 2,88 : 6 = 0,48"
+              ]
+            },
+            {
+              "e": "Ile kg waży sam proszek?",
+              "a": "2,4",
+              "kind": "liczba",
+              "w": "2,88 − 0,48",
+              "exp": [
+                "2,88 − 0,48 = 2,4"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Pani Ala pracuje 3 dni w tygodniu zamiast 5 (po tyle samo godzin). Szef proponuje jej 0,65 pełnej pensji.",
+          "czesci": [
+            {
+              "e": "Jaką część pełnego czasu pracuje? Zapisz jako ułamek dziesiętny.",
+              "a": "0,6",
+              "kind": "liczba",
+              "w": "3/5",
+              "exp": [
+                "3/5 = 6/10 = 0,6"
+              ]
+            },
+            {
+              "e": "Czy propozycja jest dla niej korzystna?",
+              "a": "tak, 0,65 > 0,6",
+              "kind": "wybor",
+              "choices": [
+                "tak, 0,65 > 0,6",
+                "nie, 0,65 < 0,6"
+              ],
+              "exp": [
+                "Pracuje 0,6 czasu, a dostaje 0,65 pensji: 0,65 > 0,6"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

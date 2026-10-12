@@ -1,0 +1,351 @@
+{
+  "id": "2026-10-12-julek-5-sprawdzian-2",
+  "dla": [
+    "julek"
+  ],
+  "tytul": "Sprawdzian próbny — wersja 2",
+  "opis": "Cały dział „Liczby naturalne i ułamki”: zadania zamknięte, rachunki i zadania z treścią. Na końcu ocena.",
+  "dodano": "2026-10-12",
+  "ikona": "B",
+  "kolor": "rozowy",
+  "ocena": true,
+  "sprawdzian": true,
+  "bloki": [
+    {
+      "id": "zamkniete",
+      "tytul": "Zadania zamknięte",
+      "polecenie": "Wybierz jedną odpowiedź.",
+      "zadania": [
+        {
+          "q": "Olek zapłacił za 3 ołówki 3,60 zł. Ile zapłaci za 5 takich ołówków?",
+          "a": "6 zł",
+          "kind": "wybor",
+          "choices": [
+            "6 zł",
+            "5,40 zł",
+            "7,20 zł",
+            "18 zł"
+          ],
+          "exp": [
+            "Jeden ołówek: 3,6 : 3 = 1,2",
+            "Pięć ołówków: 1,2 · 5 = 6"
+          ],
+          "w": "3,6 : 3 · 5"
+        },
+        {
+          "q": "Ile wynosi NWW(70, 231)?",
+          "a": "2310",
+          "kind": "wybor",
+          "choices": [
+            "7",
+            "210",
+            "2310",
+            "16170"
+          ],
+          "exp": [
+            "70 = 2 · 5 · 7",
+            "231 = 3 · 7 · 11",
+            "NWW = 2 · 5 · 7 · 3 · 11 = 2310"
+          ],
+          "w": "2 · 5 · 7 · 3 · 11"
+        },
+        {
+          "q": "Która liczba jest największa?",
+          "a": "0,23",
+          "kind": "wybor",
+          "choices": [
+            "2/9",
+            "0,23",
+            "0,(2)",
+            "0,2"
+          ],
+          "exp": [
+            "2/9 = 0,(2) = 0,222…",
+            "0,23 > 0,222… > 0,2"
+          ]
+        },
+        {
+          "q": "Ile to jest 3,7 · 10^3?",
+          "a": "3700",
+          "kind": "wybor",
+          "choices": [
+            "37",
+            "370",
+            "3700",
+            "37 000"
+          ],
+          "exp": [
+            "10^3 = 1000, a razy 1000 to przecinek o 3 miejsca w prawo: 3,7 · 1000 = 3700"
+          ],
+          "w": "3,7 · 10^3"
+        },
+        {
+          "q": "Odwrotnością liczby 4 2/3 jest 3/14.",
+          "a": "PRAWDA",
+          "kind": "wybor",
+          "choices": [
+            "PRAWDA",
+            "FAŁSZ"
+          ],
+          "exp": [
+            "4 2/3 = 14/3, więc odwrotność to 3/14",
+            "Sprawdzenie: 14/3 · 3/14 = 1"
+          ]
+        },
+        {
+          "q": "0,(75) > 0,(57)",
+          "a": "PRAWDA",
+          "kind": "wybor",
+          "choices": [
+            "PRAWDA",
+            "FAŁSZ"
+          ],
+          "exp": [
+            "0,(75) = 0,7575…, a 0,(57) = 0,5757…",
+            "0,(75) > 0,(57)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "naturalne",
+      "tytul": "Liczby naturalne",
+      "polecenie": "Oblicz.",
+      "ile": 3,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "({a} − {b}) · {c}",
+          "{h}^3 − {d} : {b}",
+          "{x} : {y}"
+        ],
+        "zmienne": {
+          "a": [
+            30,
+            99
+          ],
+          "b": [
+            2,
+            9
+          ],
+          "c": [
+            2,
+            9
+          ],
+          "g": [
+            2,
+            4
+          ],
+          "h": [
+            2,
+            5
+          ],
+          "k": [
+            2,
+            9
+          ],
+          "d": "= b · k",
+          "x": {
+            "cyfry": [
+              2,
+              12
+            ],
+            "zera": [
+              1,
+              3
+            ]
+          },
+          "y": {
+            "cyfry": [
+              2,
+              9
+            ],
+            "zera": [
+              1,
+              2
+            ]
+          }
+        },
+        "max": 2000000
+      }
+    },
+    {
+      "id": "dziesietne",
+      "tytul": "Ułamki dziesiętne",
+      "polecenie": "Oblicz.",
+      "ile": 3,
+      "generator": {
+        "typ": "wyrazenie",
+        "dziesietne": true,
+        "maxMiejsc": 4,
+        "min": 0,
+        "szablony": [
+          "{s} : {p10}",
+          "{s} − {q} · {k}",
+          "{q}^3"
+        ],
+        "zmienne": {
+          "q": {
+            "lista": [
+              "0,2",
+              "0,3",
+              "0,4",
+              "0,5",
+              "0,6",
+              "0,8",
+              "0,03",
+              "0,05"
+            ]
+          },
+          "k": [
+            2,
+            9
+          ],
+          "p": "= q · k",
+          "s": {
+            "od": 0.1,
+            "do": 9.9,
+            "miejsca": 1
+          },
+          "p10": {
+            "lista": [
+              10,
+              100,
+              1000
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "zwykle",
+      "tytul": "Ułamki zwykłe",
+      "polecenie": "Oblicz. Wynik skróć i wyłącz całości.",
+      "ile": 3,
+      "generator": {
+        "typ": "ulamki",
+        "dzialania": [
+          "·",
+          ":",
+          "−"
+        ],
+        "mianowniki": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9,
+          10,
+          12
+        ],
+        "mieszane": 4,
+        "maxWspolny": 36,
+        "maxMianownikWyniku": 24
+      }
+    },
+    {
+      "id": "zamiany",
+      "tytul": "Zamiany i rozwinięcia",
+      "polecenie": "Zamień. Okres zapisz w nawiasie, np. 0,(3).",
+      "ile": 2,
+      "okres": true,
+      "generator": {
+        "typ": "zamiana2",
+        "kierunek": [
+          "naZwykly",
+          "naOkresowy"
+        ],
+        "calosci": true
+      }
+    },
+    {
+      "id": "dzielniki",
+      "tytul": "Czynniki, NWD i NWW",
+      "polecenie": "Oblicz.",
+      "ile": 2,
+      "generator": {
+        "typ": "czynniki",
+        "min": 60,
+        "max": 2500
+      }
+    },
+    {
+      "id": "tresc",
+      "tytul": "Zadania z treścią",
+      "zadania": [
+        {
+          "q": "Za 0,2 kg sera zapłacono 4,80 zł.",
+          "czesci": [
+            {
+              "e": "Ile kosztuje 1 kg sera? (zł)",
+              "a": "24",
+              "kind": "liczba",
+              "w": "4,8 : 0,2",
+              "exp": [
+                "4,8 : 0,2 = 48 : 2 = 24"
+              ]
+            },
+            {
+              "e": "Ile kosztuje pół kilograma? (zł)",
+              "a": "12",
+              "kind": "liczba",
+              "w": "24 · 0,5",
+              "exp": [
+                "24 · 0,5 = 12"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Średni wzrost pięciu koszykarzy to 1,95 m. Zawodnika o wzroście 1,97 m zmienia zawodnik o wzroście 2,12 m.",
+          "czesci": [
+            {
+              "e": "O ile metrów wzrośnie suma wzrostów?",
+              "a": "0,15",
+              "kind": "liczba",
+              "w": "2,12 − 1,97",
+              "exp": [
+                "2,12 − 1,97 = 0,15"
+              ]
+            },
+            {
+              "e": "O ile metrów wzrośnie średnia?",
+              "a": "0,03",
+              "kind": "liczba",
+              "w": "(2,12 − 1,97) : 5",
+              "exp": [
+                "Suma rośnie o 0,15, a zawodników jest 5: 0,15 : 5 = 0,03"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Działka ma 600 m². Dom zajmuje 1/4 działki, a 2/5 pozostałej części to sad.",
+          "czesci": [
+            {
+              "e": "Ile m² zajmuje dom?",
+              "a": "150",
+              "kind": "liczba",
+              "w": "600 · 1/4",
+              "exp": [
+                "600 : 4 = 150"
+              ]
+            },
+            {
+              "e": "Ile m² ma sad?",
+              "a": "180",
+              "kind": "liczba",
+              "w": "(600 − 150) · 2/5",
+              "exp": [
+                "Zostaje: 600 − 150 = 450",
+                "2/5 z 450: 450 : 5 · 2 = 180"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

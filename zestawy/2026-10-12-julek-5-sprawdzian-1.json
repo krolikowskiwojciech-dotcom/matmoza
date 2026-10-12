@@ -1,0 +1,350 @@
+{
+  "id": "2026-10-12-julek-5-sprawdzian-1",
+  "dla": [
+    "julek"
+  ],
+  "tytul": "Sprawdzian próbny — wersja 1",
+  "opis": "Cały dział „Liczby naturalne i ułamki”: zadania zamknięte, rachunki i zadania z treścią. Na końcu ocena.",
+  "dodano": "2026-10-12",
+  "ikona": "A",
+  "kolor": "brzoskwinia",
+  "ocena": true,
+  "sprawdzian": true,
+  "bloki": [
+    {
+      "id": "zamkniete",
+      "tytul": "Zadania zamknięte",
+      "polecenie": "Wybierz jedną odpowiedź.",
+      "zadania": [
+        {
+          "q": "Ewa ma 600 monet dwudziestogroszowych. Kuba ma tyle samo pieniędzy w monetach pięćdziesięciogroszowych. Ile monet ma Kuba?",
+          "a": "240",
+          "kind": "wybor",
+          "choices": [
+            "240",
+            "300",
+            "1500",
+            "120"
+          ],
+          "exp": [
+            "Kwota Ewy w groszach: 600 · 20 = 12 000",
+            "Monety Kuby: 12 000 : 50 = 240"
+          ],
+          "w": "600 · 20 : 50"
+        },
+        {
+          "q": "Posąg razem z cokołem ma 4,74 m wysokości. Cokół ma 2,27 m. Jak wysoki jest sam posąg?",
+          "a": "2,47 m",
+          "kind": "wybor",
+          "choices": [
+            "2,47 m",
+            "3,17 m",
+            "2,57 m",
+            "7,01 m"
+          ],
+          "exp": [
+            "4,74 − 2,27 = 2,47"
+          ],
+          "w": "4,74 − 2,27"
+        },
+        {
+          "q": "Które zdanie jest prawdziwe?",
+          "a": "Reszta z dzielenia 547 przez 5 to 2",
+          "kind": "wybor",
+          "choices": [
+            "Reszta z dzielenia 547 przez 5 to 2",
+            "Liczba 2 · 3 · 5 · 7 jest podzielna przez 11",
+            "NWD(70, 231) = 11",
+            "NWW(4, 6) = 24"
+          ],
+          "exp": [
+            "547 = 109 · 5 + 2, więc reszta to 2",
+            "2 · 3 · 5 · 7 = 210 nie dzieli się przez 11",
+            "70 = 2 · 5 · 7 i 231 = 3 · 7 · 11, więc NWD = 7",
+            "Najmniejsza wspólna wielokrotność 4 i 6 to 12, a nie 24."
+          ]
+        },
+        {
+          "q": "Który zapis przedstawia liczbę 5/90?",
+          "a": "0,0(5)",
+          "kind": "wybor",
+          "choices": [
+            "0,05",
+            "0,0(5)",
+            "0,(05)",
+            "0,5(5)"
+          ],
+          "exp": [
+            "Skróć: 5/90 = 1/18",
+            "1 : 18 = 0,0555…, więc 5/90 = 0,0(5)"
+          ],
+          "w": "5/90"
+        },
+        {
+          "q": "Ułamek 7/12 ma rozwinięcie dziesiętne skończone.",
+          "a": "FAŁSZ",
+          "kind": "wybor",
+          "choices": [
+            "PRAWDA",
+            "FAŁSZ"
+          ],
+          "exp": [
+            "12 = 2 · 2 · 3 — w mianowniku jest 3, więc rozwinięcie jest nieskończone: 7/12 = 0,58(3)"
+          ]
+        },
+        {
+          "q": "2,5^2 = 6,25",
+          "a": "PRAWDA",
+          "kind": "wybor",
+          "choices": [
+            "PRAWDA",
+            "FAŁSZ"
+          ],
+          "exp": [
+            "2,5^2 = 2,5 · 2,5 = 6,25"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "naturalne",
+      "tytul": "Liczby naturalne",
+      "polecenie": "Oblicz.",
+      "ile": 3,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} − {b} · {c}",
+          "{d} : {b} + {h}^2",
+          "{x} · {y}"
+        ],
+        "zmienne": {
+          "a": [
+            30,
+            99
+          ],
+          "b": [
+            2,
+            9
+          ],
+          "c": [
+            2,
+            9
+          ],
+          "g": [
+            2,
+            4
+          ],
+          "h": [
+            2,
+            5
+          ],
+          "k": [
+            2,
+            9
+          ],
+          "d": "= b · k",
+          "x": {
+            "cyfry": [
+              2,
+              12
+            ],
+            "zera": [
+              1,
+              3
+            ]
+          },
+          "y": {
+            "cyfry": [
+              2,
+              9
+            ],
+            "zera": [
+              1,
+              2
+            ]
+          }
+        },
+        "max": 2000000
+      }
+    },
+    {
+      "id": "dziesietne",
+      "tytul": "Ułamki dziesiętne",
+      "polecenie": "Oblicz.",
+      "ile": 3,
+      "generator": {
+        "typ": "wyrazenie",
+        "dziesietne": true,
+        "maxMiejsc": 4,
+        "min": 0,
+        "szablony": [
+          "{p} : {q}",
+          "{s} · {q}",
+          "{s}^2"
+        ],
+        "zmienne": {
+          "q": {
+            "lista": [
+              "0,2",
+              "0,3",
+              "0,4",
+              "0,5",
+              "0,6",
+              "0,8",
+              "0,03",
+              "0,05"
+            ]
+          },
+          "k": [
+            2,
+            9
+          ],
+          "p": "= q · k",
+          "s": {
+            "od": 0.1,
+            "do": 9.9,
+            "miejsca": 1
+          },
+          "p10": {
+            "lista": [
+              10,
+              100,
+              1000
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "zwykle",
+      "tytul": "Ułamki zwykłe",
+      "polecenie": "Oblicz. Wynik skróć i wyłącz całości.",
+      "ile": 3,
+      "generator": {
+        "typ": "ulamki",
+        "dzialania": [
+          "+",
+          "−",
+          ":"
+        ],
+        "mianowniki": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9,
+          10,
+          12
+        ],
+        "mieszane": 4,
+        "maxWspolny": 36,
+        "maxMianownikWyniku": 24
+      }
+    },
+    {
+      "id": "zamiany",
+      "tytul": "Zamiany i rozwinięcia",
+      "polecenie": "Zamień. Okres zapisz w nawiasie, np. 0,(3).",
+      "ile": 2,
+      "okres": true,
+      "generator": {
+        "typ": "zamiana2",
+        "kierunek": [
+          "naZwykly",
+          "naOkresowy"
+        ],
+        "calosci": true
+      }
+    },
+    {
+      "id": "dzielniki",
+      "tytul": "Czynniki, NWD i NWW",
+      "polecenie": "Oblicz.",
+      "ile": 2,
+      "generator": {
+        "typ": "nwdnww",
+        "max": 300
+      }
+    },
+    {
+      "id": "tresc",
+      "tytul": "Zadania z treścią",
+      "zadania": [
+        {
+          "q": "Za 30 litrów benzyny zapłacono 165 zł.",
+          "czesci": [
+            {
+              "e": "Ile kosztuje 1 litr? (zł)",
+              "a": "5,5",
+              "kind": "liczba",
+              "w": "165 : 30",
+              "exp": [
+                "165 : 30 = 5,5"
+              ]
+            },
+            {
+              "e": "Ile zapłacisz za 20,5 litra? (zł)",
+              "a": "112,75",
+              "kind": "liczba",
+              "w": "5,5 · 20,5",
+              "exp": [
+                "5,5 · 20,5 = 112,75"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Harcerze ugotowali 10 litrów zupy i dolali 3,4 litra wody. Każdy zjadł 1/5 litra, a w garnku zostało 3,8 litra.",
+          "czesci": [
+            {
+              "e": "Ile litrów zjedli razem?",
+              "a": "9,6",
+              "kind": "liczba",
+              "w": "10 + 3,4 − 3,8",
+              "exp": [
+                "Zupy było: 10 + 3,4 = 13,4",
+                "Zjedli: 13,4 − 3,8 = 9,6"
+              ]
+            },
+            {
+              "e": "Ilu było harcerzy?",
+              "a": "48",
+              "kind": "liczba",
+              "w": "9,6 : 1/5",
+              "exp": [
+                "1/5 litra = 0,2 litra",
+                "9,6 : 0,2 = 96 : 2 = 48"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Nóż waży 10,7 dag i jest o 2,3 dag cięższy od widelca. Widelec jest 2 razy lżejszy od łyżki.",
+          "czesci": [
+            {
+              "e": "Ile waży widelec? (dag)",
+              "a": "8,4",
+              "kind": "liczba",
+              "w": "10,7 − 2,3",
+              "exp": [
+                "10,7 − 2,3 = 8,4"
+              ]
+            },
+            {
+              "e": "Ile waży łyżka? (dag)",
+              "a": "16,8",
+              "kind": "liczba",
+              "w": "8,4 · 2",
+              "exp": [
+                "8,4 · 2 = 16,8"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

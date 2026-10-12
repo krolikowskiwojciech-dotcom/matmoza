@@ -15,6 +15,111 @@
   ],
   "zestawy": [
     {
+      "id": "2026-10-12-julek-1-liczby-naturalne",
+      "tytul": "1. Liczby naturalne",
+      "opis": "Rachunki w pamięci, reszty, czynniki pierwsze, NWD i NWW, kolejność działań (podręcznik s. 10–13).",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-12",
+      "przyklad": false,
+      "ikona": "+",
+      "kolor": "mietowy",
+      "bloki": 9,
+      "zadan": 37
+    },
+    {
+      "id": "2026-10-12-julek-2-ulamki-dziesietne",
+      "tytul": "2. Ułamki dziesiętne i potęgi",
+      "opis": "Przesuwanie przecinka, działania w pamięci i pisemnie, potęgi, kolejność działań, średnia, zadania (s. 14–26).",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-12",
+      "przyklad": false,
+      "ikona": "0,1",
+      "kolor": "zolty",
+      "bloki": 8,
+      "zadan": 39
+    },
+    {
+      "id": "2026-10-12-julek-3-ulamki-zwykle",
+      "tytul": "3. Ułamki zwykłe",
+      "opis": "Skracanie, liczby mieszane, odwrotność, cztery działania, kolejność działań, zadania (s. 27–33).",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-12",
+      "przyklad": false,
+      "ikona": "½",
+      "kolor": "lila",
+      "bloki": 8,
+      "zadan": 34
+    },
+    {
+      "id": "2026-10-12-julek-4-rozwiniecia",
+      "tytul": "4. Ułamki zwykłe i dziesiętne",
+      "opis": "Zamiana ułamków, rozwinięcia okresowe, porównywanie, działania mieszane (s. 34–39).",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-12",
+      "przyklad": false,
+      "ikona": "⅓",
+      "kolor": "niebieski",
+      "bloki": 8,
+      "zadan": 31
+    },
+    {
+      "id": "2026-10-12-julek-5-sprawdzian-1",
+      "tytul": "Sprawdzian próbny — wersja 1",
+      "opis": "Cały dział „Liczby naturalne i ułamki”: zadania zamknięte, rachunki i zadania z treścią. Na końcu ocena.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-12",
+      "przyklad": false,
+      "ikona": "A",
+      "kolor": "brzoskwinia",
+      "bloki": 7,
+      "zadan": 22
+    },
+    {
+      "id": "2026-10-12-julek-5-sprawdzian-2",
+      "tytul": "Sprawdzian próbny — wersja 2",
+      "opis": "Cały dział „Liczby naturalne i ułamki”: zadania zamknięte, rachunki i zadania z treścią. Na końcu ocena.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-12",
+      "przyklad": false,
+      "ikona": "B",
+      "kolor": "rozowy",
+      "bloki": 7,
+      "zadan": 22
+    },
+    {
+      "id": "2026-10-12-julek-5-sprawdzian-3",
+      "tytul": "Sprawdzian próbny — wersja 3",
+      "opis": "Cały dział „Liczby naturalne i ułamki”: zadania zamknięte, rachunki i zadania z treścią. Na końcu ocena.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-12",
+      "przyklad": false,
+      "ikona": "C",
+      "kolor": "lila",
+      "bloki": 7,
+      "zadan": 22
+    },
+    {
       "id": "przyklad-klasa-4",
       "tytul": "Rachunki w pamięci",
       "opis": "Zestaw na próbę, zanim przyjdzie pierwsze zdjęcie z podręcznika.",
@@ -28,21 +133,6 @@
       "kolor": "mietowy",
       "bloki": 5,
       "zadan": 24
-    },
-    {
-      "id": "przyklad-klasa-6",
-      "tytul": "Ułamki dziesiętne i zwykłe",
-      "opis": "Zestaw na próbę, zanim przyjdzie pierwsze zdjęcie z podręcznika.",
-      "dla": [
-        "julek"
-      ],
-      "termin": null,
-      "dodano": "2026-10-11",
-      "przyklad": true,
-      "ikona": "½",
-      "kolor": "lila",
-      "bloki": 4,
-      "zadan": 20
     }
   ]
 }

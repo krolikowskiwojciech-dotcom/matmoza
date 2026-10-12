@@ -1,0 +1,370 @@
+{
+  "id": "2026-10-12-julek-5-sprawdzian-3",
+  "dla": [
+    "julek"
+  ],
+  "tytul": "Sprawdzian próbny — wersja 3",
+  "opis": "Cały dział „Liczby naturalne i ułamki”: zadania zamknięte, rachunki i zadania z treścią. Na końcu ocena.",
+  "dodano": "2026-10-12",
+  "ikona": "C",
+  "kolor": "lila",
+  "ocena": true,
+  "sprawdzian": true,
+  "bloki": [
+    {
+      "id": "zamkniete",
+      "tytul": "Zadania zamknięte",
+      "polecenie": "Wybierz jedną odpowiedź.",
+      "zadania": [
+        {
+          "q": "Kasia kupiła 5 długopisów i zapłaciła 8 zł. Ile kosztuje jeden długopis?",
+          "a": "1,60 zł",
+          "kind": "wybor",
+          "choices": [
+            "1,60 zł",
+            "1,50 zł",
+            "0,16 zł",
+            "40 zł"
+          ],
+          "exp": [
+            "8 : 5 = 1,6"
+          ],
+          "w": "8 : 5"
+        },
+        {
+          "q": "Ile wynosi NWD(84, 126)?",
+          "a": "42",
+          "kind": "wybor",
+          "choices": [
+            "6",
+            "14",
+            "42",
+            "252"
+          ],
+          "exp": [
+            "84 = 2 · 2 · 3 · 7",
+            "126 = 2 · 3 · 3 · 7",
+            "NWD = 2 · 3 · 7 = 42"
+          ],
+          "w": "2 · 3 · 7"
+        },
+        {
+          "q": "Która równość jest prawdziwa?",
+          "a": "1,2 : 0,3 = 4",
+          "kind": "wybor",
+          "choices": [
+            "0,4 · 0,15 = 0,6",
+            "1,2 : 0,3 = 4",
+            "5,8 : 1000 = 0,058",
+            "0,2^3 = 0,08"
+          ],
+          "exp": [
+            "1,2 : 0,3 = 12 : 3 = 4",
+            "Pozostałe: 0,4 · 0,15 = 0,06, 5,8 : 1000 = 0,0058, 0,2^3 = 0,008"
+          ]
+        },
+        {
+          "q": "Który zapis przedstawia liczbę 3/11?",
+          "a": "0,(27)",
+          "kind": "wybor",
+          "choices": [
+            "0,(27)",
+            "0,2(7)",
+            "0,(3)",
+            "0,27"
+          ],
+          "exp": [
+            "3 : 11 = 0,272727…, więc 3/11 = 0,(27)"
+          ],
+          "w": "3/11"
+        },
+        {
+          "q": "Rozkład liczby 2550 na czynniki pierwsze to 2 · 3 · 5 · 5 · 17.",
+          "a": "PRAWDA",
+          "kind": "wybor",
+          "choices": [
+            "PRAWDA",
+            "FAŁSZ"
+          ],
+          "exp": [
+            "2 · 3 · 5 · 5 · 17 = 2550",
+            "Wszystkie czynniki (2, 3, 5, 17) są liczbami pierwszymi."
+          ]
+        },
+        {
+          "q": "Reszta z dzielenia 1614 przez 500 jest równa 14.",
+          "a": "FAŁSZ",
+          "kind": "wybor",
+          "choices": [
+            "PRAWDA",
+            "FAŁSZ"
+          ],
+          "exp": [
+            "3 · 500 = 1500",
+            "1614 − 1500 = 114, więc reszta to 114"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "naturalne",
+      "tytul": "Liczby naturalne",
+      "polecenie": "Oblicz.",
+      "ile": 3,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} + {b} · ({c} − {g})^2",
+          "{d} : {b} · {c}",
+          "{x} · {y}"
+        ],
+        "zmienne": {
+          "a": [
+            30,
+            99
+          ],
+          "b": [
+            2,
+            9
+          ],
+          "c": [
+            2,
+            9
+          ],
+          "g": [
+            2,
+            4
+          ],
+          "h": [
+            2,
+            5
+          ],
+          "k": [
+            2,
+            9
+          ],
+          "d": "= b · k",
+          "x": {
+            "cyfry": [
+              2,
+              12
+            ],
+            "zera": [
+              1,
+              3
+            ]
+          },
+          "y": {
+            "cyfry": [
+              2,
+              9
+            ],
+            "zera": [
+              1,
+              2
+            ]
+          }
+        },
+        "max": 2000000
+      }
+    },
+    {
+      "id": "dziesietne",
+      "tytul": "Ułamki dziesiętne",
+      "polecenie": "Oblicz.",
+      "ile": 3,
+      "generator": {
+        "typ": "wyrazenie",
+        "dziesietne": true,
+        "maxMiejsc": 4,
+        "min": 0,
+        "szablony": [
+          "{s} + {p} : {q}",
+          "{s} · {p10}",
+          "{q} · {q}"
+        ],
+        "zmienne": {
+          "q": {
+            "lista": [
+              "0,2",
+              "0,3",
+              "0,4",
+              "0,5",
+              "0,6",
+              "0,8",
+              "0,03",
+              "0,05"
+            ]
+          },
+          "k": [
+            2,
+            9
+          ],
+          "p": "= q · k",
+          "s": {
+            "od": 0.1,
+            "do": 9.9,
+            "miejsca": 1
+          },
+          "p10": {
+            "lista": [
+              10,
+              100,
+              1000
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "zwykle",
+      "tytul": "Ułamki zwykłe",
+      "polecenie": "Oblicz. Wynik skróć i wyłącz całości.",
+      "ile": 3,
+      "generator": {
+        "typ": "ulamki",
+        "dzialania": [
+          "+",
+          ":",
+          "·"
+        ],
+        "mianowniki": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9,
+          10,
+          12
+        ],
+        "mieszane": 4,
+        "maxWspolny": 36,
+        "maxMianownikWyniku": 24
+      }
+    },
+    {
+      "id": "zamiany",
+      "tytul": "Zamiany i rozwinięcia",
+      "polecenie": "Zamień. Okres zapisz w nawiasie, np. 0,(3).",
+      "ile": 2,
+      "okres": true,
+      "generator": {
+        "typ": "zamiana2",
+        "kierunek": [
+          "naZwykly",
+          "naOkresowy"
+        ],
+        "calosci": true
+      }
+    },
+    {
+      "id": "dzielniki",
+      "tytul": "Czynniki, NWD i NWW",
+      "polecenie": "Oblicz.",
+      "ile": 2,
+      "generator": {
+        "typ": "nwdnww",
+        "co": "nww",
+        "max": 300
+      }
+    },
+    {
+      "id": "tresc",
+      "tytul": "Zadania z treścią",
+      "zadania": [
+        {
+          "q": "Pan Rafał jeździ do pracy 12 km w jedną stronę przez 20 dni w miesiącu. Samochód spala 7,5 litra na 100 km, a litr paliwa kosztuje 6,20 zł.",
+          "czesci": [
+            {
+              "e": "Ile km przejedzie w miesiącu?",
+              "a": "480",
+              "kind": "liczba",
+              "w": "12 · 2 · 20",
+              "exp": [
+                "Tam i z powrotem: 12 · 2 = 24",
+                "24 · 20 = 480"
+              ]
+            },
+            {
+              "e": "Ile litrów paliwa zużyje?",
+              "a": "36",
+              "kind": "liczba",
+              "w": "4,8 · 7,5",
+              "exp": [
+                "480 km to 4,8 razy po 100 km: 4,8 · 7,5 = 36"
+              ]
+            },
+            {
+              "e": "Ile zapłaci za paliwo? (zł)",
+              "a": "223,2",
+              "kind": "liczba",
+              "w": "36 · 6,2",
+              "exp": [
+                "36 · 6,2 = 223,2"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Woda stanowi 8/9 masy jabłek. Suszono 4,5 kg jabłek i wyparowało 7/8 zawartej w nich wody.",
+          "czesci": [
+            {
+              "e": "Ile kg wody było w jabłkach?",
+              "a": "4",
+              "kind": "liczba",
+              "w": "4,5 · 8/9",
+              "exp": [
+                "4,5 : 9 · 8 = 0,5 · 8 = 4"
+              ]
+            },
+            {
+              "e": "Ile kg wody wyparowało?",
+              "a": "3,5",
+              "kind": "liczba",
+              "w": "4 · 7/8",
+              "exp": [
+                "4 : 8 · 7 = 3,5"
+              ]
+            },
+            {
+              "e": "Ile ważyły suszone jabłka? (kg)",
+              "a": "1",
+              "kind": "liczba",
+              "w": "4,5 − 3,5",
+              "exp": [
+                "4,5 − 3,5 = 1"
+              ]
+            }
+          ]
+        },
+        {
+          "q": "Cztery klasy zebrały na teatr 180 zł, 120 zł, 150 zł i 150 zł. Bilety kosztowały razem 500 zł.",
+          "czesci": [
+            {
+              "e": "Ile pieniędzy zostało? (zł)",
+              "a": "100",
+              "kind": "liczba",
+              "w": "180 + 120 + 150 + 150 − 500",
+              "exp": [
+                "Zebrano: 180 + 120 + 150 + 150 = 600",
+                "Zostało: 600 − 500 = 100"
+              ]
+            },
+            {
+              "e": "Jaką część zebranych pieniędzy stanowi reszta?",
+              "a": "1/6",
+              "kind": "ulamek",
+              "w": "100 : 600",
+              "exp": [
+                "100/600 = 1/6"
+              ],
+              "postac": "najprostsza"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
