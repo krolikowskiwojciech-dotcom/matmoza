@@ -98,6 +98,7 @@ export function uruchom(el, opcje) {
   // ---------- wstęp do bloku ----------
   function wstepBloku() {
     sprzataj();
+    graj(nrBloku === 0 && bloki.length > 1 && !opcje.powtorka ? 'start' : 'blok');
     const b = B().blok;
     // na sprawdzianie próbnym bez podpowiedzi przed blokiem (wyjaśnienie po błędzie zostaje)
     const jak = zestaw.sprawdzian ? null : b.jak || JAK[b.generator?.typ];
@@ -112,7 +113,7 @@ export function uruchom(el, opcje) {
           jak.intro ? h('p', { class: 'gram-tekst' }, mat(jak.intro)) : null,
           (jak.zasady || []).map(([t, opis]) => h('p', { class: 'gram-tekst' }, h('b', {}, t), ' — ', mat(opis))),
           jak.przyklad ? h('div', { class: 'gram-przyklad' }, h('div', { class: 'gp-znak serif' }, '='), h('div', { class: 'gp-linie' }, jak.przyklad.map((l) => h('div', {}, mat(l))))) : null) : null),
-      stopka: h('button', { class: 'btn glowny szeroki', type: 'button', id: 'start-bloku', onclick: () => pokazZadanie() }, 'Zaczynam', ik('dalej')),
+      stopka: h('button', { class: 'btn glowny szeroki', type: 'button', id: 'start-bloku', onclick: () => { graj('przycisk'); pokazZadanie(); } }, 'Zaczynam', ik('dalej')),
     });
     ustawKlawisze((e) => { if (e.key === 'Enter') { e.preventDefault(); pokazZadanie(); } });
     el.querySelector('#start-bloku').focus({ preventScroll: true });
@@ -283,7 +284,7 @@ export function uruchom(el, opcje) {
 
   function dobrze() {
     seria++;
-    graj(seria % 10 === 0 ? 'piec' : seria % 5 === 0 ? 'trzy' : 'dobrze');
+    graj(seria % 10 === 0 ? 'seria10' : seria % 5 === 0 ? 'seria5' : 'dobrze');
     el.querySelector('.zadanie-karta').classList.add('ok');
     const stopka = el.querySelector('.stopka');
     stopka.className = 'stopka ok';
@@ -314,7 +315,7 @@ export function uruchom(el, opcje) {
       h('ol', { class: 'kroki' }, (cz.exp || []).map((l) => h('li', {}, mat(l)))),
       h('p', { class: 'wraca' }, ik('powtorz'), ' To zadanie wróci jeszcze raz w tym bloku.')));
     let zablokowaneDalej = true;
-    const dalejBtn = h('button', { class: 'btn czerwony', type: 'button', disabled: true, onclick: () => { if (!zablokowaneDalej) nastepne(); } }, 'Przeczytaj…');
+    const dalejBtn = h('button', { class: 'btn czerwony', type: 'button', disabled: true, onclick: () => { if (!zablokowaneDalej) { graj('przycisk'); nastepne(); } } }, 'Przeczytaj…');
     const przerwijBtn = h('button', { class: 'btn jasny', type: 'button', disabled: true, onclick: przerwij }, 'Przerwij');
     const stopka = el.querySelector('.stopka');
     stopka.className = 'stopka zle';
@@ -348,9 +349,9 @@ export function uruchom(el, opcje) {
     const w = B().wyniki, dob = w.filter((x) => x.dobrze).length;
     if (nrBloku + 1 >= bloki.length) return podsumowanie(false);
     const g = gwiazdki(dob, w.length);
-    graj(g === 3 ? 'trzy' : 'dobrze');
+    graj('koniecBloku');
     const nast = bloki[nrBloku + 1].blok;
-    const dalejF = () => { nrBloku++; poz = 0; czesc = 0; wstepBloku(); };
+    const dalejF = () => { graj('przycisk'); nrBloku++; poz = 0; czesc = 0; wstepBloku(); };
     ekran({
       tresc: h('div', { class: 'podsum' },
         koza(g === 3 ? 'brawo' : 'ok', 'koza-duza'),
@@ -380,7 +381,7 @@ export function uruchom(el, opcje) {
     };
     if (proba.ile) opcje.naKoniec(proba);
     const g = gwiazdki(dob, proba.ile);
-    if (!przerwane && g === 3) graj('piec');
+    if (!przerwane) graj(g === 3 ? 'zwyciestwo' : 'koniec');
     const minuty = Math.max(1, Math.round(proba.czas / 60));
     const ocena = zestaw.ocena && proba.ile && !przerwane ? ocenaSzkolna(dob, proba.ile) : null;
     if (ocena) proba.ocena = ocena.o;
@@ -449,11 +450,11 @@ async function wyslij(tekst, btn, status) {
   status.replaceChildren();
   try {
     if (navigator.share) {
-      try { await navigator.share({ title: 'Matmoza — wynik', text: tekst }); status.textContent = 'Wysłane? Super!'; return; }
+      try { await navigator.share({ title: 'Matmoza — wynik', text: tekst }); graj('wyslij'); status.textContent = 'Wysłane? Super!'; return; }
       catch (e) { if (e.name === 'AbortError') return; }
     }
     if (navigator.clipboard?.writeText) {
-      try { await navigator.clipboard.writeText(tekst); status.textContent = 'Skopiowano — wklej w wiadomości do taty.'; return; } catch { /* dalej */ }
+      try { await navigator.clipboard.writeText(tekst); graj('wyslij'); status.textContent = 'Skopiowano — wklej w wiadomości do taty.'; return; } catch { /* dalej */ }
     }
     const pole = h('textarea', { class: 'kopiuj', readonly: true }, tekst);
     status.replaceChildren('Zaznacz i skopiuj:', pole);

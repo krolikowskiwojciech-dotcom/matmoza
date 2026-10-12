@@ -1,8 +1,8 @@
 // Offline: pliki aplikacji i zestawy najpierw z sieci (nowe zadania od razu), bez sieci z pamięci podręcznej.
-const CACHE = 'matmoza-v9';
+const CACHE = 'matmoza-v10';
 const SHELL = ['./', 'index.html', 'styles.css', 'manifest.webmanifest', 'js/app.js', 'js/dom.js', 'js/gra.js', 'js/generatory.js',
   'js/liczby.js', 'js/wyrazenie.js', 'js/sprawdz.js', 'js/store.js', 'js/dzwieki.js', 'zestawy/indeks.json', 'ikony/ikona-192.png', 'fonts/Jost.ttf', 'fonts/LibreBaskerville.ttf', 'obrazy/koza-mysli.png',
-  'obrazy/koza-czesc.png', 'obrazy/koza-ok.png', 'obrazy/koza-brawo.png', 'audio/dobra-odpowiedz-podstawowa.mp3', 'audio/zla-odpowiedz.mp3'];
+  'obrazy/koza-czesc.png', 'obrazy/koza-ok.png', 'obrazy/koza-brawo.png', 'audio/klik.m4a', 'audio/cofnij.m4a', 'audio/przycisk.m4a', 'audio/dobrze.m4a', 'audio/zle.m4a'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
