@@ -1,8 +1,15 @@
-# Matmoza — rodzinna aplikacja do ćwiczeń z matematyki (PWA)
+# Matematyka (repo `matmoza`) — rodzinna aplikacja do ćwiczeń z matematyki (PWA)
 
 Zawsze po polsku. Aplikacja webowa na iPhone'a (dodana do ekranu początkowego), siostra Lingozy.
+Użytkownik widzi nazwę **„Matematyka”** (nie „Matmoza”); nazwy repo, plików, kluczy `mz.*` i ścieżek danych zostają.
 
-- **Adres:** https://krolikowskiwojciech-dotcom.github.io/matmoza/ (GitHub Pages z gałęzi `main`, repo publiczne).
+- **Adres:** https://krolikowskiwojciech-dotcom.github.io/matmoza/ (GitHub Pages z gałęzi `main`, repo publiczne)
+  oraz https://matematyka.ogarnijmaterial.pl (Cloudflare Pages, ten sam push).
+- **Pod *.ogarnijmaterial.pl** (`js/konto.js`): osobę ustala konto rodziny — `GET https://ogarnijmaterial.pl/api/ja`
+  (julian → `julek`, aniela → `aniela`; 401 albo dorosły → przekierowanie na https://ogarnijmaterial.pl/). Ekranu wyboru
+  profilu tam nie ma, pola tokenu też nie: wyniki idą przez pośrednika `/api/gh/...` z `credentials: 'include'`.
+  Start: „Przedmioty” w lewym górnym rogu, znaczek z inicjałem („Zmień osobę”) w prawym. Test lokalny: `?om=julian|aniela|wojtek|401`
+  działa tylko na 127.0.0.1/localhost.
 - **Wyniki:** prywatne repo `krolikowskiwojciech-dotcom/matmoza-dane`, plik `profile/<id>.json` = `{ id, proby: [...] }`.
   Telefon dziecka zapisuje tam każdą próbę (token GitHub wklejony raz w Ustawieniach). Odczyt: `node narzedzia/matmoza.mjs wyniki`.
 - **Profile:** `julek` (Julek, klasa 6) i `aniela` (Aniela, klasa 4). Lista w `narzedzia/matmoza.mjs` (PROFILE) → `zestawy/indeks.json`.
@@ -34,8 +41,12 @@ Zawsze po polsku. Aplikacja webowa na iPhone'a (dodana do ekranu początkowego),
 - `js/app.js` (ekrany i adresy `#/…`), `js/gra.js` (przebieg zestawu, poprawka po błędzie, podsumowanie, udostępnianie),
   `js/generatory.js` (generatory i wyjaśnienia), `js/wyrazenie.js` (kolejność działań krok po kroku),
   `js/liczby.js` (ułamki dokładne, polski zapis liczb), `js/sprawdz.js` (ocena odpowiedzi), `js/store.js` (zapis + synchronizacja),
-  `js/dzwieki.js` (dźwięki z Epidemic Sound w `audio/*.mp3`, obróbka `narzedzia/dzwiek.sh`), `obrazy/koza-*.png` (kózka 3D w stylu Lingi: czesc, ok, brawo, mysli;
-  brak pliku nie psuje ekranu, ale `sw.js` ma je w SHELL — muszą istnieć).
+  `js/dzwieki.js` (dźwięki z Epidemic Sound w `audio/*.mp3`, obróbka `narzedzia/dzwiek.sh`), `js/konto.js` (tryb ogarnijmaterial.pl).
+- **Bez maskotek i bajkowych grafik** (dzieci 11–13 lat): żadnej kózki ani ilustracji 3D; najwyżej liniowa ikona SVG z `ik()`.
+  Ikona aplikacji: żółty kwadrat #F4EE90 z liniowymi znakami + − × = w kolorze #1D1C22 (`ikony/ikona-*.png`).
+- **„Wróć” zawsze w lewym górnym rogu** (`wroc()` / `pasek()` z `js/dom.js`, ten sam przycisk co na ogarnijmaterial.pl).
+  W ćwiczeniu wyjście po pierwszej odpowiedzi pyta własnym okienkiem `okno()`.
+- `sw.js`: pliki aplikacji z pamięci od razu + odświeżenie w tle; zestawy i dźwięki najpierw z sieci.
 - `narzedzia/matmoza.mjs` — wyrocznia NIEZALEŻNA od kodu aplikacji (własna arytmetyka na BigInt). Nie łącz jej z `js/`.
 - Podgląd lokalny na 127.0.0.1 nie ma tokenu, więc nie zapisuje wyników do prawdziwych danych. Nie testuj z tokenem.
 - Po każdej zmianie kodu podbij `CACHE` w `sw.js`, potem commit + push.

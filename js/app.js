@@ -1,10 +1,11 @@
-// Ekrany Matmozy: wybór dziecka, lista zestawów, zestaw z blokami, ćwiczenie, ustawienia.
-// Adresy: #/ (start), #/z/<id> (zestaw), #/ustawienia.
+// Ekrany aplikacji „Matematyka”: wybór dziecka (tylko github.io), lista zestawów, zestaw z blokami, ćwiczenie, ustawienia.
+// Adresy: #/ (start), #/z/<id> (zestaw), #/ustawienia. Pod *.ogarnijmaterial.pl osobę ustala konto rodziny (konto.js).
 
-import { h, okno, odm, ik, koza, kolor } from './dom.js';
+import { h, okno, odm, ik, kolor, wroc, pasek } from './dom.js';
 import { uruchom } from './gra.js';
 import * as S from './store.js';
 import { graj } from './dzwieki.js';
+import { naOM, ustalOsobe, STRONA, KONTA, KOLOR_OSOBY } from './konto.js';
 
 const app = document.getElementById('app');
 let indeks = null;
@@ -35,6 +36,14 @@ const babel = (znak, klasa = 'kp-emoji') => h('span', { class: klasa + ' znak-ma
 
 function naglowek() {
   const p = profilInfo();
+  // ogarnijmaterial.pl: „Przedmioty” w lewym górnym rogu, w prawym znaczek z inicjałem („Zmień osobę”)
+  if (naOM) {
+    return [
+      pasek(wroc({ tekst: 'Przedmioty', href: STRONA }),
+        h('a', { class: 'okragly', href: '#/ustawienia', 'aria-label': 'Ustawienia' }, ik('zebatka')),
+        h('a', { class: `okragly inicjal serif ${KOLOR_OSOBY[p.id] || ''}`, href: KONTA, 'aria-label': 'Zmień osobę' }, p.znak)),
+      h('div', { class: 'przedmiot-etykieta' }, `Matematyka · ${p.imie}, klasa ${p.klasa}`)];
+  }
   return h('header', { class: 'naglowek' },
     h('a', { class: 'avatar serif', href: '#/ustawienia', 'aria-label': 'Ustawienia' }, p.znak),
     h('div', { class: 'naglowek-txt' }, h('b', {}, p.imie), h('small', { class: 'maly' }, `klasa ${p.klasa}`)),
@@ -45,8 +54,7 @@ function naglowek() {
 function ekranWyboru() {
   app.replaceChildren(
     h('main', { class: 'ekran profile-wybor' },
-      h('div', { class: 'logo serif' }, 'Mat', h('em', {}, 'moza')),
-      koza('czesc', 'koza-powitanie'),
+      h('div', { class: 'logo serif' }, 'Matematyka'),
       h('h1', { class: 'serif' }, 'Kto dziś ', h('em', {}, 'liczy'), '?'),
       h('div', { class: 'profile-siatka' }, indeks.profile.map((p, i) => h('button', {
         class: `profil-kafel ${kolor(i + 1)}`, type: 'button',
@@ -76,9 +84,7 @@ function ekranListy() {
   app.replaceChildren(
     h('main', { class: 'ekran' },
       naglowek(),
-      h('div', { class: 'tytul-wiersz' },
-        h('h1', { class: 'tytul serif' }, 'Co dziś ', h('em', {}, 'liczymy'), '?'),
-        koza('czesc', 'koza-glowna')),
+      h('h1', { class: 'tytul serif' }, 'Co dziś ', h('em', {}, 'liczymy'), '?'),
       prawdziwe.length ? null : h('p', { class: 'podtytul' }, 'Tata jeszcze nie wrzucił zadań z podręcznika. Na rozgrzewkę jest przykład.'),
       prawdziwe.length ? h('div', { class: 'sekcja' }, 'Przed kartkówką') : null,
       h('div', { class: 'lista-pakietow' }, prawdziwe.map(karta)),
@@ -97,8 +103,8 @@ async function ekranZestawu(id) {
   const zadan = z.bloki.reduce((n, b) => n + (b.ile || b.zadania?.length || 0), 0);
   app.replaceChildren(
     h('main', { class: 'ekran' },
+      pasek(wroc({ href: '#/' })),
       h('section', { class: `naglowek-dzialu ${kolorZestawu(z, nr)}` },
-        h('a', { class: 'wstecz', href: '#/', 'aria-label': 'Wróć' }, ik('wstecz')),
         babel(znakZestawu(z, nr), 'kp-emoji nagl-znak'),
         h('span', { class: 'kat-etykieta' }, z.przyklad ? 'Przykład' : z.termin && dni >= 0 ? (dni === 0 ? 'Kartkówka dziś' : dni === 1 ? 'Kartkówka jutro' : `Kartkówka ${dataPL(z.termin)}`) : 'Zestaw'),
         h('h1', { class: 'serif' }, z.tytul),
@@ -143,18 +149,26 @@ function ekranUstawien() {
   const stan = h('p', { class: 'maly', role: 'status' });
   app.replaceChildren(
     h('main', { class: 'ekran' },
+      pasek(wroc({ href: '#/' })),
       h('div', { class: 'profil-gora' },
-        h('a', { class: 'ikona-btn', href: '#/', 'aria-label': 'Wróć' }, ik('wstecz')),
-        h('span', { class: 'profil-duzy-avatar serif' }, p.znak),
+        h('span', { class: `profil-duzy-avatar serif ${naOM ? KOLOR_OSOBY[p.id] || '' : ''}` }, p.znak),
         h('h1', { class: 'serif' }, p.imie)),
       h('section', { class: 'ust' },
         h('div', { class: 'sekcja' }, 'Ten telefon'),
         h('div', { class: 'wiersz' }, h('span', {}, `Ćwiczy: ${p.imie}, klasa ${p.klasa}`),
-          h('button', { class: 'chip', type: 'button', onclick: () => { S.ustawProfil(null); location.hash = '#/'; render(); } }, 'Zmień')),
+          naOM ? h('a', { class: 'chip', href: KONTA }, 'Zmień osobę')
+            : h('button', { class: 'chip', type: 'button', onclick: () => { S.ustawProfil(null); location.hash = '#/'; render(); } }, 'Zmień')),
         h('div', { class: 'wiersz' }, h('span', {}, 'Dźwięki'),
           h('button', { class: 'chip' + (S.dzwiek() ? ' akt' : ''), type: 'button', 'aria-pressed': String(S.dzwiek()), onclick: () => { S.ustawDzwiek(!S.dzwiek()); graj('dobrze'); render(); } },
             S.dzwiek() ? 'włączone' : 'wyłączone'))),
-      h('section', { class: 'ust' },
+      naOM ? h('section', { class: 'ust' },
+        h('div', { class: 'sekcja' }, 'Wyniki u taty'),
+        h('p', { class: 'maly' }, 'Każdy wynik zapisuje się sam na koncie rodziny.'),
+        h('div', { class: 'przyciski' }, h('button', { class: 'btn jasny', type: 'button', onclick: async () => {
+          stan.textContent = 'Łączę…';
+          try { await S.synchronizuj(p.id); stan.textContent = S.synchroWlaczona() ? 'Połączone. Wyniki są zapisane.' : 'Podgląd testowy — bez zapisu.'; } catch (e) { stan.textContent = e.message; }
+        } }, 'Synchronizuj teraz')),
+        stan) : h('section', { class: 'ust' },
         h('div', { class: 'sekcja' }, 'Wyniki u taty'),
         h('p', { class: 'maly' }, 'Każdy wynik zapisuje się w prywatnym repozytorium rodziny. Wystarczy raz wkleić token GitHub na tym telefonie.'),
         pole,
@@ -174,13 +188,19 @@ function ekranUstawien() {
 
 async function synchro() {
   const p = S.profil();
-  if (!p || !S.token()) return;
+  if (!p || !S.synchroWlaczona()) return;
   try { await S.synchronizuj(p); } catch (e) { console.warn('Synchronizacja:', e.message); }
 }
 
+let czekamNaKonto = false;
 async function render() {
   try {
     if (!indeks) await wczytajIndeks();
+    if (naOM && !profilInfo()) {
+      // pod ogarnijmaterial.pl nigdy nie pokazujemy wyboru profilu — czekamy na /api/ja (albo przekierowanie)
+      if (!czekamNaKonto) app.replaceChildren(h('p', { class: 'ladowanie' }, 'Wczytuję…'));
+      return;
+    }
     if (!profilInfo()) return ekranWyboru();
     const hash = location.hash || '#/';
     if (biezacaGra && !hash.startsWith('#/gra')) { biezacaGra.zakoncz(); biezacaGra = null; }
@@ -190,12 +210,33 @@ async function render() {
     if (hash.startsWith('#/gra')) return;
     return ekranListy();
   } catch (e) {
-    app.replaceChildren(h('main', { class: 'ekran' }, h('h1', { class: 'serif' }, 'Ups'), h('p', {}, e.message), h('a', { class: 'btn', href: '#/' }, 'Na start')));
+    app.replaceChildren(h('main', { class: 'ekran' }, pasek(wroc(naOM ? { tekst: 'Przedmioty', href: STRONA } : { href: '#/' })), h('h1', { class: 'serif' }, 'Ups'), h('p', {}, e.message), h('a', { class: 'btn', href: '#/' }, 'Na start')));
   }
 }
 
 window.addEventListener('hashchange', render);
-render().then(synchro);
+
+async function start() {
+  if (!naOM) { await render(); return synchro(); }
+  // konto rodziny: ostatnio potwierdzona osoba od razu, /api/ja sprawdza w tle (401 / dorosły → strona główna)
+  const istnieje = (id) => !!indeks?.profile.some((p) => p.id === id);
+  try { await wczytajIndeks(); } catch { return render(); } // bez listy zestawów: zwykły ekran błędu
+  const { teraz, sprawdzenie } = ustalOsobe(istnieje, (id) => {
+    if (biezacaGra) { biezacaGra.zakoncz(); biezacaGra = null; location.hash = '#/'; }
+    S.ustawProfilKonta(id); render().then(synchro);
+  });
+  if (teraz) { S.ustawProfilKonta(teraz); await render(); sprawdzenie.then((id) => { if (id === teraz) synchro(); }).catch((e) => console.warn('Konto:', e.message)); return; }
+  czekamNaKonto = true;
+  app.replaceChildren(h('p', { class: 'ladowanie' }, 'Wczytuję…'));
+  try { await sprawdzenie; } catch (e) {
+    app.replaceChildren(h('main', { class: 'ekran' },
+      pasek(wroc({ tekst: 'Przedmioty', href: STRONA })),
+      h('h1', { class: 'serif' }, 'Brak połączenia'),
+      h('p', {}, 'Nie udało się sprawdzić, kto jest zalogowany. Sprawdź internet i spróbuj jeszcze raz.'),
+      h('button', { class: 'btn glowny', type: 'button', onclick: () => location.reload() }, 'Spróbuj ponownie')));
+  }
+}
+start();
 
 if ('serviceWorker' in navigator && location.hostname !== '127.0.0.1' && location.hostname !== 'localhost') {
   navigator.serviceWorker.register('sw.js').catch(() => {});

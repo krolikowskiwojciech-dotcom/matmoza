@@ -2,7 +2,7 @@
 // błędne zadanie wraca w tym samym bloku, na końcu podsumowanie i „Wyślij wynik”.
 // Wygląd jak lekcja w Lingozie: pełny ekran w kolorze bloku, pasek postępu u góry, stopka z przyciskiem na dole.
 
-import { h, mat, okno, odm, ik, koza, kolor } from './dom.js';
+import { h, mat, okno, odm, ik, kolor, wroc } from './dom.js';
 import { nastepneZadanie, los, JAK } from './generatory.js';
 import { ocen, normuj } from './sprawdz.js';
 import { graj } from './dzwieki.js';
@@ -75,18 +75,31 @@ export function uruchom(el, opcje) {
   }
   const sprzataj = () => { clearTimeout(timer); ustawKlawisze(null); };
 
-  // wspólny szkielet ekranu lekcji
+  // wspólny szkielet ekranu lekcji; „Wróć” zawsze w lewym górnym rogu (na podsumowaniu bez paska postępu)
   function ekran({ tytul, tresc, stopka, klasaStopki = '', bezGory = false }) {
     el.className = `lekcja w-kolorze ${kolor(B()?.nr ?? 0)}`;
     el.replaceChildren(...[
-      bezGory ? null : h('div', { class: 'lekcja-gora' },
-        h('button', { class: 'zamknij', type: 'button', 'aria-label': 'Przerwij', onclick: przerwij }, ik('zamknij')),
-        h('div', { class: 'postep' }, h('div', { class: 'postep-wew', style: `width:${postep()}%` })),
-        h('span', { class: 'licznik' }, `${nrBloku + 1}/${bloki.length}`)),
+      h('div', { class: 'lekcja-gora' },
+        bezGory ? wroc({ onclick: () => { graj('cofnij'); opcje.wyjdz(); } }) : wroc({ onclick: wyjdzZLekcji }),
+        bezGory ? null : h('div', { class: 'postep' }, h('div', { class: 'postep-wew', style: `width:${postep()}%` })),
+        bezGory ? null : h('span', { class: 'licznik' }, `${nrBloku + 1}/${bloki.length}`)),
       tytul ? h('div', { class: 'lekcja-tytul serif' }, tytul) : null,
       h('div', { class: 'cw-pole' }, tresc),
       stopka ? h('div', { class: 'stopka ' + klasaStopki }, stopka) : null].filter(Boolean));
     el.querySelector('.cw-pole').scrollTop = 0;
+  }
+
+  // „Wróć” w trakcie: bez odpowiedzi wychodzi od razu; gdy coś już zrobione — pyta (podejścia nie da się wznowić)
+  async function wyjdzZLekcji() {
+    if (document.querySelector('.okno-tlo')) return;
+    if (!zrobionych()) { sprzataj(); graj('cofnij'); opcje.wyjdz(); return; }
+    const w = await okno({ tytul: 'Wyjść z ćwiczenia?', tresc: 'Tego podejścia nie da się dokończyć później. Zrobione zadania zapiszą się jako wynik przerwany.',
+      przyciski: [{ tekst: 'Ćwiczę dalej', wartosc: false, klasa: 'jasny' }, { tekst: 'Wyjdź', wartosc: true, klasa: 'czerwony' }] });
+    if (!w) return;
+    sprzataj();
+    const proba = zbudujProbe(true);
+    if (proba.ile) opcje.naKoniec(proba);
+    opcje.wyjdz();
   }
 
   async function przerwij() {
@@ -320,8 +333,7 @@ export function uruchom(el, opcje) {
     const stopka = el.querySelector('.stopka');
     stopka.className = 'stopka zle';
     stopka.replaceChildren(
-      h('div', { class: 'stopka-info z-koza' }, koza('mysli', 'koza-stopka'),
-        h('div', {}, h('div', { class: 'stopka-tytul' }, 'Prawie! Zobacz, jak to policzyć.'))),
+      h('div', { class: 'stopka-info' }, h('div', { class: 'stopka-tytul' }, 'Prawie! Zobacz, jak to policzyć.')),
       h('div', { class: 'przyciski' }, przerwijBtn, dalejBtn));
     requestAnimationFrame(() => pole.querySelector('.poprawka')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
     timer = setTimeout(() => {
@@ -354,7 +366,6 @@ export function uruchom(el, opcje) {
     const dalejF = () => { graj('przycisk'); nrBloku++; poz = 0; czesc = 0; wstepBloku(); };
     ekran({
       tresc: h('div', { class: 'podsum' },
-        koza(g === 3 ? 'brawo' : 'ok', 'koza-duza'),
         h('div', { class: 'kat-etykieta' }, `Blok ${nrBloku + 1} z ${bloki.length} gotowy`),
         h('h2', { class: 'serif' }, B().blok.tytul),
         pokazGwiazdki(g, 'duze'),
@@ -367,11 +378,10 @@ export function uruchom(el, opcje) {
   }
 
   // ---------- podsumowanie ----------
-  function podsumowanie(przerwane) {
-    sprzataj();
+  function zbudujProbe(przerwane) {
     const wszystkie = bloki.flatMap((b) => b.wyniki);
     const dob = wszystkie.filter((x) => x.dobrze).length;
-    const proba = {
+    return {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       zestaw: zestaw.id, tytul: zestaw.tytul + (opcje.tylkoBlok ? ` — ${bloki[0].blok.tytul}` : ''), d: start, czas: Math.round((Date.now() - start) / 1000),
       ile: wszystkie.length, dobrze: dob, przerwane: przerwane || undefined,
@@ -379,6 +389,13 @@ export function uruchom(el, opcje) {
       bloki: bloki.filter((b) => b.wyniki.length).map((b) => ({ id: b.blok.id, tytul: b.blok.tytul, ile: b.wyniki.length, dobrze: b.wyniki.filter((x) => x.dobrze).length })),
       bledy: wszystkie.filter((x) => !x.dobrze).map(({ tekst, a, pelne, odp }) => ({ d: tekst, a, pelne, odp })),
     };
+  }
+
+  function podsumowanie(przerwane) {
+    sprzataj();
+    const wszystkie = bloki.flatMap((b) => b.wyniki);
+    const dob = wszystkie.filter((x) => x.dobrze).length;
+    const proba = zbudujProbe(przerwane);
     if (proba.ile) opcje.naKoniec(proba);
     const g = gwiazdki(dob, proba.ile);
     if (!przerwane) graj(g === 3 ? 'zwyciestwo' : 'koniec');
@@ -397,7 +414,6 @@ export function uruchom(el, opcje) {
     ekran({
       bezGory: true,
       tresc: h('div', { class: 'podsum' },
-        koza(g === 3 ? 'brawo' : g ? 'ok' : 'mysli', 'koza-duza'),
         h('div', { class: 'kat-etykieta' }, przerwane ? 'Przerwane' : 'Zestaw ukończony'),
         h('h2', { class: 'serif' }, zestaw.tytul),
         pokazGwiazdki(g, 'duze'),
@@ -433,7 +449,7 @@ export function uruchom(el, opcje) {
 export function tekstWyniku(p, profilInfo, minuty) {
   const procent = p.ile ? Math.round((p.dobrze / p.ile) * 100) : 0;
   const linie = [
-    `Matmoza · ${profilInfo?.imie || ''}`,
+    `Matematyka · ${profilInfo?.imie || ''}`,
     `${p.tytul}${p.przerwane ? ' (przerwane)' : ''}${p.powtorka ? ' (powtórka pomyłek)' : ''}`,
     `Dobrze za pierwszym razem: ${p.dobrze} z ${p.ile} (${procent}%) · błędów: ${p.ile - p.dobrze}`,
     ...(p.ocena ? [`Ocena (przybliżona skala szkolna): ${p.ocena}`] : []),
@@ -450,7 +466,7 @@ async function wyslij(tekst, btn, status) {
   status.replaceChildren();
   try {
     if (navigator.share) {
-      try { await navigator.share({ title: 'Matmoza — wynik', text: tekst }); graj('wyslij'); status.textContent = 'Wysłane? Super!'; return; }
+      try { await navigator.share({ title: 'Matematyka — wynik', text: tekst }); graj('wyslij'); status.textContent = 'Wysłane? Super!'; return; }
       catch (e) { if (e.name === 'AbortError') return; }
     }
     if (navigator.clipboard?.writeText) {

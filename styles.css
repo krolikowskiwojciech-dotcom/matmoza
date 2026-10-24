@@ -1,4 +1,4 @@
-/* Matmoza — wygląd Lingozy (kremowe tło, pastelowe karty 3D, Libre Baskerville + Jost, bez kursywy)
+/* Matematyka (repo matmoza) — wygląd Lingozy (kremowe tło, pastelowe karty 3D, Libre Baskerville + Jost, bez kursywy)
    z delikatnym akcentem matematyki: znaki + − × ÷ na kartach, kratka zeszytu w tle ćwiczeń, cyfry tabelaryczne. */
 @font-face { font-family: 'Jost'; src: url('fonts/Jost.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Libre Baskerville'; src: url('fonts/LibreBaskerville.ttf') format('truetype'); font-weight: 400 700; font-display: swap; }
@@ -41,18 +41,19 @@ em, i { font-style: normal; }
 .naglowek-txt b { font-weight: 500; }
 .ikona-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--linia); background: var(--karta); display: grid; place-items: center; cursor: pointer; flex: none; }
 .tytul { font-size: clamp(34px, 9.6vw, 46px); line-height: 1.08; margin: 18px 0 16px; }
-.tytul-wiersz { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.tytul-wiersz .tytul { flex: 1; min-width: 0; }
 .podtytul { color: var(--szary); margin: -4px 0 16px; }
 .sekcja { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--szary); font-weight: 500; margin: 22px 2px 10px; }
 
-/* kózka (ilustracje 3D) */
-.koza { display: block; object-fit: contain; pointer-events: none; filter: drop-shadow(0 10px 12px rgba(29,28,34,.16)); }
-.koza-glowna { width: 112px; height: 112px; flex: none; margin-right: -6px; }
-.koza-powitanie { width: 190px; height: 190px; margin: 4px auto -18px; }
-.koza-duza { width: 170px; height: 170px; margin: 0 auto; animation: wskok .6s cubic-bezier(.2,1.6,.4,1); }
-.koza-stopka { width: 58px; height: 58px; flex: none; margin-top: -6px; }
-@keyframes wskok { from { transform: scale(.3); opacity: 0; } }
+/* górny pasek: „Wróć” zawsze w lewym górnym rogu — ten sam przycisk co na ogarnijmaterial.pl */
+.pasek { display: flex; align-items: center; justify-content: space-between; min-height: 48px; gap: 10px; margin-bottom: 8px; }
+.pasek-prawe { display: flex; align-items: center; gap: 10px; }
+.wroc { display: inline-flex; align-items: center; gap: 4px; height: 44px; padding: 0 16px 0 10px; border-radius: 22px; flex: none; cursor: pointer;
+  background: var(--karta); border: 1px solid var(--linia); color: var(--tusz); font-size: 16px; font-weight: 500; line-height: 1; box-shadow: 0 3px 0 var(--linia); }
+.wroc .ik svg { width: 22px; height: 22px; }
+.wroc:active, .okragly:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--linia); }
+.okragly { width: 44px; height: 44px; border-radius: 50%; background-color: var(--karta); border: 1px solid var(--linia); display: grid; place-items: center; box-shadow: 0 3px 0 var(--linia); flex: none; }
+.okragly.inicjal { font-size: 19px; line-height: 1; }
+.przedmiot-etykieta { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--szary); font-weight: 500; margin: 14px 2px 0; }
 
 /* kolory kart (jak w Lingozie) */
 .kolor-lila { background-color: var(--lila); --tlo-karty: var(--lila); --brzeg: #A7A0EA; }
@@ -88,14 +89,14 @@ em, i { font-style: normal; }
 .termin.pilne { background: var(--tusz); color: #fff; }
 
 /* nagłówek zestawu */
-.naglowek-dzialu { position: relative; border-radius: var(--r); padding: 58px 20px 20px; margin-bottom: 16px;
+.naglowek-dzialu { position: relative; border-radius: var(--r); padding: 22px 20px 20px; margin-bottom: 16px; min-height: 120px;
   background-image: var(--znaki), linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,0) 45%);
   background-repeat: no-repeat; background-position: right -10px top 0, 0 0; background-size: 52% auto, auto;
   box-shadow: inset 0 1.5px 0 rgba(255,255,255,.75), 0 6px 0 var(--brzeg, rgba(0,0,0,.12)), 0 22px 30px -20px rgba(29,28,34,.5); }
 .naglowek-dzialu h1 { font-size: 30px; line-height: 1.12; margin: 6px 0 8px; padding-right: 70px; }
+.naglowek-dzialu .kat-etykieta { display: block; padding-right: 70px; }
 .naglowek-dzialu p { margin: 0; opacity: .85; }
 .nagl-znak { position: absolute; top: 14px; right: 16px; width: 64px; height: 64px; font-size: 32px; }
-.wstecz { position: absolute; top: 12px; left: 12px; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,.6); display: grid; place-items: center; color: var(--tusz); }
 .kat-etykieta { text-transform: uppercase; letter-spacing: .08em; font-size: 11px; color: inherit; opacity: .7; }
 .np-staty { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; font-size: 14px; }
 .np-staty b { font-size: 18px; font-weight: 500; }
@@ -165,9 +166,7 @@ body.w-lekcji { overflow: hidden; }
   /* akcent: kratka z zeszytu do matematyki, ledwo widoczna */
   background-image: linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,0) 45%), var(--kratka);
   background-size: auto, 24px 24px, 24px 24px; }
-.lekcja-gora { display: flex; align-items: center; gap: 12px; padding: 12px 16px 6px; max-width: 620px; width: 100%; margin: 0 auto; }
-.zamknij { width: 38px; height: 38px; border: 0; background: none; color: var(--szary); cursor: pointer; display: grid; place-items: center; }
-.zamknij .ik svg { width: 24px; height: 24px; }
+.lekcja-gora { display: flex; align-items: center; gap: 12px; padding: 12px 16px 8px; max-width: 620px; width: 100%; margin: 0 auto; min-height: 60px; }
 .postep { flex: 1; height: 14px; border-radius: 8px; background: rgba(255,255,255,.55); overflow: hidden; }
 .postep-wew { height: 100%; border-radius: 8px; background: linear-gradient(90deg, #8AD9A8, var(--ok)); transition: width .4s; }
 .licznik { font-size: 13px; color: rgba(29,28,34,.6); font-variant-numeric: tabular-nums; min-width: 28px; text-align: right; }
@@ -233,7 +232,6 @@ sup { font-size: .55em; line-height: 0; }
 .stopka.zle .stopka-tytul { color: var(--zle); font-size: 18px; }
 .stopka-tytul .ik svg { width: 24px; height: 24px; }
 .seria { margin-left: auto; font-size: 13px; font-weight: 500; background: #fff; border-radius: 999px; padding: 3px 10px; color: var(--ok); }
-.stopka-info.z-koza { display: flex; gap: 10px; align-items: center; }
 .stopka .przyciski { margin: 0; }
 
 .klawiatura { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -318,23 +316,22 @@ sup { font-size: .55em; line-height: 0; }
 .kopiuj { width: 100%; min-height: 160px; margin-top: 6px; border: 1px solid var(--linia); border-radius: 14px; padding: 10px; background: var(--karta); }
 
 /* ustawienia */
-.profil-gora { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+.profil-gora { display: flex; align-items: center; gap: 14px; margin: 8px 0; }
 .profil-gora h1 { font-size: 33px; margin: 0; line-height: 1.1; }
-.profil-duzy-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--rozowy); display: grid; place-items: center; font-size: 30px; }
+.profil-duzy-avatar { width: 64px; height: 64px; border-radius: 50%; background-color: var(--rozowy); display: grid; place-items: center; font-size: 30px; }
 .ust { background: var(--karta); border: 1px solid var(--linia); border-radius: var(--r); padding: 4px 16px 14px; margin-top: 14px; }
 .ust .sekcja { margin-top: 14px; }
 .wiersz { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--linia); }
 .wiersz:last-child { border-bottom: 0; }
 input.pole { display: block; width: 100%; height: auto; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--linia); background: var(--tlo); margin: 6px 0 10px; cursor: text; font-size: 16px; }
 
-/* własne okienko (jak w Lingozie: wysuwane od dołu, z kózką nad krawędzią) */
+/* własne okienko (jak w Lingozie: wysuwane od dołu) */
 .okno-tlo { position: fixed; inset: 0; z-index: 90; background: rgba(29,28,34,.32); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; transition: opacity .2s; }
 .okno-tlo.wid { opacity: 1; }
 .okno { position: fixed; left: 12px; right: 12px; bottom: calc(var(--dol) + 12px); z-index: 91; max-width: 460px; margin: 0 auto; background: var(--karta);
-  border-radius: 30px; padding: 54px 22px 20px; text-align: center; box-shadow: 0 6px 0 var(--linia), 0 30px 60px -20px rgba(29,28,34,.45);
+  border-radius: 30px; padding: 26px 22px 20px; text-align: center; box-shadow: 0 6px 0 var(--linia), 0 30px 60px -20px rgba(29,28,34,.45);
   transform: translateY(120%); transition: transform .28s cubic-bezier(.2,.9,.3,1.1); }
 .okno.wid { transform: none; }
-.okno-koza { width: 112px; height: 112px; position: absolute; top: -66px; left: 50%; transform: translateX(-50%); }
 .okno-tytul { font-size: 24px; line-height: 1.2; margin-bottom: 6px; }
 .okno-tekst { color: var(--szary); margin: 0 0 18px; font-size: 16px; }
 .okno-przyciski { display: flex; gap: 10px; }
@@ -352,3 +349,6 @@ input.pole { display: block; width: 100%; height: auto; padding: 12px 14px; bord
   .tytul { font-size: 52px; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* znaczek z inicjałem w kolorze osoby (jak na ogarnijmaterial.pl) */
+.okragly.inicjal[class*="kolor-"], .profil-duzy-avatar[class*="kolor-"] { background-color: var(--tlo-karty); }

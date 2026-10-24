@@ -53,14 +53,17 @@ export function mat(tekst, okienko) {
   return wynik;
 }
 
-export const koza = (poza, klasa = '') => h('img', { class: 'koza ' + klasa, src: `obrazy/koza-${poza}.png`, alt: '', onerror: (e) => e.target.remove() });
+// przycisk powrotu — zawsze w lewym górnym rogu, taki sam jak na ogarnijmaterial.pl (pigułka: strzałka + słowo)
+export const wroc = ({ tekst = 'Wróć', href, onclick, aria } = {}) => h(href ? 'a' : 'button',
+  { class: 'wroc', href, type: href ? null : 'button', onclick, 'aria-label': aria }, ik('wstecz'), tekst);
+// górny pasek ekranu: po lewej powrót, po prawej opcjonalne przyciski
+export const pasek = (lewy, ...prawe) => h('div', { class: 'pasek' }, lewy || h('span'), h('div', { class: 'pasek-prawe' }, prawe));
 
-// własne okienko (wysuwane od dołu, z kózką): okno({ tytul, tresc, przyciski: [{ tekst, wartosc, klasa }] }) → Promise<wartosc>
-export function okno({ tytul, tresc, poza = 'mysli', przyciski = [{ tekst: 'Jasne', wartosc: true, klasa: 'glowny' }] }) {
+// własne okienko (wysuwane od dołu): okno({ tytul, tresc, przyciski: [{ tekst, wartosc, klasa }] }) → Promise<wartosc>
+export function okno({ tytul, tresc, przyciski = [{ tekst: 'Jasne', wartosc: true, klasa: 'glowny' }] }) {
   return new Promise((ok) => {
     const tlo = h('div', { class: 'okno-tlo', onclick: () => zamknij(null) });
     const pudlo = h('div', { class: 'okno', role: 'dialog', 'aria-modal': 'true', 'aria-label': tytul },
-      koza(poza, 'okno-koza'),
       h('div', { class: 'okno-tytul serif' }, tytul),
       typeof tresc === 'string' ? h('p', { class: 'okno-tekst' }, tresc) : tresc,
       h('div', { class: 'okno-przyciski' }, przyciski.map((p) => h('button', { class: 'btn ' + (p.klasa || 'jasny'), type: 'button', onclick: () => zamknij(p.wartosc) }, p.tekst))));
