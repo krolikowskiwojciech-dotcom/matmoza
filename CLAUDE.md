@@ -14,7 +14,8 @@ Użytkownik widzi nazwę **„Matematyka”** (nie „Matmoza”); nazwy repo, p
   Telefon dziecka zapisuje tam każdą próbę (token GitHub wklejony raz w Ustawieniach). Odczyt: `node narzedzia/matmoza.mjs wyniki`.
 - **Profile:** `julek` (Julek, klasa 6) i `aniela` (Aniela, klasa 4). Lista w `narzedzia/matmoza.mjs` (PROFILE) → `zestawy/indeks.json`.
 - **Zasady gier** wzięte ze starej strony „Ucz się sprytniej” (iCloud: `Audio - do nauki /uczsiesprytniej/projekt/migracja/`):
-  zła odpowiedź zatrzymuje grę, poprawna odpowiedź w ramce + kroki „jak to policzyć”, 1,2 s blokady przycisków,
+  zła odpowiedź zatrzymuje grę, poprawna odpowiedź w karcie zadania + kroki „jak to policzyć”, dziecko musi ją przepisać
+  (dopiero wtedy „Dalej”; ocena liczy pierwsze podejście), 1,2 s blokady przycisków,
   błędne zadanie wraca w tym samym bloku, bez powtórek w rundzie, każde „=” na ekranie jest prawdą,
   poziom jak na kartkówce (nie trudniej), treści własnymi słowami, własne okienka zamiast alert/confirm.
 - **Koniec zestawu:** podsumowanie per blok i „Wyślij wynik” → systemowe okienko udostępniania (SMS, Mail…).

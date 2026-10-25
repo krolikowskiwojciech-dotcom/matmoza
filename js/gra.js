@@ -1,4 +1,5 @@
 // Przebieg zestawu: bloki ćwiczeń jeden po drugim, zła odpowiedź zatrzymuje grę i uczy,
+// po błędzie dziecko przepisuje poprawną odpowiedź (dopiero wtedy „Dalej”),
 // błędne zadanie wraca w tym samym bloku, na końcu podsumowanie i „Wyślij wynik”.
 // Wygląd jak lekcja w Lingozie: pełny ekran w kolorze bloku, pasek postępu u góry, stopka z przyciskiem na dole.
 
@@ -54,6 +55,7 @@ export function uruchom(el, opcje) {
   })).filter((b) => b.kolejka.length);
 
   let nrBloku = 0, poz = 0, czesc = 0, seria = 0, zablokowane = false, pola = [], aktywne = 0, timer = null;
+  let przep = null; // po błędzie: { cz, dalejBtn, gotowe, odblok } — przepisywanie poprawnej odpowiedzi
   let klawisze = null;
   document.body.classList.add('w-lekcji');
 
@@ -100,12 +102,6 @@ export function uruchom(el, opcje) {
     const proba = zbudujProbe(true);
     if (proba.ile) opcje.naKoniec(proba);
     opcje.wyjdz();
-  }
-
-  async function przerwij() {
-    const w = await okno({ tytul: 'Przerwać ćwiczenie?', tresc: 'Wynik zapisze się jako przerwany. Możesz go i tak wysłać.',
-      przyciski: [{ tekst: 'Ćwiczę dalej', wartosc: false, klasa: 'jasny' }, { tekst: 'Przerwij', wartosc: true, klasa: 'czerwony' }] });
-    if (w) podsumowanie(true);
   }
 
   // ---------- wstęp do bloku ----------
@@ -160,9 +156,16 @@ export function uruchom(el, opcje) {
     });
   }
 
+  // okienka bez data-i (zamrożona błędna odpowiedź) nie dają się już wybrać
+  const podepnijPola = (root) => root.querySelectorAll('.pole[data-i]').forEach((p) => p.addEventListener('click', () => {
+    if (!p.hasAttribute('data-i') || zablokowane) return;
+    aktywne = Number(p.dataset.i); graj('klik'); odswiezPola();
+  }));
+
   function pokazZadanie() {
     sprzataj();
     zablokowane = false;
+    przep = null;
     const { z, powtorka } = pozycja();
     const cz = czescTeraz();
     nowePola(cz);
@@ -187,7 +190,7 @@ export function uruchom(el, opcje) {
       ],
       stopka,
     });
-    el.querySelectorAll('.pole[data-i]').forEach((p) => p.addEventListener('click', () => { aktywne = Number(p.dataset.i); graj('klik'); odswiezPola(); }));
+    podepnijPola(el);
     odswiezPola();
     ustawKlawisze((e) => klawiszFizyczny(e, cz));
   }
@@ -224,6 +227,7 @@ export function uruchom(el, opcje) {
     if (info) { info.textContent = ''; info.className = 'info'; }
     graj('klik');
     odswiezPola();
+    sprawdzPrzepisanie();
   }
   function kasuj() {
     if (zablokowane) return;
@@ -231,6 +235,7 @@ export function uruchom(el, opcje) {
     pola[aktywne] = pola[aktywne].slice(0, -1);
     graj('cofnij');
     odswiezPola();
+    sprawdzPrzepisanie();
   }
   function dalej() {
     if (zablokowane) return;
@@ -243,6 +248,8 @@ export function uruchom(el, opcje) {
   function klawiszFizyczny(e, cz) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (zablokowane) return;
+    if (przep && e.key === 'Enter') { e.preventDefault(); if (!e.repeat) idzDalej(); return; }
+    if (przep && cz.kind === 'wybor') return; // przepisuje w zwykłym polu tekstowym
     if (cz.kind === 'wybor') {
       const i = { '<': 0, '=': 1, '>': 2 }[e.key];
       if (i != null && cz.choices[i]) sprawdz(cz.choices[i]);
@@ -270,17 +277,17 @@ export function uruchom(el, opcje) {
     return pola[0];
   }
   const pokazOdp = (cz, odp) => (Array.isArray(odp) ? `${odp[0]} r. ${odp[1]}` : String(odp));
+  const brakuje = (cz) => (cz.kind === 'reszta' ? pola.some((p) => !p) : cz.kind === 'ulamek' ? (!pola[1] !== !pola[2]) || (!pola[0] && !pola[1]) : !pola[0]);
 
   function sprawdz(wybor) {
-    if (zablokowane) return;
+    if (zablokowane || przep) return;
     const cz = czescTeraz();
     const info = el.querySelector('.info');
     let odp;
     if (cz.kind === 'wybor') odp = wybor;
     else {
       odp = odpowiedzDziecka(cz);
-      const brak = cz.kind === 'reszta' ? pola.some((p) => !p) : cz.kind === 'ulamek' ? (!pola[1] !== !pola[2]) || (!pola[0] && !pola[1]) : !pola[0];
-      if (brak) {
+      if (brakuje(cz)) {
         info.textContent = cz.kind === 'reszta' ? 'Wpisz wynik i resztę.' : cz.kind === 'ulamek' ? 'Uzupełnij licznik i mianownik.' : 'Najpierw wpisz odpowiedź.';
         info.className = 'info podpowiedz';
         return;
@@ -314,36 +321,77 @@ export function uruchom(el, opcje) {
     const kolejka = B().kolejka;
     kolejka.splice(Math.min(kolejka.length, poz + 1 + los.int(2, 4)), 0, { z, powtorka: true });
 
+    // wersja C: odpowiedź w samej karcie zadania, na dole tylko klawiatura do przepisania i szeroki „Dalej”
     const karta = el.querySelector('.zadanie-karta');
     karta.classList.add('zle');
-    el.querySelector('.info').replaceChildren();
-    const pole = el.querySelector('.cw-pole');
-    pole.append(h('section', { class: 'poprawka' },
-      h('p', { class: 'twoja' }, 'Twoja odpowiedź: ', h('s', {}, mat(pokazOdp(cz, odp)))),
-      uwaga ? h('p', { class: 'uwaga' }, uwaga) : null,
-      h('div', { class: 'ramka-poprawna' },
-        h('div', { class: 'kat-etykieta' }, 'Poprawna odpowiedź'),
-        h('div', { class: 'rownanie' }, mat(poprawnie(cz)))),
-      h('div', { class: 'sekcja' }, 'Jak to policzyć'),
-      h('ol', { class: 'kroki' }, (cz.exp || []).map((l) => h('li', {}, mat(l)))),
-      h('p', { class: 'wraca' }, ik('powtorz'), ' To zadanie wróci jeszcze raz w tym bloku.')));
-    let zablokowaneDalej = true;
-    const dalejBtn = h('button', { class: 'btn czerwony', type: 'button', disabled: true, onclick: () => { if (!zablokowaneDalej) { graj('przycisk'); nastepne(); } } }, 'Przeczytaj…');
-    const przerwijBtn = h('button', { class: 'btn jasny', type: 'button', disabled: true, onclick: przerwij }, 'Przerwij');
+    karta.querySelector('.info')?.remove();
+    karta.querySelectorAll('.pole[data-i]').forEach((p) => { p.removeAttribute('data-i'); p.classList.remove('aktywne'); });
+    const wybor = cz.kind === 'wybor';
+    const wpis = wybor
+      ? h('input', { class: 'przepisz-tekst', type: 'text', id: 'przepisz', disabled: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off',
+        spellcheck: 'false', enterkeyhint: 'go', oninput: sprawdzPrzepisanie })
+      : h('div', { class: 'przepisz-pola' }, mat(cz.kind === 'reszta' ? '□ r. □' : '□', okienkoDla(cz)), cz.jednostka ? h('span', { class: 'jednostka' }, cz.jednostka) : null);
+    karta.append(
+      h('div', { class: 'odp' },
+        h('p', { class: 'twoja' }, 'Twoja odpowiedź: ', h('s', {}, mat(pokazOdp(cz, odp)))),
+        h('div', { class: 'odp-poprawna', 'aria-label': 'Poprawna odpowiedź' }, ik('ptaszek'), h('span', { class: 'odp-rownanie' }, mat(poprawnie(cz)))),
+        uwaga ? h('p', { class: 'uwaga' }, uwaga) : null),
+      cz.exp?.length ? h('div', { class: 'wyjasnienie' },
+        h('div', { class: 'wyj-tytul' }, 'Jak to policzyć'),
+        h('ol', { class: 'kroki' }, cz.exp.map((l) => h('li', {}, mat(l))))) : null,
+      h('div', { class: 'przepisz' }, h('label', { class: 'przepisz-etyk', for: wybor ? 'przepisz' : null }, 'Przepisz poprawnie:'), wpis),
+      h('p', { class: 'wraca' }, ik('powtorz'), ' To zadanie wróci jeszcze raz w tym bloku.'));
+    nowePola(cz);
+    podepnijPola(karta);
+    odswiezPola();
+
+    const dalejBtn = h('button', { class: 'btn glowny szeroki dalej-przep', type: 'button', disabled: true, onclick: () => idzDalej() });
+    przep = { cz, dalejBtn, gotowe: false, odblok: false };
+    odswiezDalej();
     const stopka = el.querySelector('.stopka');
-    stopka.className = 'stopka zle';
-    stopka.replaceChildren(
-      h('div', { class: 'stopka-info' }, h('div', { class: 'stopka-tytul' }, 'Prawie! Zobacz, jak to policzyć.')),
-      h('div', { class: 'przyciski' }, przerwijBtn, dalejBtn));
-    requestAnimationFrame(() => pole.querySelector('.poprawka')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
-    timer = setTimeout(() => {
-      zablokowaneDalej = false;
-      dalejBtn.disabled = false; przerwijBtn.disabled = false;
-      dalejBtn.replaceChildren('Dalej', ik('dalej'));
-      dalejBtn.focus({ preventScroll: true });
-      ustawKlawisze((e) => { if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) { e.preventDefault(); nastepne(); } });
-    }, BLOKADA_MS);
+    stopka.className = 'stopka przepisywanie';
+    if (wybor) stopka.replaceChildren(dalejBtn);
+    else stopka.querySelector('.btn.sprawdz').replaceWith(dalejBtn);
+    requestAnimationFrame(() => karta.querySelector('.przepisz')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
+    // przyciski i klawisze śpią BLOKADA_MS, żeby rozpędzony palec nie przeskoczył wyjaśnienia
     ustawKlawisze(null);
+    timer = setTimeout(() => {
+      zablokowane = false;
+      przep.odblok = true;
+      odswiezPola();
+      odswiezDalej();
+      if (wybor) { const t = el.querySelector('#przepisz'); t.disabled = false; t.focus({ preventScroll: true }); }
+      ustawKlawisze((e) => klawiszFizyczny(e, cz));
+    }, BLOKADA_MS);
+  }
+
+  // przepisanie musi dać poprawną odpowiedź; ocena pierwszego podejścia się nie zmienia
+  // tekst z wyboru: bez wielkości liter, spacji i końcowej interpunkcji; kropka = przecinek w liczbach, * i × = ·
+  const uprosc = (t) => String(t).toLowerCase().replace(/[−–]/g, '-').replace(/[*×⋅∙]/g, '·').trim().replace(/[.,;:!?…]+$/, '')
+    .replace(/(\d)\.(?=\d)/g, '$1,').replace(/\s+/g, '');
+  function sprawdzPrzepisanie() {
+    if (!przep) return;
+    const { cz } = przep;
+    const ok = cz.kind === 'wybor'
+      ? uprosc(el.querySelector('#przepisz').value) === uprosc(cz.a)
+      : !brakuje(cz) && ocen(cz, odpowiedzDziecka(cz)).ok;
+    if (ok === przep.gotowe) return;
+    przep.gotowe = ok;
+    el.querySelector('.przepisz').classList.toggle('gotowe', ok);
+    if (ok) graj('przycisk');
+    odswiezDalej();
+  }
+  function odswiezDalej() {
+    const { dalejBtn, gotowe, odblok } = przep;
+    const wolno = gotowe && odblok;
+    if (dalejBtn.disabled === !wolno && dalejBtn.childNodes.length) return;
+    dalejBtn.disabled = !wolno;
+    dalejBtn.replaceChildren(...(wolno ? ['Dalej', ik('dalej')] : ['Przepisz, żeby przejść dalej']));
+  }
+  function idzDalej() {
+    if (!przep?.gotowe || !przep.odblok) return;
+    graj('przycisk');
+    nastepne();
   }
 
   function nastepne() {

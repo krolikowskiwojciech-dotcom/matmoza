@@ -279,19 +279,42 @@ sup { font-size: .55em; line-height: 0; }
 .gp-znak { width: 40px; height: 40px; flex: none; border-radius: 50%; background: var(--zolty); display: grid; place-items: center; font-size: 22px; }
 .gp-linie { font-size: 19px; line-height: 1.5; font-variant-numeric: tabular-nums; }
 
-/* poprawka po błędzie */
-.poprawka { margin-top: 16px; background: rgba(255,255,255,.92); border-radius: 24px; padding: 16px; box-shadow: 0 5px 0 rgba(29,28,34,.07), 0 18px 24px -18px rgba(29,28,34,.4); }
-.twoja { margin: 0 0 10px; color: var(--zle); font-weight: 500; }
-.twoja s { text-decoration-thickness: 2px; }
-.uwaga { font-size: 15px; background: var(--krem); border-radius: 12px; padding: 8px 12px; margin: 0 0 10px; }
-.ramka-poprawna { border-radius: 18px; padding: 10px 14px 12px; background: var(--ok-tlo); color: var(--ok); }
-.rownanie { font-size: clamp(27px, 8.5vw, 40px); font-weight: 500; font-variant-numeric: tabular-nums; text-align: center; color: var(--tusz); }
-.poprawka .sekcja { margin-top: 16px; }
-.kroki { margin: 0; padding-left: 1.4em; font-size: 17px; }
+/* po błędzie (wersja C): poprawna odpowiedź w samej karcie zadania, pod nią wyjaśnienie i pole „Przepisz poprawnie” */
+.zadanie-karta.zle { justify-content: flex-start; }
+.odp { margin-top: 14px; padding-top: 14px; border-top: 2px dashed rgba(214,69,93,.28); text-align: center; }
+.twoja { margin: 0 0 8px; color: var(--zle); font-weight: 500; font-size: 17px; }
+.twoja s { text-decoration-thickness: 3px; text-decoration-color: var(--zle); }
+.odp-poprawna { display: flex; align-items: center; justify-content: center; gap: .22em; color: var(--ok);
+  font-size: clamp(28px, 8.4vw, 44px); font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums lining-nums; }
+.odp-poprawna .ik { flex: none; }
+.odp-poprawna .ik svg { width: .78em; height: .78em; stroke-width: 2.8; display: block; }
+.odp-rownanie { min-width: 0; display: inline-flex; align-items: center; flex-wrap: wrap; justify-content: center; column-gap: .2em; }
+.uwaga { font-size: 16px; background: var(--krem); border-radius: 12px; padding: 8px 12px; margin: 10px 0 0; }
+.wyjasnienie { margin-top: 14px; background: #FFF8D2; border: 1px solid #F0E3A0; border-radius: 18px; padding: 12px 16px 6px; text-align: left; }
+.wyj-tytul { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; color: #7D6E24; margin-bottom: 8px; }
+.kroki { margin: 0; padding-left: 1.4em; font-size: 18px; line-height: 1.45; }
 .kroki li { margin-bottom: 7px; font-variant-numeric: tabular-nums; }
 .kroki li::marker { color: var(--oliwka); font-weight: 600; }
-.wraca { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--szary); margin: 12px 0 0; }
+.przepisz { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 14px; }
+.przepisz-etyk { font-size: 17px; font-weight: 600; }
+.przepisz-pola { display: inline-flex; align-items: center; gap: .2em; font-size: 28px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.zadanie-karta.zle .przepisz .pole { border-color: var(--linia); background: #fff; color: var(--tusz); text-decoration: none; }
+.zadanie-karta.zle .przepisz .pole.aktywne { border-color: #8AA8F0; background: #EAF0FF; }
+.zadanie-karta.zle .przepisz.gotowe .pole { border-color: var(--ok); color: var(--ok); }
+.przepisz-tekst { font: inherit; font-size: 26px; font-weight: 500; width: min(100%, 320px); padding: 8px 14px; border-radius: 14px; text-align: center;
+  border: 2px solid var(--linia); border-bottom-width: 4px; background: #fff; color: var(--tusz); }
+.przepisz-tekst:focus { outline: none; border-color: #8AA8F0; background: #F6F8FF; }
+.przepisz.gotowe .przepisz-tekst { border-color: var(--ok); color: var(--ok); }
+.wraca { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; color: var(--szary); margin: 12px 0 0; }
 .wraca .ik svg { width: 16px; height: 16px; }
+.stopka .btn.dalej-przep { min-height: 60px; font-size: 20px; border-radius: 18px; }
+.stopka .btn.dalej-przep:disabled { opacity: 1; background: rgba(255,255,255,.75); color: var(--szary); border: 2px dashed rgba(29,28,34,.22); font-size: 17px; }
+/* na telefonie (klawiatura zajmuje dół) pole do przepisania od razu pod poprawną odpowiedzią, wyjaśnienie niżej */
+@media (max-width: 819px) {
+  .zadanie-karta.zle .przepisz { order: 1; }
+  .zadanie-karta.zle .wyjasnienie { order: 2; }
+  .zadanie-karta.zle .wraca { order: 3; }
+}
 
 /* koniec bloku i podsumowanie */
 .podsum { text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; padding-top: 18px; }
@@ -347,6 +370,48 @@ input.pole { display: block; width: 100%; height: auto; padding: 12px 14px; bord
 }
 @media (min-width: 700px) {
   .tytul { font-size: 52px; }
+}
+/* komputer: szersza kolumna lekcji (ok. 760 px) i czcionki w ćwiczeniach ok. 1/3 większe */
+@media (min-width: 820px) {
+  .lekcja-gora, .lekcja-tytul, .cw-pole { max-width: 800px; }
+  .stopka > * { max-width: 768px; }
+  .lekcja-tytul { font-size: 22px; }
+  .cw-polecenie { font-size: 16px; }
+  .zadanie-karta { padding: 28px 26px 20px; }
+  .tresc { font-size: 29px; }
+  .etykieta { font-size: 22px; }
+  .dzialanie { font-size: 88px; }
+  .dzialanie.dlugie { font-size: 74px; }
+  .dzialanie.bardzo-dlugie { font-size: 56px; }
+  .info { font-size: 19px; }
+  .zadanie-karta.zle .dzialanie { font-size: 42px; }
+  .zadanie-karta.zle .tresc { font-size: 21px; }
+  .twoja { font-size: 22px; }
+  .odp-poprawna { font-size: 48px; }
+  .uwaga { font-size: 19px; }
+  .wyjasnienie { padding: 14px 20px 8px; }
+  .wyj-tytul { font-size: 15px; }
+  .kroki { font-size: 20px; }
+  .przepisz-etyk { font-size: 22px; }
+  .przepisz-pola { font-size: 30px; }
+  .przepisz-tekst { font-size: 28px; }
+  .wraca { font-size: 17px; }
+  .wraca .ik svg { width: 19px; height: 19px; }
+  .stopka-tytul { font-size: 26px; }
+  .stopka .btn.sprawdz { font-size: 26px; }
+  .stopka .btn.dalej-przep { font-size: 24px; min-height: 66px; }
+  .stopka .btn.dalej-przep:disabled { font-size: 20px; }
+  .opcja { font-size: 24px; }
+  .opcje.znaki .opcja { font-size: 50px; min-height: 92px; }
+  .wstep-tytul { font-size: 42px; }
+  .wstep-polecenie { font-size: 24px; }
+  .gram-klucz { font-size: 28px; }
+  .gram-tekst { font-size: 23px; }
+  .gp-linie { font-size: 25px; }
+}
+/* komputer z klawiaturą: przy przepisywaniu pisze się z klawiatury, na dole zostaje sam „Dalej” */
+@media (min-width: 820px) and (hover: hover) and (pointer: fine) {
+  .stopka.przepisywanie .klawiatura { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
