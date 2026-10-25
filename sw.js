@@ -3,7 +3,7 @@
 // otwieranie nie czeka na sieć, poprawiony kod działa od następnego otwarcia (po podbiciu CACHE — od razu po instalacji).
 // Zestawy i dźwięki jak dotąd: najpierw z sieci (nowe zadania od razu), bez sieci z pamięci; przy bardzo wolnej sieci
 // po 3 s bierzemy kopię z pamięci, a odpowiedź z sieci i tak trafia do pamięci na następny raz.
-const CACHE = 'matmoza-v13';
+const CACHE = 'matmoza-v14';
 const SHELL = ['./', 'styles.css', 'manifest.webmanifest', 'js/app.js', 'js/dom.js', 'js/gra.js', 'js/generatory.js',
   'js/liczby.js', 'js/wyrazenie.js', 'js/sprawdz.js', 'js/store.js', 'js/konto.js', 'js/dzwieki.js', 'zestawy/indeks.json',
   'ikony/ikona-180.png', 'ikony/ikona-192.png', 'ikony/ikona-512.png', 'fonts/Jost.ttf', 'fonts/LibreBaskerville.ttf',

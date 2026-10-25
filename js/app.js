@@ -128,6 +128,7 @@ async function ekranZestawu(id) {
 }
 
 function startGry(zestaw, bloki, extra = {}) {
+  if (biezacyKlucz) { zapamietajMiejsce(); pominZapis = true; biezacyKlucz = null; }
   biezacaGra?.zakoncz();
   const p = profilInfo();
   const pole = h('div');
@@ -193,7 +194,26 @@ async function synchro() {
 }
 
 let czekamNaKonto = false;
+// Zapamiętane miejsce na każdym ekranie: po wyjściu z lekcji („Wróć”, koniec) lista wraca do tej samej karty,
+// a nie na górę (Wojtek 2026-10-25 — zasada we wszystkich lekcjach). Zapis w chwili wyjścia z ekranu albo startu lekcji.
+const miejsca = new Map();
+let biezacyKlucz = null;
+let pominZapis = false;
+function zapamietajMiejsce() { if (biezacyKlucz) miejsca.set(biezacyKlucz, window.scrollY); }
+function przywrocMiejsce() {
+  biezacyKlucz = location.hash || '#/';
+  const y = miejsca.get(biezacyKlucz) || 0;
+  window.scrollTo(0, y);
+  if (y) { setTimeout(() => window.scrollTo(0, y), 60); setTimeout(() => window.scrollTo(0, y), 300); }
+}
+
 async function render() {
+  if (pominZapis) pominZapis = false; else zapamietajMiejsce();
+  await renderEkran();
+  if (!(location.hash || '').startsWith('#/gra')) przywrocMiejsce();
+}
+
+async function renderEkran() {
   try {
     if (!indeks) await wczytajIndeks();
     if (naOM && !profilInfo()) {
