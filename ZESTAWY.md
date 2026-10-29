@@ -10,6 +10,7 @@
   "dodano": "2026-10-11",
   "ikona": "½",                              // znak w bąblu karty: + − × ÷ ½ % = … (opcjonalnie)
   "kolor": "lila",                           // lila | mietowy | zolty | brzoskwinia | niebieski | rozowy (opcjonalnie)
+  "kategoria": "sprawdzian",                 // osobna kategoria na stronie głównej (opcjonalnie)
   "ocena": true,                             // sprawdzian: na końcu przybliżona ocena szkolna (też w SMS-ie)
   "sprawdzian": true,                        // bez „Jak to zrobić?” przed blokami (wyjaśnienie po błędzie zostaje)
   "bloki": [ { … }, { … } ]                  // jeden typ zadań = jeden blok

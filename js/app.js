@@ -63,9 +63,11 @@ function ekranWyboru() {
 }
 
 // ---------- lista zestawów ----------
-function ekranListy() {
+function ekranListy(kategoria = null) {
   const p = profilInfo();
-  const moje = indeks.zestawy.filter((z) => z.dla.includes(p.id));
+  const wszystkie = indeks.zestawy.filter((z) => z.dla.includes(p.id));
+  const sprawdziany = wszystkie.filter((z) => z.kategoria === 'sprawdzian');
+  const moje = wszystkie.filter((z) => kategoria ? z.kategoria === kategoria : z.kategoria !== 'sprawdzian');
   const prawdziwe = moje.filter((z) => !z.przyklad), przyklady = moje.filter((z) => z.przyklad);
   const karta = (z, i) => {
     const { ostatnia, ile } = S.wynikiZestawu(p.id, z.id);
@@ -83,10 +85,15 @@ function ekranListy() {
   };
   app.replaceChildren(
     h('main', { class: 'ekran' },
-      naglowek(),
-      h('h1', { class: 'tytul serif' }, 'Co dziś ', h('em', {}, 'liczymy'), '?'),
-      prawdziwe.length ? null : h('p', { class: 'podtytul' }, 'Tata jeszcze nie wrzucił zadań z podręcznika. Na rozgrzewkę jest przykład.'),
-      prawdziwe.length ? h('div', { class: 'sekcja' }, 'Przed kartkówką') : null,
+      kategoria ? pasek(wroc({ href: '#/' })) : naglowek(),
+      h('h1', { class: 'tytul serif' }, kategoria ? 'Sprawdzian' : ['Co dziś ', h('em', {}, 'liczymy'), '?']),
+      kategoria ? h('p', { class: 'podtytul' }, 'Wybierz wariant. Możesz zrobić cały sprawdzian albo przećwiczyć pojedynczy blok.') : null,
+      !kategoria && sprawdziany.length ? h('a', { class: 'karta-pakietu kolor-lila', href: '#/sprawdzian' },
+        h('div', { class: 'kp-gora' }, babel('✓'), h('div', { class: 'kp-tytul serif' }, 'Sprawdzian')),
+        h('p', { class: 'kp-opis' }, 'Próbne sprawdziany i przygotowanie do poprawy.'),
+        h('div', { class: 'kp-dol' }, `${sprawdziany.length} ${odm(sprawdziany.length, 'zestaw', 'zestawy', 'zestawów')}`, ik('dalej'))) : null,
+      prawdziwe.length || sprawdziany.length ? null : h('p', { class: 'podtytul' }, kategoria ? 'Nie ma jeszcze sprawdzianów dla tego profilu.' : 'Tata jeszcze nie wrzucił zadań z podręcznika. Na rozgrzewkę jest przykład.'),
+      prawdziwe.length ? h('div', { class: 'sekcja' }, kategoria ? 'Wybierz sprawdzian' : 'Przed kartkówką') : null,
       h('div', { class: 'lista-pakietow' }, prawdziwe.map(karta)),
       przyklady.length ? [h('div', { class: 'sekcja' }, 'Na rozgrzewkę'),
         h('div', { class: 'lista-pakietow' }, przyklady.map((z, i) => karta(z, i + prawdziwe.length)))] : null));
@@ -103,10 +110,10 @@ async function ekranZestawu(id) {
   const zadan = z.bloki.reduce((n, b) => n + (b.ile || b.zadania?.length || 0), 0);
   app.replaceChildren(
     h('main', { class: 'ekran' },
-      pasek(wroc({ href: '#/' })),
+      pasek(wroc({ href: z.sprawdzian || z.kategoria === 'sprawdzian' ? '#/sprawdzian' : '#/' })),
       h('section', { class: `naglowek-dzialu ${kolorZestawu(z, nr)}` },
         babel(znakZestawu(z, nr), 'kp-emoji nagl-znak'),
-        h('span', { class: 'kat-etykieta' }, z.przyklad ? 'Przykład' : z.termin && dni >= 0 ? (dni === 0 ? 'Kartkówka dziś' : dni === 1 ? 'Kartkówka jutro' : `Kartkówka ${dataPL(z.termin)}`) : 'Zestaw'),
+        h('span', { class: 'kat-etykieta' }, z.przyklad ? 'Przykład' : z.termin && dni >= 0 ? (dni === 0 ? 'Kartkówka dziś' : dni === 1 ? 'Kartkówka jutro' : `Kartkówka ${dataPL(z.termin)}`) : z.sprawdzian ? 'Sprawdzian' : 'Zestaw'),
         h('h1', { class: 'serif' }, z.tytul),
         z.opis ? h('p', {}, z.opis) : null,
         h('div', { class: 'np-staty' },
@@ -226,6 +233,7 @@ async function renderEkran() {
     if (biezacaGra && !hash.startsWith('#/gra')) { biezacaGra.zakoncz(); biezacaGra = null; }
     const m = hash.match(/^#\/z\/(.+)$/);
     if (m) return await ekranZestawu(decodeURIComponent(m[1]));
+    if (hash === '#/sprawdzian') return ekranListy('sprawdzian');
     if (hash === '#/ustawienia') return ekranUstawien();
     if (hash.startsWith('#/gra')) return;
     return ekranListy();

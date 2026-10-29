@@ -1,0 +1,518 @@
+{
+  "id": "2026-10-29-julek-poprawa-03",
+  "dla": [
+    "julek"
+  ],
+  "tytul": "Poprawa — wariant 3",
+  "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+  "dodano": "2026-10-29",
+  "kategoria": "sprawdzian",
+  "ikona": "3",
+  "kolor": "zolty",
+  "ocena": true,
+  "sprawdzian": true,
+  "bloki": [
+    {
+      "id": "prawda-falsz",
+      "tytul": "Prawda czy fałsz?",
+      "polecenie": "Oceń podany wynik działania.",
+      "zadania": [
+        {
+          "q": "Czy działanie 0,05 · 10000 daje wynik 500?",
+          "a": "Prawda",
+          "kind": "wybor",
+          "choices": [
+            "Prawda",
+            "Fałsz"
+          ],
+          "exp": [
+            "Przy mnożeniu przez 10000 przesuń przecinek o cztery miejsca w prawo.",
+            "0,05 · 10000 = 500"
+          ]
+        },
+        {
+          "q": "Czy działanie 0,05 : 100 daje wynik 0,005?",
+          "a": "Fałsz",
+          "kind": "wybor",
+          "choices": [
+            "Prawda",
+            "Fałsz"
+          ],
+          "exp": [
+            "Przy dzieleniu przez 100 przesuń przecinek o dwa miejsca w lewo.",
+            "0,05 : 100 = 0,0005"
+          ]
+        },
+        {
+          "q": "Czy działanie 0,005 · 0,05 daje wynik 0,00025?",
+          "a": "Prawda",
+          "kind": "wybor",
+          "choices": [
+            "Prawda",
+            "Fałsz"
+          ],
+          "exp": [
+            "Pomnóż liczniki, a potem uwzględnij wszystkie miejsca po przecinku.",
+            "0,005 · 0,05 = 0,00025"
+          ]
+        },
+        {
+          "q": "Czy działanie 0,0005 : 0,002 daje wynik 0,025?",
+          "a": "Fałsz",
+          "kind": "wybor",
+          "choices": [
+            "Prawda",
+            "Fałsz"
+          ],
+          "exp": [
+            "Pomnóż obie liczby przez 10000, a potem podziel.",
+            "0,0005 : 0,002 = 0,25"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "najwiekszy",
+      "tytul": "Największy wynik",
+      "zadania": [
+        {
+          "q": "Oblicz cztery działania. Które daje największy wynik?",
+          "a": "7550 : 1000",
+          "kind": "wybor",
+          "choices": [
+            "2,5 · 3",
+            "3,3 + 3,2",
+            "9,3 − 2,3",
+            "7550 : 1000"
+          ],
+          "exp": [
+            "3,3 + 3,2 = 6,5",
+            "9,3 − 2,3 = 7",
+            "7550 : 1000 = 7,55",
+            "2,5 · 3 = 7,5",
+            "Porównaj otrzymane liczby i wybierz największą."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kolejnosc-mnozenie",
+      "tytul": "Najpierw mnożenie",
+      "polecenie": "Oblicz.",
+      "ile": 1,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} − {b} · {c}"
+        ],
+        "zmienne": {
+          "b": [
+            3,
+            8
+          ],
+          "c": [
+            3,
+            7
+          ],
+          "d": [
+            2,
+            15
+          ],
+          "a": "= b · c + d"
+        }
+      }
+    },
+    {
+      "id": "kolejnosc-nawias",
+      "tytul": "Najpierw nawias",
+      "polecenie": "Oblicz.",
+      "ile": 1,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} + ({b} − {c}) : {d}"
+        ],
+        "zmienne": {
+          "a": [
+            23,
+            53
+          ],
+          "c": [
+            2,
+            8
+          ],
+          "d": [
+            2,
+            4
+          ],
+          "k": [
+            1,
+            5
+          ],
+          "b": "= c + d · k"
+        }
+      }
+    },
+    {
+      "id": "kolejnosc-lewo",
+      "tytul": "Działania od lewej",
+      "polecenie": "Oblicz.",
+      "ile": 1,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} : {b} : {c} · {d}"
+        ],
+        "zmienne": {
+          "b": [
+            2,
+            6
+          ],
+          "c": [
+            2,
+            4
+          ],
+          "d": [
+            2,
+            5
+          ],
+          "k": [
+            2,
+            6
+          ],
+          "a": "= b · c · k"
+        }
+      }
+    },
+    {
+      "id": "zwykle-0",
+      "tytul": "Dodawanie ułamków zwykłych",
+      "polecenie": "Oblicz. Skróć wynik i wyłącz całości.",
+      "ile": 1,
+      "generator": {
+        "typ": "ulamki",
+        "dzialania": [
+          "+"
+        ],
+        "mianowniki": [
+          3,
+          4,
+          5,
+          7,
+          8,
+          9
+        ],
+        "mieszane": 5,
+        "maxWspolny": 72,
+        "maxMianownikWyniku": 90
+      }
+    },
+    {
+      "id": "dziesietne-0",
+      "tytul": "Dodawanie ułamków dziesiętnych",
+      "polecenie": "Oblicz.",
+      "ile": 1,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} + {b}"
+        ],
+        "zmienne": {
+          "a": {
+            "od": 2.1,
+            "do": 8.9,
+            "miejsca": 1
+          },
+          "b": {
+            "od": 0.2,
+            "do": 2.8,
+            "miejsca": 1
+          }
+        },
+        "dziesietne": true,
+        "maxMiejsc": 1
+      }
+    },
+    {
+      "id": "zwykle-1",
+      "tytul": "Odejmowanie ułamków zwykłych",
+      "polecenie": "Oblicz. Skróć wynik i wyłącz całości.",
+      "ile": 1,
+      "generator": {
+        "typ": "ulamki",
+        "dzialania": [
+          "−"
+        ],
+        "mianowniki": [
+          3,
+          4,
+          5,
+          7,
+          8,
+          9
+        ],
+        "mieszane": 5,
+        "maxWspolny": 72,
+        "maxMianownikWyniku": 90
+      }
+    },
+    {
+      "id": "dziesietne-1",
+      "tytul": "Odejmowanie ułamków dziesiętnych",
+      "polecenie": "Oblicz.",
+      "ile": 1,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} − {b}"
+        ],
+        "zmienne": {
+          "a": {
+            "od": 6.1,
+            "do": 9.9,
+            "miejsca": 1
+          },
+          "b": {
+            "od": 2.1,
+            "do": 5.9,
+            "miejsca": 1
+          }
+        },
+        "dziesietne": true,
+        "maxMiejsc": 1
+      }
+    },
+    {
+      "id": "zwykle-2",
+      "tytul": "Mnożenie ułamków zwykłych",
+      "polecenie": "Oblicz. Skróć wynik i wyłącz całości.",
+      "ile": 1,
+      "generator": {
+        "typ": "ulamki",
+        "dzialania": [
+          "·"
+        ],
+        "mianowniki": [
+          3,
+          4,
+          5,
+          7,
+          8,
+          9
+        ],
+        "mieszane": 5,
+        "maxWspolny": 72,
+        "maxMianownikWyniku": 90
+      }
+    },
+    {
+      "id": "dziesietne-2",
+      "tytul": "Mnożenie ułamków dziesiętnych",
+      "polecenie": "Oblicz.",
+      "ile": 1,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} · {b}"
+        ],
+        "zmienne": {
+          "a": {
+            "od": 0.2,
+            "do": 0.9,
+            "miejsca": 1
+          },
+          "b": {
+            "od": 1.1,
+            "do": 2.9,
+            "miejsca": 1
+          }
+        },
+        "dziesietne": true,
+        "maxMiejsc": 2
+      }
+    },
+    {
+      "id": "zwykle-3",
+      "tytul": "Dzielenie ułamków zwykłych",
+      "polecenie": "Oblicz. Skróć wynik i wyłącz całości.",
+      "ile": 1,
+      "generator": {
+        "typ": "ulamki",
+        "dzialania": [
+          ":"
+        ],
+        "mianowniki": [
+          3,
+          4,
+          5,
+          7,
+          8,
+          9
+        ],
+        "mieszane": 5,
+        "maxWspolny": 72,
+        "maxMianownikWyniku": 90
+      }
+    },
+    {
+      "id": "dziesietne-3",
+      "tytul": "Dzielenie ułamków dziesiętnych",
+      "polecenie": "Oblicz.",
+      "ile": 1,
+      "generator": {
+        "typ": "wyrazenie",
+        "szablony": [
+          "{a} : {b}"
+        ],
+        "zmienne": {
+          "b": {
+            "lista": [
+              "0,02",
+              "0,03",
+              "0,04",
+              "0,05",
+              "0,06",
+              "0,08"
+            ]
+          },
+          "k": {
+            "lista": [
+              20,
+              30,
+              40,
+              50,
+              60,
+              70,
+              80,
+              90
+            ]
+          },
+          "a": "= b · k"
+        },
+        "dziesietne": true,
+        "maxMiejsc": 2
+      }
+    },
+    {
+      "id": "okienka",
+      "tytul": "Brakująca liczba",
+      "polecenie": "Uzupełnij okienko liczbą dziesiętną.",
+      "zadania": [
+        {
+          "d": "12/20 + □ = 0,95",
+          "a": "0,35",
+          "kind": "liczba",
+          "exp": [
+            "12/20 = 0,6",
+            "0,95 − 0,6 = 0,35"
+          ]
+        },
+        {
+          "d": "1,65 − □ = 1/4",
+          "a": "1,4",
+          "kind": "liczba",
+          "exp": [
+            "1/4 = 0,25",
+            "1,65 − 0,25 = 1,4"
+          ]
+        },
+        {
+          "d": "□ + 9/20 = 1,15",
+          "a": "0,7",
+          "kind": "liczba",
+          "exp": [
+            "9/20 = 0,45",
+            "1,15 − 0,45 = 0,7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rozwiniecia",
+      "tytul": "Rozwinięcia dziesiętne",
+      "polecenie": "Zapisz rozwinięcie dziesiętne. Okres wpisz w nawiasie, np. 0,(3).",
+      "okres": true,
+      "zadania": [
+        {
+          "d": "7/8 = □",
+          "a": "0,875",
+          "kind": "liczba",
+          "exp": [
+            "Podziel licznik 7 przez mianownik 8.",
+            "Jeżeli reszta się powtarza, powtarzające się cyfry zapisz w nawiasie.",
+            "7/8 = 0,875"
+          ]
+        },
+        {
+          "d": "2/5 = □",
+          "a": "0,4",
+          "kind": "liczba",
+          "exp": [
+            "Podziel licznik 10 przez mianownik 25.",
+            "Jeżeli reszta się powtarza, powtarzające się cyfry zapisz w nawiasie.",
+            "10/25 = 0,4"
+          ]
+        },
+        {
+          "d": "4/15 = □",
+          "a": "0,2(6)",
+          "kind": "liczba",
+          "exp": [
+            "Podziel licznik 4 przez mianownik 15.",
+            "Jeżeli reszta się powtarza, powtarzające się cyfry zapisz w nawiasie.",
+            "4/15 = 0,2(6)"
+          ]
+        },
+        {
+          "d": "1 4/9 = □",
+          "a": "1,(4)",
+          "kind": "liczba",
+          "exp": [
+            "Podziel licznik 13 przez mianownik 9.",
+            "Jeżeli reszta się powtarza, powtarzające się cyfry zapisz w nawiasie.",
+            "13/9 = 1,(4)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tresc",
+      "tytul": "Zadanie z treścią",
+      "polecenie": "Wpisz liczbę.",
+      "zadania": [
+        {
+          "q": "Na półce ustawiono bez przerw pudełka szerokości 1/5 m. Zajęły 7 4/5 m. Ile jest pudełek?",
+          "a": "39",
+          "kind": "liczba",
+          "w": "7 4/5 : 1/5",
+          "exp": [
+            "Szukamy, ile małych porcji mieści się w całości. Użyj dzielenia.",
+            "7 4/5 : 1/5 = 39/5 · 5 = 39"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zagadka-okres",
+      "tytul": "Odkryj okres",
+      "polecenie": "Wpisz liczbę z okresem w nawiasie.",
+      "okres": true,
+      "zadania": [
+        {
+          "q": "Liczba mniejsza od 1 ma trzycyfrowy okres zaczynający się zaraz po przecinku. Siódma cyfra po przecinku to 4. Osiemnasta jest o 2 większa od czternastej. Suma piątej, ósmej i dwunastej cyfry wynosi 5. Jaka to liczba?",
+          "a": "0,(413)",
+          "kind": "liczba",
+          "w": "413/999",
+          "exp": [
+            "Cyfry okresu powtarzają się co trzy miejsca. Miejsca 1, 4 i 7 mają tę samą cyfrę: 4.",
+            "Miejsca 5, 8 i 14 wskazują drugą cyfrę okresu; 12 i 18 wskazują trzecią.",
+            "Odejmij różnicę cyfr od podanej sumy: 5 − 2 = 3",
+            "Druga cyfra: 3 : 3 = 1",
+            "Trzecia cyfra: 1 + 2 = 3",
+            "Powtarza się grupa 413. Zapisz: 0,(413)."
+          ]
+        }
+      ]
+    }
+  ]
+}

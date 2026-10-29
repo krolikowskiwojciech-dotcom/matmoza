@@ -15,6 +15,166 @@
   ],
   "zestawy": [
     {
+      "id": "2026-10-29-julek-poprawa-01",
+      "tytul": "Poprawa — wariant 1",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "1",
+      "kolor": "lila",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-02",
+      "tytul": "Poprawa — wariant 2",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "2",
+      "kolor": "mietowy",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-03",
+      "tytul": "Poprawa — wariant 3",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "3",
+      "kolor": "zolty",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-04",
+      "tytul": "Poprawa — wariant 4",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "4",
+      "kolor": "brzoskwinia",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-05",
+      "tytul": "Poprawa — wariant 5",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "5",
+      "kolor": "niebieski",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-06",
+      "tytul": "Poprawa — wariant 6",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "6",
+      "kolor": "lila",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-07",
+      "tytul": "Poprawa — wariant 7",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "7",
+      "kolor": "mietowy",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-08",
+      "tytul": "Poprawa — wariant 8",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "8",
+      "kolor": "zolty",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-09",
+      "tytul": "Poprawa — wariant 9",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "9",
+      "kolor": "brzoskwinia",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
+      "id": "2026-10-29-julek-poprawa-10",
+      "tytul": "Poprawa — wariant 10",
+      "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-10-29",
+      "kategoria": "sprawdzian",
+      "przyklad": false,
+      "ikona": "10",
+      "kolor": "niebieski",
+      "bloki": 17,
+      "zadan": 25
+    },
+    {
       "id": "2026-10-12-julek-1-liczby-naturalne",
       "tytul": "1. Liczby naturalne",
       "opis": "Rachunki w pamięci, reszty, czynniki pierwsze, NWD i NWW, kolejność działań (podręcznik s. 10–13).",
@@ -23,6 +183,7 @@
       ],
       "termin": null,
       "dodano": "2026-10-12",
+      "kategoria": null,
       "przyklad": false,
       "ikona": "+",
       "kolor": "mietowy",
@@ -38,6 +199,7 @@
       ],
       "termin": null,
       "dodano": "2026-10-12",
+      "kategoria": null,
       "przyklad": false,
       "ikona": "0,1",
       "kolor": "zolty",
@@ -53,6 +215,7 @@
       ],
       "termin": null,
       "dodano": "2026-10-12",
+      "kategoria": null,
       "przyklad": false,
       "ikona": "½",
       "kolor": "lila",
@@ -68,6 +231,7 @@
       ],
       "termin": null,
       "dodano": "2026-10-12",
+      "kategoria": null,
       "przyklad": false,
       "ikona": "⅓",
       "kolor": "niebieski",
@@ -83,6 +247,7 @@
       ],
       "termin": null,
       "dodano": "2026-10-12",
+      "kategoria": "sprawdzian",
       "przyklad": false,
       "ikona": "A",
       "kolor": "brzoskwinia",
@@ -98,6 +263,7 @@
       ],
       "termin": null,
       "dodano": "2026-10-12",
+      "kategoria": "sprawdzian",
       "przyklad": false,
       "ikona": "B",
       "kolor": "rozowy",
@@ -113,6 +279,7 @@
       ],
       "termin": null,
       "dodano": "2026-10-12",
+      "kategoria": "sprawdzian",
       "przyklad": false,
       "ikona": "C",
       "kolor": "lila",
@@ -128,6 +295,7 @@
       ],
       "termin": null,
       "dodano": "2026-10-11",
+      "kategoria": null,
       "przyklad": true,
       "ikona": "+",
       "kolor": "mietowy",
