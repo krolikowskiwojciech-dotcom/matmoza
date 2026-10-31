@@ -122,10 +122,11 @@ async function ekranZestawu(id) {
           ostatnia ? h('span', {}, 'ostatnio ', h('b', {}, `${ostatnia.dobrze}/${ostatnia.ile}`)) : null,
           ile > 1 ? h('span', {}, h('b', {}, ile), ' prób') : null)),
       h('button', { class: 'cta', type: 'button', onclick: () => graj1(z.bloki) },
-        h('span', { class: 'cta-txt' }, h('b', {}, 'Zaczynam cały zestaw'), h('small', {}, 'blok po bloku, z wyjaśnieniami')),
+        h('span', { class: 'cta-txt' }, h('b', {}, z.sprawdzian ? 'Zaczynam sprawdzian' : 'Zaczynam cały zestaw'), h('small', {}, z.sprawdzian ? 'wynik na końcu, po wszystkich zadaniach' : 'blok po bloku, z wyjaśnieniami')),
         h('span', { class: 'cta-strzalka' }, ik('dalej'))),
-      h('div', { class: 'sekcja' }, 'Bloki — możesz przećwiczyć jeden'),
-      h('ul', { class: 'lista-pozycji' }, z.bloki.map((b, i) => {
+      // sprawdzian robi się w całości, żeby wynik szedł raz, po całym wariancie
+      z.sprawdzian ? null : h('div', { class: 'sekcja' }, 'Bloki — możesz przećwiczyć jeden'),
+      z.sprawdzian ? null : h('ul', { class: 'lista-pozycji' }, z.bloki.map((b, i) => {
         const n = b.ile || b.zadania?.length;
         return h('li', { class: 'pozycja klik', onclick: () => graj1([b], { tylkoBlok: b.id }) },
           h('span', { class: `blok-nr serif ${kolor(i)}` }, i + 1),

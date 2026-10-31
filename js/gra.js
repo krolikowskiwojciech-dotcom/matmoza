@@ -408,6 +408,8 @@ export function uruchom(el, opcje) {
     sprzataj();
     const w = B().wyniki, dob = w.filter((x) => x.dobrze).length;
     if (nrBloku + 1 >= bloki.length) return podsumowanie(false);
+    // sprawdzian: bez wyniku po bloku — wynik i „Wyślij wynik” dopiero po całym wariancie
+    if (zestaw.sprawdzian) { nrBloku++; poz = 0; czesc = 0; return wstepBloku(); }
     const g = gwiazdki(dob, w.length);
     graj('koniecBloku');
     const nast = bloki[nrBloku + 1].blok;
