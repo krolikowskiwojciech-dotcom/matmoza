@@ -122,16 +122,15 @@ async function ekranZestawu(id) {
           ostatnia ? h('span', {}, 'ostatnio ', h('b', {}, `${ostatnia.dobrze}/${ostatnia.ile}`)) : null,
           ile > 1 ? h('span', {}, h('b', {}, ile), ' prób') : null)),
       h('button', { class: 'cta', type: 'button', onclick: () => graj1(z.bloki) },
-        h('span', { class: 'cta-txt' }, h('b', {}, z.sprawdzian ? 'Zaczynam sprawdzian' : 'Zaczynam cały zestaw'), h('small', {}, z.sprawdzian ? 'wynik na końcu, po wszystkich zadaniach' : 'blok po bloku, z wyjaśnieniami')),
+        h('span', { class: 'cta-txt' }, h('b', {}, z.sprawdzian ? 'Zaczynam sprawdzian' : 'Zaczynam cały zestaw'), h('small', {}, z.sprawdzian ? 'wynik na końcu, po wszystkich zadaniach' : 'blok po bloku, wynik na końcu')),
         h('span', { class: 'cta-strzalka' }, ik('dalej'))),
-      // sprawdzian robi się w całości, żeby wynik szedł raz, po całym wariancie
-      z.sprawdzian ? null : h('div', { class: 'sekcja' }, 'Bloki — możesz przećwiczyć jeden'),
-      z.sprawdzian ? null : h('ul', { class: 'lista-pozycji' }, z.bloki.map((b, i) => {
+      // tylko cały zestaw — wynik raz, po wszystkich blokach; lista bloków jest tylko do podglądu
+      h('div', { class: 'sekcja' }, 'Co jest w zestawie'),
+      h('ul', { class: 'lista-pozycji' }, z.bloki.map((b, i) => {
         const n = b.ile || b.zadania?.length;
-        return h('li', { class: 'pozycja klik', onclick: () => graj1([b], { tylkoBlok: b.id }) },
+        return h('li', { class: 'pozycja' },
           h('span', { class: `blok-nr serif ${kolor(i)}` }, i + 1),
-          h('span', { class: 'poz-txt' }, h('b', {}, b.tytul), h('small', { class: 'maly' }, `${n} ${odm(n, 'zadanie', 'zadania', 'zadań')}`)),
-          h('span', { class: 'poz-status' }, 'ćwicz'));
+          h('span', { class: 'poz-txt' }, h('b', {}, b.tytul), h('small', { class: 'maly' }, `${n} ${odm(n, 'zadanie', 'zadania', 'zadań')}`)));
       }))));
 }
 

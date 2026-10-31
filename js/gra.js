@@ -95,12 +95,10 @@ export function uruchom(el, opcje) {
   async function wyjdzZLekcji() {
     if (document.querySelector('.okno-tlo')) return;
     if (!zrobionych()) { sprzataj(); graj('cofnij'); opcje.wyjdz(); return; }
-    const w = await okno({ tytul: 'Wyjść z ćwiczenia?', tresc: 'Tego podejścia nie da się dokończyć później. Zrobione zadania zapiszą się jako wynik przerwany.',
+    const w = await okno({ tytul: 'Wyjść z ćwiczenia?', tresc: 'Wynik zapisuje się dopiero po całym zestawie. Jeśli wyjdziesz teraz, to podejście się nie liczy i następnym razem zaczniesz od początku.',
       przyciski: [{ tekst: 'Ćwiczę dalej', wartosc: false, klasa: 'jasny' }, { tekst: 'Wyjdź', wartosc: true, klasa: 'czerwony' }] });
     if (!w) return;
     sprzataj();
-    const proba = zbudujProbe(true);
-    if (proba.ile) opcje.naKoniec(proba);
     opcje.wyjdz();
   }
 
@@ -404,27 +402,12 @@ export function uruchom(el, opcje) {
   }
 
   // ---------- koniec bloku ----------
+  // wynik tylko po całym zestawie (zasada Wojtka 2026-10-31): między blokami bez ekranu wyniku, od razu następny blok
   function koniecBloku() {
     sprzataj();
-    const w = B().wyniki, dob = w.filter((x) => x.dobrze).length;
     if (nrBloku + 1 >= bloki.length) return podsumowanie(false);
-    // sprawdzian: bez wyniku po bloku — wynik i „Wyślij wynik” dopiero po całym wariancie
-    if (zestaw.sprawdzian) { nrBloku++; poz = 0; czesc = 0; return wstepBloku(); }
-    const g = gwiazdki(dob, w.length);
-    graj('koniecBloku');
-    const nast = bloki[nrBloku + 1].blok;
-    const dalejF = () => { graj('przycisk'); nrBloku++; poz = 0; czesc = 0; wstepBloku(); };
-    ekran({
-      tresc: h('div', { class: 'podsum' },
-        h('div', { class: 'kat-etykieta' }, `Blok ${nrBloku + 1} z ${bloki.length} gotowy`),
-        h('h2', { class: 'serif' }, B().blok.tytul),
-        pokazGwiazdki(g, 'duze'),
-        h('div', { class: 'wynik-duzy serif' }, `${dob}/${w.length}`),
-        h('p', { class: 'maly' }, 'dobrze za pierwszym razem')),
-      stopka: h('button', { class: 'btn glowny szeroki', type: 'button', id: 'dalej', onclick: dalejF }, `Dalej: ${nast.tytul}`, ik('dalej')),
-    });
-    ustawKlawisze((e) => { if (e.key === 'Enter') { e.preventDefault(); dalejF(); } });
-    el.querySelector('#dalej').focus({ preventScroll: true });
+    nrBloku++; poz = 0; czesc = 0;
+    wstepBloku();
   }
 
   // ---------- podsumowanie ----------

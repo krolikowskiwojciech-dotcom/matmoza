@@ -19,6 +19,9 @@ Użytkownik widzi nazwę **„Matematyka”** (nie „Matmoza”); nazwy repo, p
   błędne zadanie wraca w tym samym bloku, bez powtórek w rundzie, każde „=” na ekranie jest prawdą,
   poziom jak na kartkówce (nie trudniej), treści własnymi słowami, własne okienka zamiast alert/confirm.
 - **Koniec zestawu:** podsumowanie per blok i „Wyślij wynik” → systemowe okienko udostępniania (SMS, Mail…).
+- **Wynik tylko po całym wariancie** (Wojtek 2026-10-31, zasada dla każdego zestawu i sprawdzianu): między blokami żadnego ekranu
+  z wynikiem (od razu następny blok), bloków nie da się ćwiczyć osobno (lista bloków tylko do podglądu), wyjście w trakcie
+  niczego nie zapisuje ani nie wysyła. Wynik, zapis do `matmoza-dane` i „Wyślij wynik” — dopiero po przejściu całego zestawu.
 
 ## Prośba „zrób im ćwiczenia z tego zdjęcia” (zdjęcie strony podręcznika / karty pracy)
 
