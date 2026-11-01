@@ -67,7 +67,7 @@ Zadanie z treścią w kilku częściach (każda część osobno oceniana):
 | `reszta` | `dzielna: [min,max]`, `dzielnik: [min,max]`, `zReszta` (domyślnie true) | `88 : 5 = □ r. □` |
 | `okienko` | `dzialania: ["+","−","·",":"]`, `a`, `b` | `35 · □ = 1680` |
 | `porownaj` | `lewa`, `prawa` (jak `wyrazenie`) | `2,45 · 4 □ 7,3 + 2,5` |
-| `ulamki` | `dzialania`, `mianowniki`, `mieszane` (maks. całości), `wspolnyMianownik`, `skracalne`, `maxWspolny`, `maxMianownikWyniku` | `2 3/4 − 1 1/6 = □` |
+| `ulamki` | `dzialania`, `mianowniki`, `mieszane` (maks. całości), `mieszaneOd` (min. całości, np. 1 = zawsze liczba mieszana), `wspolnyMianownik`, `skracalne`, `maxWspolny`, `maxMianownikWyniku` | `2 3/4 − 1 1/6 = □` |
 | `skracanie` | `mianowniki`, `razy: [2,9]` | `12/18 = □` |
 | `zamiana` | `kierunek: "naMieszana" \| "naNiewlasciwy"`, `mianowniki`, `calosci` | `17/5 = □` |
 | `czynniki` | `pierwsze`, `ile: [3,6]`, `min`, `max` | `600 = □` → 2 · 2 · 2 · 3 · 5 · 5 |

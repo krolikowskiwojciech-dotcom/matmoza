@@ -1,0 +1,242 @@
+{
+  "id": "2026-11-01-julek-mnozenie-mieszanych",
+  "dla": [
+    "julek"
+  ],
+  "tytul": "Mnożenie liczb mieszanych",
+  "opis": "Jak 3 3/4 · 4 1/3 = 16 1/4: zamiana na ułamki niewłaściwe, mnożenie, wyłączanie całości i skracanie.",
+  "dodano": "2026-11-01",
+  "ikona": "×",
+  "kolor": "mietowy",
+  "bloki": [
+    {
+      "id": "na-niewlasciwy",
+      "tytul": "Liczba mieszana → ułamek",
+      "polecenie": "Zamień na ułamek niewłaściwy.",
+      "ile": 5,
+      "generator": {
+        "typ": "zamiana",
+        "kierunek": [
+          "naNiewlasciwy"
+        ],
+        "mianowniki": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          8
+        ],
+        "calosci": [
+          1,
+          6
+        ]
+      },
+      "jak": {
+        "intro": "Całości razy mianownik, dodaj licznik. Mianownik zostaje ten sam.",
+        "przyklad": [
+          "3 3/4 = 15/4 (3 · 4 + 3 = 15)",
+          "4 1/3 = 13/3 (4 · 3 + 1 = 13)"
+        ]
+      }
+    },
+    {
+      "id": "wylacz-calosci",
+      "tytul": "Wyłącz całości i skróć",
+      "polecenie": "Zamień na liczbę mieszaną i skróć.",
+      "ile": 6,
+      "zadania": [
+        {
+          "d": "231/30 = □",
+          "a": "7 7/10",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 231 : 30 = 7 r. 21",
+            "231/30 = 7 21/30",
+            "Skróć przez 3: 7 21/30 = 7 7/10"
+          ]
+        },
+        {
+          "d": "696/30 = □",
+          "a": "23 1/5",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 696 : 30 = 23 r. 6",
+            "696/30 = 23 6/30",
+            "Skróć przez 6: 23 6/30 = 23 1/5"
+          ]
+        },
+        {
+          "d": "182/20 = □",
+          "a": "9 1/10",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 182 : 20 = 9 r. 2",
+            "182/20 = 9 2/20",
+            "Skróć przez 2: 9 2/20 = 9 1/10"
+          ]
+        },
+        {
+          "d": "42/15 = □",
+          "a": "2 4/5",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 42 : 15 = 2 r. 12",
+            "42/15 = 2 12/15",
+            "Skróć przez 3: 2 12/15 = 2 4/5"
+          ]
+        },
+        {
+          "d": "126/15 = □",
+          "a": "8 2/5",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 126 : 15 = 8 r. 6",
+            "126/15 = 8 6/15",
+            "Skróć przez 3: 8 6/15 = 8 2/5"
+          ]
+        },
+        {
+          "d": "28/18 = □",
+          "a": "1 5/9",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 28 : 18 = 1 r. 10",
+            "28/18 = 1 10/18",
+            "Skróć przez 2: 1 10/18 = 1 5/9"
+          ]
+        },
+        {
+          "d": "45/6 = □",
+          "a": "7 1/2",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 45 : 6 = 7 r. 3",
+            "45/6 = 7 3/6",
+            "Skróć przez 3: 7 3/6 = 7 1/2"
+          ]
+        },
+        {
+          "d": "414/30 = □",
+          "a": "13 4/5",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 414 : 30 = 13 r. 24",
+            "414/30 = 13 24/30",
+            "Skróć przez 6: 13 24/30 = 13 4/5"
+          ]
+        },
+        {
+          "d": "144/10 = □",
+          "a": "14 2/5",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 144 : 10 = 14 r. 4",
+            "144/10 = 14 4/10",
+            "Skróć przez 2: 14 4/10 = 14 2/5"
+          ]
+        },
+        {
+          "d": "63/12 = □",
+          "a": "5 1/4",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 63 : 12 = 5 r. 3",
+            "63/12 = 5 3/12",
+            "Skróć przez 3: 5 3/12 = 5 1/4"
+          ]
+        },
+        {
+          "d": "375/24 = □",
+          "a": "15 5/8",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 375 : 24 = 15 r. 15",
+            "375/24 = 15 15/24",
+            "Skróć przez 3: 15 15/24 = 15 5/8"
+          ]
+        },
+        {
+          "d": "156/15 = □",
+          "a": "10 2/5",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 156 : 15 = 10 r. 6",
+            "156/15 = 10 6/15",
+            "Skróć przez 3: 10 6/15 = 10 2/5"
+          ]
+        },
+        {
+          "d": "95/15 = □",
+          "a": "6 1/3",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 95 : 15 = 6 r. 5",
+            "95/15 = 6 5/15",
+            "Skróć przez 5: 6 5/15 = 6 1/3"
+          ]
+        },
+        {
+          "d": "195/12 = □",
+          "a": "16 1/4",
+          "kind": "ulamek",
+          "postac": "najprostsza",
+          "exp": [
+            "Podziel licznik przez mianownik: 195 : 12 = 16 r. 3",
+            "195/12 = 16 3/12",
+            "Skróć przez 3: 16 3/12 = 16 1/4"
+          ]
+        }
+      ],
+      "jak": {
+        "intro": "Podziel licznik przez mianownik: wynik to całości, reszta to nowy licznik. Na koniec skróć ułamek.",
+        "przyklad": [
+          "195/12: 195 : 12 = 16 r. 3",
+          "195/12 = 16 3/12 = 16 1/4"
+        ]
+      }
+    },
+    {
+      "id": "mnozenie",
+      "tytul": "Mnożenie liczb mieszanych",
+      "polecenie": "Oblicz. Wynik skróć i wyłącz całości.",
+      "ile": 8,
+      "generator": {
+        "typ": "ulamki",
+        "dzialania": [
+          "·"
+        ],
+        "mianowniki": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "mieszane": 4,
+        "mieszaneOd": 1,
+        "maxMianownikWyniku": 12
+      },
+      "jak": {
+        "intro": "Zamień obie liczby na ułamki niewłaściwe. Licznik razy licznik, mianownik razy mianownik. Potem wyłącz całości i skróć.",
+        "przyklad": [
+          "3 3/4 · 4 1/3 = 15/4 · 13/3",
+          "= 195/12 = 16 3/12 = 16 1/4"
+        ]
+      }
+    }
+  ]
+}

@@ -15,6 +15,22 @@
   ],
   "zestawy": [
     {
+      "id": "2026-11-01-julek-mnozenie-mieszanych",
+      "tytul": "Mnożenie liczb mieszanych",
+      "opis": "Jak 3 3/4 · 4 1/3 = 16 1/4: zamiana na ułamki niewłaściwe, mnożenie, wyłączanie całości i skracanie.",
+      "dla": [
+        "julek"
+      ],
+      "termin": null,
+      "dodano": "2026-11-01",
+      "kategoria": null,
+      "przyklad": false,
+      "ikona": "×",
+      "kolor": "mietowy",
+      "bloki": 3,
+      "zadan": 19
+    },
+    {
       "id": "2026-10-29-julek-poprawa-01",
       "tytul": "Poprawa — wariant 1",
       "opis": "Liczby naturalne i ułamki · zakres ze sprawdzianu. 25 zadań: rachunki, okienka, rozwinięcia i zagadka o okresie. Nowe rachunki przy kolejnej próbie.",

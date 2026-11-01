@@ -244,7 +244,7 @@ function losujUlamek(p) {
   const mian = los.wybierz(p.mianowniki || [2, 3, 4, 5, 6, 8, 10, 12]);
   const l = los.int(1, mian - 1);
   if (nwd(l, mian) !== 1 && !p.skracalne) return null;
-  const c = p.mieszane ? los.int(0, p.mieszane) : 0;
+  const c = p.mieszane ? los.int(p.mieszaneOd || 0, p.mieszane) : 0;
   return { t: c ? `${c} ${l}/${mian}` : U(l, mian), v: new Q(c * mian + l, mian), c, l, m: mian };
 }
 
