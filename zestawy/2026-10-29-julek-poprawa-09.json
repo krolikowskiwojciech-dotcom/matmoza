@@ -195,16 +195,19 @@
           "+"
         ],
         "mianowniki": [
+          2,
           3,
           4,
           5,
-          7,
+          6,
           8,
-          9
+          9,
+          10,
+          12
         ],
-        "mieszane": 5,
-        "maxWspolny": 72,
-        "maxMianownikWyniku": 90
+        "mieszane": 4,
+        "maxWspolny": 36,
+        "maxMianownikWyniku": 24
       }
     },
     {
@@ -244,16 +247,19 @@
           "−"
         ],
         "mianowniki": [
+          2,
           3,
           4,
           5,
-          7,
+          6,
           8,
-          9
+          9,
+          10,
+          12
         ],
-        "mieszane": 5,
-        "maxWspolny": 72,
-        "maxMianownikWyniku": 90
+        "mieszane": 4,
+        "maxWspolny": 36,
+        "maxMianownikWyniku": 24
       }
     },
     {
@@ -293,16 +299,19 @@
           "·"
         ],
         "mianowniki": [
+          2,
           3,
           4,
           5,
-          7,
+          6,
           8,
-          9
+          9,
+          10,
+          12
         ],
-        "mieszane": 5,
-        "maxWspolny": 72,
-        "maxMianownikWyniku": 90
+        "mieszane": 4,
+        "maxWspolny": 36,
+        "maxMianownikWyniku": 24
       }
     },
     {
@@ -342,16 +351,19 @@
           ":"
         ],
         "mianowniki": [
+          2,
           3,
           4,
           5,
-          7,
+          6,
           8,
-          9
+          9,
+          10,
+          12
         ],
-        "mieszane": 5,
-        "maxWspolny": 72,
-        "maxMianownikWyniku": 90
+        "mieszane": 4,
+        "maxWspolny": 36,
+        "maxMianownikWyniku": 24
       }
     },
     {
