@@ -417,3 +417,21 @@ input.pole { display: block; width: 100%; height: auto; padding: 12px 14px; bord
 
 /* znaczek z inicjałem w kolorze osoby (jak na ogarnijmaterial.pl) */
 .okragly.inicjal[class*="kolor-"], .profil-duzy-avatar[class*="kolor-"] { background-color: var(--tlo-karty); }
+
+/* zakładki na starcie: Ćwiczenia / Sprawdzian */
+.zakladki { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin: 4px 0 6px; background: var(--linia); border-radius: 999px; }
+.zakladka { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 12px; border-radius: 999px; color: var(--szary); text-decoration: none; font-weight: 500; font-size: 15px; }
+.zakladka.akt { background: var(--karta); color: var(--tusz); box-shadow: 0 2px 0 rgba(0,0,0,.06); }
+.zakl-licznik { font-size: 12px; min-width: 22px; padding: 1px 7px; border-radius: 999px; background: rgba(0,0,0,.07); font-variant-numeric: tabular-nums; }
+a.pozycja { color: inherit; text-decoration: none; }
+.sekcja-ile { float: right; text-transform: none; letter-spacing: 0; }
+.grupa-opis { margin: -2px 2px 12px; color: var(--szary); font-size: 14px; line-height: 1.45; }
+.siatka-wariantow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.wariant { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 4px 10px; border-radius: 16px; background: var(--karta);
+  border: 1px solid var(--linia); box-shadow: 0 3px 0 var(--linia); color: var(--tusz); text-decoration: none; }
+.wariant-nr { font-size: 22px; line-height: 1.1; }
+.wariant small { font-size: 12px; color: var(--szary); font-variant-numeric: tabular-nums; }
+.wariant.zrobiony { background: var(--mietowy); border-color: #9FD9BF; box-shadow: 0 3px 0 #9FD9BF; }
+.wariant.zrobiony small { color: var(--tusz); }
+.wariant.teraz { background: var(--lila); border-color: #A7A0EA; box-shadow: 0 3px 0 #A7A0EA; }
+.wariant.teraz small { color: var(--tusz); font-weight: 500; }
